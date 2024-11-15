@@ -5,6 +5,7 @@ package sk.uniza.fri.heapfile;
  *
  * @author matus
  */
-public interface IRecord extends IData {
+public interface IRecord<T> extends IData<T> {
     boolean equals(Object data);
+
 }

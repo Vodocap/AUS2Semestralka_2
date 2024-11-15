@@ -5,19 +5,23 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  * 15. 11. 2024 - 13:25
  *
  * @author matus
  */
-public class Block<T extends IData> {
+public class Block<T extends IRecord<T>> implements IData<T> {
     private int validCount;
     private int next;
     private int previous;
     private int size;
-    public Block(int paBlockSize) {
-        this.validCount = paBlockSize;
+    private IRecord[] recordArray;
+    public Block() {
+        this.validCount = 0;
+        this.next = 0;
+        this.previous = 0;
     }
 
     public byte[] toByteArray(Object paData) {
@@ -56,12 +60,24 @@ public class Block<T extends IData> {
             throw new IllegalStateException("Error during conversion from byte array.");
         }
 
+    }
 
-
+    @Override
+    public T createInstance() {
+        return null;
     }
 
     public int getSize() {
         return this.size;
+    }
+
+
+    public int getNext() {
+        return this.next;
+    }
+
+    public int getPrevious() {
+        return this.previous;
     }
 
 

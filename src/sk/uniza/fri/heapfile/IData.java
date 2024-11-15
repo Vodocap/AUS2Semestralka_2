@@ -5,8 +5,9 @@ package sk.uniza.fri.heapfile;
  *
  * @author matus
  */
-public interface IData {
+public interface IData<T> {
     int getSize();
     byte[] toByteArray(Object object);
     Object fromByteArray(byte[] pabyteArray);
+    T createInstance();
 }
