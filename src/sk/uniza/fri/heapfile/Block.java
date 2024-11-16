@@ -12,13 +12,15 @@ import java.io.RandomAccessFile;
  *
  * @author matus
  */
-public class Block<T extends IRecord<T>> implements IData<T> {
+public class Block<T extends IData<T>> implements IRecord<T> {
     private int validCount;
     private int next;
     private int previous;
     private int size;
-    private IRecord[] recordArray;
-    public Block() {
+    private T[] recordArray;
+
+    public Block(int paBlockSize) {
+        this.size = paBlockSize;
         this.validCount = 0;
         this.next = 0;
         this.previous = 0;

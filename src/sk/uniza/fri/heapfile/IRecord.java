@@ -6,6 +6,10 @@ package sk.uniza.fri.heapfile;
  * @author matus
  */
 public interface IRecord<T> extends IData<T> {
-    boolean equals(Object data);
+    int getSize();
+    byte[] toByteArray(Object object);
+    Object fromByteArray(byte[] pabyteArray);
+    T createInstance();
+
 
 }
