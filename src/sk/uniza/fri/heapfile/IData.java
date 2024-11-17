@@ -5,6 +5,7 @@ package sk.uniza.fri.heapfile;
  *
  * @author matus
  */
-public interface IData<T> {
+public interface IData<T> extends IRecord<T>{
     boolean equals(Object data);
+    T createInstance();
 }

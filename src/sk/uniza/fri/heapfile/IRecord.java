@@ -5,11 +5,11 @@ package sk.uniza.fri.heapfile;
  *
  * @author matus
  */
-public interface IRecord<T> extends IData<T> {
+public interface IRecord<T> {
     int getSize();
-    byte[] toByteArray(Object object);
-    Object fromByteArray(byte[] pabyteArray);
-    T createInstance();
+    byte[] toByteArray();
+    void fromByteArray(byte[] pabyteArray);
+    boolean isValid();
 
 
 }
