@@ -15,10 +15,16 @@ public class Main {
 
         HeapFile<OsobaTest> heapFile = new HeapFile<>("sub.bin", 100);
         OsobaTest osobaTest = new OsobaTest("Jozo", "Pytagora", 636565);
-        OsobaTest osobaTest1 = new OsobaTest("Majo", "Aristotel", 416516);
+        OsobaTest osobaTest1 = new OsobaTest("Majo", "Aristotel", 9849849);
+        OsobaTest osobaTest2 = new OsobaTest("Fero", "Sokrovec", 453453413);
+        OsobaTest osobaTest3 = new OsobaTest("Mino", "Sangala", 59495196);
+        OsobaTest osobaTest4 = new OsobaTest("Simon", "RabMag", 1244422);
         long adOs = heapFile.insert(osobaTest);
         long adOs1 = heapFile.insert(osobaTest1);
-        heapFile.delete(adOs, osobaTest);
+        long adOs2 = heapFile.insert(osobaTest2);
+        long adOs3 = heapFile.insert(osobaTest3);
+        long adOs4 = heapFile.insert(osobaTest4);
+//        heapFile.delete(adOs, osobaTest);
         heapFile.printBlocks(osobaTest);
 
     }
