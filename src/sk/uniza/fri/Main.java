@@ -13,9 +13,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        HeapFile<OsobaTest> heapFile = new HeapFile<>("sub.bin", 250);
+        HeapFile<OsobaTest> heapFile = new HeapFile<>("sub.bin", 100);
         OsobaTest osobaTest = new OsobaTest("Jozo", "Pytagora", 636565);
-        heapFile.insert(osobaTest);
+        OsobaTest osobaTest1 = new OsobaTest("Majo", "Aristotel", 416516);
+        long adOs = heapFile.insert(osobaTest);
+        long adOs1 = heapFile.insert(osobaTest1);
+        heapFile.delete(adOs, osobaTest);
         heapFile.printBlocks(osobaTest);
 
     }

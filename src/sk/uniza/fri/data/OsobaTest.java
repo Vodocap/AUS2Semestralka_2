@@ -15,35 +15,65 @@ import java.util.ArrayList;
  *
  * @author matus
  */
-public class OsobaTest<T extends IData<T>> implements IData<T> {
+public class OsobaTest implements IData<OsobaTest> {
     private String meno;
     private String priezvisko;
     private static int MENO_LENGHT = 15;
     private static int PRIEZVISKO_LENGHT = 20;
     private int ID;
-    private ArrayList<T> zaznamy;
+    private ArrayList<ZaznamTest> zaznamy;
     private int size;
 
     public OsobaTest(String paMeno, String paPriezvisko, int paID) {
         this.zaznamy = new ArrayList<>();
         this.meno = paMeno;
         this.priezvisko = paPriezvisko;
-        this.size = 0;
+        this.size = 51;
         this.ID = paID;
 
     }
 
-    public void addZaznam(T paZaznam) {
+    public void addZaznam(ZaznamTest paZaznam) {
         this.zaznamy.add(paZaznam);
     }
 
+    public String getMeno() {
+        return this.meno;
+    }
+
+    public void setMeno(String meno) {
+        this.meno = meno;
+    }
+
+    public String getPriezvisko() {
+        return this.priezvisko;
+    }
+
+    public void setPriezvisko(String priezvisko) {
+        this.priezvisko = priezvisko;
+    }
+
+    public int getID() {
+        return this.ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
     @Override
-    public T createInstance() {
+    public boolean myEquals(OsobaTest data) {
+        return this.ID == data.getID() && this.meno.equals(data.getMeno()) && this.priezvisko.equals(data.getPriezvisko());
+    }
+
+
+    @Override
+    public OsobaTest createInstance() {
         OsobaTest osobaCopy = new OsobaTest(this.meno, this.priezvisko, this.ID);
-        for (T t : this.zaznamy) {
+        for (ZaznamTest t : this.zaznamy) {
             osobaCopy.addZaznam(t);
         }
-        return (T) osobaCopy;
+        return osobaCopy;
     }
 
     @Override
@@ -56,7 +86,7 @@ public class OsobaTest<T extends IData<T>> implements IData<T> {
 
     @Override
     public int getSize() {
-        return 51;
+        return this.size;
     }
 
     @Override
@@ -86,7 +116,7 @@ public class OsobaTest<T extends IData<T>> implements IData<T> {
             hlpOutStream.write(writtenPriezvisko.getBytes());
 
 
-            for (T record : this.zaznamy) {
+            for (ZaznamTest record : this.zaznamy) {
                 record.toByteArray();
             }
             System.out.println(hlpByteArrayOutputStream.toByteArray().length);

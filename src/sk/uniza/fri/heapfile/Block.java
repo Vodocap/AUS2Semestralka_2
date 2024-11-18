@@ -44,6 +44,18 @@ public class Block<T extends IData<T>> implements IRecord<T> {
 
     }
 
+
+    public void removeData(T paData) {
+        if (!this.recordArray.isEmpty()) {
+            for (int i = 0; i < this.recordArray.size(); i++) {
+                if (this.recordArray.get(i).myEquals(paData)) {
+                    this.recordArray.remove(i);
+                }
+            }
+        }
+
+    }
+
     public byte[] toByteArray() {
         ByteArrayOutputStream hlpByteArrayOutputStream = new ByteArrayOutputStream();
         DataOutputStream hlpOutStream = new DataOutputStream(hlpByteArrayOutputStream);
@@ -94,6 +106,10 @@ public class Block<T extends IData<T>> implements IRecord<T> {
             throw new IllegalStateException("Error during conversion from byte array.");
         }
 
+    }
+
+    public boolean isFull() {
+        return this.recordArray.size() == RECORD_LIMIT;
     }
 
     public void setNext(int next) {
