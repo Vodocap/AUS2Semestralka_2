@@ -8,4 +8,5 @@ package sk.uniza.fri.heapfile;
 public interface IData<T> extends IRecord<T>{
     boolean equals(Object data);
     T createInstance();
+    void print();
 }

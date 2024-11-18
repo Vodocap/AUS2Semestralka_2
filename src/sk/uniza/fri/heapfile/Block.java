@@ -19,10 +19,12 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     private int next;
     private int previous;
     private int size;
+    private static int RECORD_LIMIT = 4;
     private ArrayList<T> recordArray;
-    private Supplier<T> recordSupplier;
+    T instanceCreator;
 
-    public Block(int paBlockSize) {
+    public Block(T data, int paBlockSize) {
+        this.instanceCreator = data;
         this.size = paBlockSize;
         this.validCount = 0;
         this.next = 0;
@@ -30,9 +32,14 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         this.recordArray = new ArrayList<>();
     }
 
+    public boolean isParltyEmpty() {
+        return this.recordArray.size() < RECORD_LIMIT && !this.recordArray.isEmpty();
+    }
+
     public void insertData(T paData) {
-        if (this.recordArray.size() > this.size) {
+        if (this.recordArray.size() < RECORD_LIMIT) {
             this.recordArray.add(paData);
+            this.validCount++;
         }
 
     }
@@ -47,9 +54,14 @@ public class Block<T extends IData<T>> implements IRecord<T> {
             hlpOutStream.writeInt(this.next);
             hlpOutStream.writeInt(this.previous);
             hlpOutStream.writeInt(this.size);
+            int recordsBytes = 0;
             for (T record : this.recordArray) {
-                record.toByteArray();
+                hlpOutStream.write(record.toByteArray());
+                recordsBytes += record.getSize();
             }
+            byte[] emptyArrray = new byte[this.size - recordsBytes];
+            hlpOutStream.write(emptyArrray);
+
 
             return hlpByteArrayOutputStream.toByteArray();
 
@@ -72,8 +84,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
 
             for (int i = 0; i < this.validCount; i++) {
 
-                T record = this.recordSupplier.get();
-                record.createInstance();
+                T record = this.instanceCreator.createInstance();
                 record.fromByteArray(hlpInStream.readNBytes(record.getSize()));
                 this.recordArray.add(record);
             }
@@ -83,6 +94,14 @@ public class Block<T extends IData<T>> implements IRecord<T> {
             throw new IllegalStateException("Error during conversion from byte array.");
         }
 
+    }
+
+    public void setNext(int next) {
+        this.next = next;
+    }
+
+    public void setPrevious(int previous) {
+        this.previous = previous;
     }
 
     @Override
@@ -102,6 +121,16 @@ public class Block<T extends IData<T>> implements IRecord<T> {
 
     public int getPrevious() {
         return this.previous;
+    }
+
+    public void printBlock() {
+        System.out.println("Size: " + this.size);
+        System.out.println("Valid Count: " + this.validCount);
+        System.out.println("Next: " + this.next);
+        System.out.println("Previous: " + this.previous);
+        for (T t : this.recordArray) {
+            t.print();
+        }
     }
 
 

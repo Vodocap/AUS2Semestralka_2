@@ -10,13 +10,14 @@ import java.io.RandomAccessFile;
  * @author matus
  */
 public class HeapFile<T extends IData> {
-    private long emptyBlocks;
-    private long partlyEmptyBlocks;
+    private int emptyBlocks;
+    private int partlyEmptyBlocks;
     private String filePath;
     private int sizeNum;
     private RandomAccessFile randomAccessFileWriter;
-    private long start;
-    private long end;
+    private int start;
+    private int end;
+    private static int BLOCK_SIZE = 250;
 
 
     public HeapFile(String paFilePath, int paSizeNum) {
@@ -34,7 +35,7 @@ public class HeapFile<T extends IData> {
 
     }
 
-    public long insert(T data) {
+    public long insert(T paData) {
         try {
 
             if (this.partlyEmptyBlocks != -1) {
@@ -42,9 +43,14 @@ public class HeapFile<T extends IData> {
             } else if (this.emptyBlocks != -1) {
                 this.randomAccessFileWriter.seek(this.emptyBlocks);
             }
-            Block newBlock = new Block<>(this.sizeNum / 10);
-            newBlock.insertData(data);
-            this.end += 1;
+            Block newBlock = new Block(paData, BLOCK_SIZE);
+            newBlock.insertData(paData);
+
+            this.end += BLOCK_SIZE;
+            newBlock.setNext(this.end);
+            if (newBlock.isParltyEmpty()) {
+                this.partlyEmptyBlocks = 0;
+            }
             this.randomAccessFileWriter.write(newBlock.toByteArray());
             return this.randomAccessFileWriter.getFilePointer();
         } catch (IOException e) {
@@ -52,7 +58,7 @@ public class HeapFile<T extends IData> {
         }
     }
 
-    public void delete(long address, T data) {
+    public void delete(long address, T paData) {
 
     }
 
@@ -60,11 +66,15 @@ public class HeapFile<T extends IData> {
         return null;
     }
 
-    public void printBlocks() {
+    public void printBlocks(T paData) {
         for (int i = 0; i < this.sizeNum; i++) {
             try {
-                this.randomAccessFileWriter.seek(i);
-                this.randomAccessFileWriter.read();
+                this.randomAccessFileWriter.seek(i * BLOCK_SIZE);
+                byte[] readBlock = new byte[BLOCK_SIZE];
+                this.randomAccessFileWriter.readFully(readBlock);
+                Block block = new Block(paData,BLOCK_SIZE);
+                block.fromByteArray(readBlock);
+                block.printBlock();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

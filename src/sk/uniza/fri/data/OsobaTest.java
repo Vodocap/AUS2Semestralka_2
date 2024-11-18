@@ -47,8 +47,16 @@ public class OsobaTest<T extends IData<T>> implements IData<T> {
     }
 
     @Override
+    public void print() {
+        System.out.println("Meno: " + this.meno);
+        System.out.println("Priezvisko: " + this.priezvisko);
+        System.out.println("ID: " + this.ID);
+        System.out.println("Size: " + this.size);
+    }
+
+    @Override
     public int getSize() {
-        return 0;
+        return 51;
     }
 
     @Override
@@ -81,7 +89,7 @@ public class OsobaTest<T extends IData<T>> implements IData<T> {
             for (T record : this.zaznamy) {
                 record.toByteArray();
             }
-
+            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
             return hlpByteArrayOutputStream.toByteArray();
 
 

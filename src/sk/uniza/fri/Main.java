@@ -13,10 +13,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        HeapFile heapFile = new HeapFile<>("sub.bin", 100);
+        HeapFile<OsobaTest> heapFile = new HeapFile<>("sub.bin", 250);
         OsobaTest osobaTest = new OsobaTest("Jozo", "Pytagora", 636565);
         heapFile.insert(osobaTest);
-        heapFile.printBlocks();
+        heapFile.printBlocks(osobaTest);
 
     }
 }
