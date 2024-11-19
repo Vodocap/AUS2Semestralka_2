@@ -42,30 +42,26 @@ public class HeapFile<T extends IData> {
 
             if (this.partlyEmptyBlocks != -1) {
                 this.randomAccessFileWriter.seek(this.partlyEmptyBlocks);
-                Block blockInstance = new Block(paData, BLOCK_SIZE);
-                blockInstance.fromByteArray(this.readBlock());
+                Block blockInstance = this.makeBlockInstance(paData);
                 blockInstance.insertData(paData);
                 this.randomAccessFileWriter.seek(this.partlyEmptyBlocks);
                 this.randomAccessFileWriter.write(blockInstance.toByteArray());
-                if (blockInstance.isParltyEmpty()) {
-                    this.partlyEmptyBlocks = blockInstance.getPrevious();
-                } else {
-                    this.partlyEmptyBlocks = -1;
-                }
+
+                this.checkPartlyEmpty(blockInstance);
+
                 return blockInstance.getPrevious();
 
 
             } else if (this.emptyBlocks != -1) {
 
                 this.randomAccessFileWriter.seek(this.emptyBlocks);
-                Block blockInstance = new Block(paData, BLOCK_SIZE);
+                Block blockInstance = this.makeEmptyBlockInstance(paData);
                 blockInstance.insertData(paData);
                 this.end += BLOCK_SIZE;
                 blockInstance.setNext(this.end);
                 blockInstance.setPrevious(this.end - BLOCK_SIZE);
-                if (blockInstance.isParltyEmpty()) {
-                    this.partlyEmptyBlocks = blockInstance.getPrevious();
-                }
+
+                this.checkPartlyEmpty(blockInstance);
 
                 this.randomAccessFileWriter.write(blockInstance.toByteArray());
                 this.actualSize++;
@@ -80,6 +76,17 @@ public class HeapFile<T extends IData> {
         }
     }
 
+    private Block makeBlockInstance(T paData) {
+        Block blockInstance = new Block(paData, BLOCK_SIZE);
+        blockInstance.fromByteArray(this.readBlock());
+        return blockInstance;
+    }
+
+    private Block makeEmptyBlockInstance(T paData) {
+        Block blockInstance = new Block(paData, BLOCK_SIZE);
+        return blockInstance;
+    }
+
     private byte[] readBlock() {
         byte[] readBlock = new byte[BLOCK_SIZE];
         try {
@@ -90,32 +97,50 @@ public class HeapFile<T extends IData> {
         return readBlock;
     }
 
+    private void checkPartlyEmpty(Block blockInstance) {
+        if (blockInstance.isParltyEmpty()) {
+            this.partlyEmptyBlocks = blockInstance.getPrevious();
+        } else {
+            this.partlyEmptyBlocks = -1;
+        }
+    }
+
     public void delete(long paAdress, T paData) {
         try {
             this.randomAccessFileWriter.seek(paAdress);
-            Block blockInstance = new Block(paData, BLOCK_SIZE);
-            blockInstance.fromByteArray(this.readBlock());
+
+            Block blockInstance = this.makeBlockInstance(paData);
             blockInstance.removeData(paData);
+
             this.randomAccessFileWriter.seek(paAdress);
             this.randomAccessFileWriter.write(blockInstance.toByteArray());
+            if (!blockInstance.isValid()) {
+                this.actualSize--;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public T get(long paAddress, T paData) {
-        return null;
+        try {
+            this.randomAccessFileWriter.seek(paAddress);
+            Block foundBlock = this.makeBlockInstance(paData);
+            return (T) foundBlock.getRecord(paData);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void printBlocks(T paData) {
         for (int i = 0; i < this.actualSize; i++) {
             try {
-                this.randomAccessFileWriter.seek(i * BLOCK_SIZE);
-                byte[] readBlock = new byte[BLOCK_SIZE];
-                this.randomAccessFileWriter.readFully(readBlock);
-                Block block = new Block(paData,BLOCK_SIZE);
-                block.fromByteArray(readBlock);
-                block.printBlock();
+                long address = i * BLOCK_SIZE;
+                this.randomAccessFileWriter.seek(address);
+                Block blockInstance = this.makeBlockInstance(paData);
+                blockInstance.printBlock();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

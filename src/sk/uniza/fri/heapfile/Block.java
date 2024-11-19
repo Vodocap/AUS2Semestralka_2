@@ -44,6 +44,18 @@ public class Block<T extends IData<T>> implements IRecord<T> {
 
     }
 
+    public T getRecord(T paData) {
+        if (!this.recordArray.isEmpty()) {
+            for (T t : this.recordArray) {
+                if (t.myEquals(paData)) {
+                    return t;
+                }
+
+            }
+        }
+        return null;
+    }
+
 
     public void removeData(T paData) {
         if (!this.recordArray.isEmpty()) {
@@ -126,7 +138,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
 
     @Override
     public boolean isValid() {
-        return this.validCount == 0;
+        return this.validCount != 0;
     }
 
 
