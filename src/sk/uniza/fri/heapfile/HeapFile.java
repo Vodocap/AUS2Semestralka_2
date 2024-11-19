@@ -98,7 +98,6 @@ public class HeapFile<T extends IData> {
             blockInstance.removeData(paData);
             this.randomAccessFileWriter.seek(paAdress);
             this.randomAccessFileWriter.write(blockInstance.toByteArray());
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

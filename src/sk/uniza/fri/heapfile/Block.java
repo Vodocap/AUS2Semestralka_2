@@ -50,7 +50,10 @@ public class Block<T extends IData<T>> implements IRecord<T> {
             for (int i = 0; i < this.recordArray.size(); i++) {
                 if (this.recordArray.get(i).myEquals(paData)) {
                     this.recordArray.remove(i);
+                    this.validCount--;
+                    break;
                 }
+
             }
         }
 
@@ -71,10 +74,11 @@ public class Block<T extends IData<T>> implements IRecord<T> {
                 hlpOutStream.write(record.toByteArray());
                 recordsBytes += record.getSize();
             }
-            byte[] emptyArrray = new byte[this.size - recordsBytes];
+            byte[] emptyArrray = new byte[this.size - recordsBytes - 16];
+
             hlpOutStream.write(emptyArrray);
 
-
+            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
             return hlpByteArrayOutputStream.toByteArray();
 
 

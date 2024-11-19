@@ -119,7 +119,7 @@ public class OsobaTest implements IData<OsobaTest> {
             for (ZaznamTest record : this.zaznamy) {
                 record.toByteArray();
             }
-            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
+//            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
             return hlpByteArrayOutputStream.toByteArray();
 
 
