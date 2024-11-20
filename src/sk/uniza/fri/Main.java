@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        HeapFile<OsobaTest> heapFile = new HeapFile<>("sub.bin", 100);
+        HeapFile<OsobaTest> heapFile = new HeapFile<>("sub.bin", 10, 250);
         OsobaTest osobaTest = new OsobaTest("Jozo", "Pytagora", 636565);
         OsobaTest osobaTest1 = new OsobaTest("Majo", "Aristotel", 9849849);
         OsobaTest osobaTest2 = new OsobaTest("Fero", "Sokrovec", 453453413);

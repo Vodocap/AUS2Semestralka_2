@@ -18,16 +18,17 @@ public class HeapFile<T extends IData> {
     private RandomAccessFile randomAccessFileWriter;
     private int start;
     private int end;
-    private static int BLOCK_SIZE = 250;
+    private int blockSize;
 
 
-    public HeapFile(String paFilePath, int paSizeNum) {
+    public HeapFile(String paFilePath, int paSizeNum, int paBlockSize) {
         this.actualSize = 0;
         this.start = 0;
         this.end = 0;
         this.sizeNum = paSizeNum;
         this.emptyBlocks = 0;
         this.partlyEmptyBlocks = -1;
+        this.blockSize = paBlockSize;
         try {
             this.randomAccessFileWriter = new RandomAccessFile(paFilePath, "rw");
         } catch (FileNotFoundException e) {
@@ -53,13 +54,16 @@ public class HeapFile<T extends IData> {
 
 
             } else if (this.emptyBlocks != -1) {
-
+                if (this.end + this.blockSize > this.sizeNum * this.blockSize) {
+                    System.out.println("The Heapfile is full");
+                    return -1;
+                }
                 this.randomAccessFileWriter.seek(this.emptyBlocks);
                 Block blockInstance = this.makeEmptyBlockInstance(paData);
                 blockInstance.insertData(paData);
-                this.end += BLOCK_SIZE;
+                this.end += this.blockSize;
                 blockInstance.setNext(this.end);
-                blockInstance.setPrevious(this.end - BLOCK_SIZE);
+                blockInstance.setPrevious(this.end - this.blockSize);
 
                 this.checkPartlyEmpty(blockInstance);
 
@@ -77,18 +81,18 @@ public class HeapFile<T extends IData> {
     }
 
     private Block makeBlockInstance(T paData) {
-        Block blockInstance = new Block(paData, BLOCK_SIZE);
+        Block blockInstance = new Block(paData, this.blockSize);
         blockInstance.fromByteArray(this.readBlock());
         return blockInstance;
     }
 
     private Block makeEmptyBlockInstance(T paData) {
-        Block blockInstance = new Block(paData, BLOCK_SIZE);
+        Block blockInstance = new Block(paData, this.blockSize);
         return blockInstance;
     }
 
     private byte[] readBlock() {
-        byte[] readBlock = new byte[BLOCK_SIZE];
+        byte[] readBlock = new byte[this.blockSize];
         try {
             this.randomAccessFileWriter.readFully(readBlock);
         } catch (IOException e) {
@@ -137,7 +141,7 @@ public class HeapFile<T extends IData> {
     public void printBlocks(T paData) {
         for (int i = 0; i < this.actualSize; i++) {
             try {
-                long address = i * BLOCK_SIZE;
+                long address = i * this.blockSize;
                 this.randomAccessFileWriter.seek(address);
                 Block blockInstance = this.makeBlockInstance(paData);
                 blockInstance.printBlock();
