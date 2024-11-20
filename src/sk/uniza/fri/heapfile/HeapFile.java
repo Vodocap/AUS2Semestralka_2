@@ -61,16 +61,24 @@ public class HeapFile<T extends IData> {
                 this.randomAccessFileWriter.seek(this.emptyBlocks);
                 Block blockInstance = this.makeEmptyBlockInstance(paData);
                 blockInstance.insertData(paData);
-                this.end += this.blockSize;
-                blockInstance.setNext(this.end);
-                blockInstance.setPrevious(this.end - this.blockSize);
+                if (this.emptyBlocks == this.end) {
+                    this.end += this.blockSize;
+                    blockInstance.setNext(this.end);
+                    blockInstance.setPrevious(this.end - this.blockSize);
 
-                this.checkPartlyEmpty(blockInstance);
+                    this.checkPartlyEmpty(blockInstance);
 
-                this.randomAccessFileWriter.write(blockInstance.toByteArray());
-                this.actualSize++;
-                this.emptyBlocks = blockInstance.getNext();
-                return blockInstance.getPrevious();
+                    this.randomAccessFileWriter.write(blockInstance.toByteArray());
+                    this.actualSize++;
+                    this.emptyBlocks = blockInstance.getNext();
+
+                } else {
+
+                    this.checkPartlyEmpty(blockInstance);
+
+                    this.randomAccessFileWriter.write(blockInstance.toByteArray());
+
+                }
             }
             return -1;
 
