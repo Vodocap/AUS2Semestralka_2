@@ -5,9 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 /**
  * 15. 11. 2024 - 13:25
@@ -18,6 +16,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     private int validCount;
     private int next;
     private int previous;
+    private int blockStart;
     private int size;
     private static int RECORD_LIMIT = 4;
     private ArrayList<T> recordArray;
@@ -27,8 +26,9 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         this.instanceCreator = data;
         this.size = paBlockSize;
         this.validCount = 0;
-        this.next = 0;
-        this.previous = 0;
+        this.next = -1;
+        this.previous = -1;
+        this.blockStart = 0;
         this.recordArray = new ArrayList<>();
     }
 
@@ -77,20 +77,22 @@ public class Block<T extends IData<T>> implements IRecord<T> {
 
         try {
 
+            hlpOutStream.writeInt(this.blockStart);
             hlpOutStream.writeInt(this.validCount);
             hlpOutStream.writeInt(this.next);
             hlpOutStream.writeInt(this.previous);
             hlpOutStream.writeInt(this.size);
+
             int recordsBytes = 0;
             for (T record : this.recordArray) {
                 hlpOutStream.write(record.toByteArray());
                 recordsBytes += record.getSize();
             }
-            byte[] emptyArrray = new byte[this.size - recordsBytes - 16];
+            byte[] emptyArrray = new byte[this.size - recordsBytes - 20];
 
             hlpOutStream.write(emptyArrray);
 
-            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
+//            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
             return hlpByteArrayOutputStream.toByteArray();
 
 
@@ -105,6 +107,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
 
         try {
 
+            this.blockStart = hlpInStream.readInt();
             this.validCount = hlpInStream.readInt();
             this.next = hlpInStream.readInt();
             this.previous = hlpInStream.readInt();
@@ -136,11 +139,13 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         this.previous = previous;
     }
 
-    @Override
-    public boolean isValid() {
-        return this.validCount != 0;
+    public boolean isEmpty() {
+        return this.validCount == 0;
     }
 
+    public boolean hasReferences() {
+        return this.getPrevious() != -1 || this.getNext() != -1;
+    }
 
     public int getSize() {
         return this.size;
@@ -156,13 +161,29 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     }
 
     public void printBlock() {
+        System.out.println("BLOCK");
+        System.out.println("_______________________________");
+        System.out.println("Start: " + this.blockStart);
         System.out.println("Size: " + this.size);
         System.out.println("Valid Count: " + this.validCount);
         System.out.println("Next: " + this.next);
         System.out.println("Previous: " + this.previous);
+        System.out.println("_______________________________");
         for (T t : this.recordArray) {
             t.print();
         }
+    }
+
+    public int getBlockStart() {
+        return this.blockStart;
+    }
+
+    public void setBlockStart(int blockStart) {
+        this.blockStart = blockStart;
+    }
+
+    public T getInstanceCreator() {
+        return this.instanceCreator;
     }
 
 

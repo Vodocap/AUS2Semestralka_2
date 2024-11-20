@@ -1,7 +1,6 @@
-package sk.uniza.fri.data;
+package sk.uniza.fri.tester;
 
 import sk.uniza.fri.heapfile.IData;
-import sk.uniza.fri.heapfile.IRecord;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -96,13 +95,13 @@ public class OsobaTest implements IData<OsobaTest> {
 
         try {
             String writtenMeno = this.meno;
-            if (this.meno.length() < MENO_LENGHT) {
+            if (this.meno.length() <= MENO_LENGHT) {
                 for (int i = this.meno.length(); i < MENO_LENGHT; i++) {
                     writtenMeno += "x";
                 }
             }
             String writtenPriezvisko = this.priezvisko;
-            if (this.priezvisko.length() < PRIEZVISKO_LENGHT) {
+            if (this.priezvisko.length() <= PRIEZVISKO_LENGHT) {
                 for (int i = this.priezvisko.length(); i < PRIEZVISKO_LENGHT; i++) {
                     writtenPriezvisko += "x";
                 }
@@ -160,7 +159,12 @@ public class OsobaTest implements IData<OsobaTest> {
     }
 
     @Override
-    public boolean isValid() {
-        return this.size == 0;
+    public String toString() {
+        return "OsobaTest{ " +
+                "meno = '" + meno + '\'' +
+                ", priezvisko = '" + priezvisko + '\'' +
+                ", ID = " + ID +
+                ", size = " + size +
+                '}';
     }
 }

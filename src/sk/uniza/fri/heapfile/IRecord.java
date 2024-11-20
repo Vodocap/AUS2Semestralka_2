@@ -9,7 +9,7 @@ public interface IRecord<T> {
     int getSize();
     byte[] toByteArray();
     void fromByteArray(byte[] pabyteArray);
-    boolean isValid();
+
 
 
 }
