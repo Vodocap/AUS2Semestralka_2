@@ -72,6 +72,8 @@ public class HeapFile<T extends IData> {
                     blockInstance.setBlockStart((int)(this.randomAccessFileWriter.getFilePointer() - this.blockSize));
                 }
 
+                blockInstance.setNext(this.end);
+                blockInstance.setPrevious(-1);
 
                 blockInstance.insertData(paData);
 
@@ -80,13 +82,11 @@ public class HeapFile<T extends IData> {
                 if (this.emptyBlocks == this.end) {
                     this.end += this.blockSize;
 
-                    blockInstance.setNext(this.end);
-                    blockInstance.setPrevious(-1);
 
                     this.randomAccessFileWriter.seek(blockInstance.getBlockStart());
                     this.randomAccessFileWriter.write(blockInstance.toByteArray());
                     this.actualSize++;
-                    this.emptyBlocks = blockInstance.getNext();
+
                     this.addEmptyBlock(paData);
 
                 } else {
@@ -163,16 +163,19 @@ public class HeapFile<T extends IData> {
 
         } else if (blockInstance.isPartlyEmpty() && blockInstance.getValidCount() == 1) {
             this.mendOldReferences(blockInstance);
-            this.insertBlockInBetween(blockInstance, this.emptyBlocks);
             this.emptyBlocks = blockInstance.getNext();
+            this.partlyEmptyBlocks = blockInstance.getBlockStart();
+
+            this.insertBlockInBetween(blockInstance, this.partlyEmptyBlocks);
 
         }
     }
 
     private void checkStatusDelete(Block blockInstance) {
         if (blockInstance.isPartlyEmpty() && !blockInstance.hasReferences()) {
-            this.insertBlockInBetween(blockInstance, this.partlyEmptyBlocks);
             this.partlyEmptyBlocks = blockInstance.getBlockStart();
+
+
         } else if (blockInstance.isEmpty()) {
             this.mendOldReferences(blockInstance);
             this.insertBlockInBetween(blockInstance, this.emptyBlocks);
