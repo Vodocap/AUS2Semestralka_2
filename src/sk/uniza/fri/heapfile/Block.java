@@ -22,6 +22,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     private ArrayList<T> recordArray;
     T instanceCreator;
 
+
     public Block(T data, int paBlockSize) {
         this.instanceCreator = data;
         this.size = paBlockSize;
@@ -32,7 +33,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         this.recordArray = new ArrayList<>();
     }
 
-    public boolean isParltyEmpty() {
+    public boolean isPartlyEmpty() {
         return this.recordArray.size() < RECORD_LIMIT && !this.recordArray.isEmpty();
     }
 
@@ -185,6 +186,11 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     public T getInstanceCreator() {
         return this.instanceCreator;
     }
+
+    public int getValidCount() {
+        return this.validCount;
+    }
+
 
 
 }
