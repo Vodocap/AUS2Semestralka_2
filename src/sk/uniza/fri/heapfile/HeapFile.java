@@ -284,6 +284,25 @@ public class HeapFile<T extends IData> {
         }
     }
 
+    public void shortenFile(Block blockInstance) {
+        if (blockInstance.getBlockStart() + this.blockSize == this.end) {
+            int numberOfEmptyBlocks = 0;
+            while (blockInstance.isEmpty()) {
+                try {
+                    this.randomAccessFileWriter.seek(blockInstance.getBlockStart() - this.blockSize);
+                    blockInstance = this.makeBlockInstance((T) blockInstance.getInstanceCreator());
+                    numberOfEmptyBlocks++;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+            this.actualSize -= numberOfEmptyBlocks;
+        }
+
+    }
+
 
     public void delete(int paAdress, T paData) {
         try {
@@ -296,6 +315,8 @@ public class HeapFile<T extends IData> {
 
             this.randomAccessFileWriter.seek(paAdress);
             this.randomAccessFileWriter.write(blockInstance.toByteArray());
+
+//            this.shortenFile(blockInstance);
 //            if (blockInstance.isEmpty()) {
 //                this.actualSize--;
 //            }
