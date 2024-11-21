@@ -91,4 +91,13 @@ public class GeneratorOperaci {
         this.heapFile.printBlocks(new OsobaTest("Jano", "Hladac", 665));
     }
 
+    private void skontrolujHeapFile() {
+        ArrayList keys = new ArrayList(this.kontrolneData.keySet());
+        for (OsobaTest osobaTest : kontrolneData.keySet()) {
+            this.heapFile.get(this.kontrolneData.get(osobaTest), osobaTest);
+
+        }
+
+    }
+
 }

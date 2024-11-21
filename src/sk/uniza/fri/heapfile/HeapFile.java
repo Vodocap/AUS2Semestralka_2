@@ -48,7 +48,7 @@ public class HeapFile<T extends IData> {
                 blockInstance.insertData(paData);
                 blockInstance.setBlockStart((int)(this.randomAccessFileWriter.getFilePointer() - this.blockSize));
 
-                this.checkStatusInstert(blockInstance);
+                this.checkStatusInsert(blockInstance);
 
                 this.randomAccessFileWriter.seek(blockInstance.getBlockStart());
                 this.randomAccessFileWriter.write(blockInstance.toByteArray());
@@ -59,6 +59,7 @@ public class HeapFile<T extends IData> {
             } else if (this.emptyBlocks != -1) {
 
                 if (this.emptyBlocks == this.end) {
+                    this.randomAccessFileWriter.seek(this.end);
                     this.addEmptyBlock(paData);
                     this.actualSize++;
 
@@ -85,7 +86,7 @@ public class HeapFile<T extends IData> {
 
                 blockInstance.insertData(paData);
 
-                this.checkStatusInstert(blockInstance);
+                this.checkStatusInsert(blockInstance);
 
 
 
@@ -142,41 +143,59 @@ public class HeapFile<T extends IData> {
         return readBlock;
     }
 
-    private void checkStatusInstert(Block blockInstance) {
+    private void checkStatusInsert(Block blockInstance) {
         if (blockInstance.isFull()) {
-            this.partlyEmptyBlocks = blockInstance.getNext();
-            System.out.println("Next " + this.partlyEmptyBlocks);
-            if (blockInstance.getNext() == -1) {
-                this.partlyEmptyBlocks = blockInstance.getPrevious();
-                System.out.println("Previous " + this.partlyEmptyBlocks);
-            }
+            System.out.println("PARTLY EMPTY BOLI " + this.partlyEmptyBlocks);
+            this.partlyEmptyBlocks = blockInstance.getPrevious();
+            System.out.println("PARTLY EMPTY NOVE " + this.partlyEmptyBlocks);
+            System.out.println("NAPLNIL SA BLOK NA ADRESE " + blockInstance.getBlockStart());
+            System.out.println("EMPTY BOLI " + this.emptyBlocks);
+
             this.mendOldReferences(blockInstance);
             if (this.emptyBlocks == blockInstance.getBlockStart()) {
                 System.out.println("BOLO TAKE " + this.emptyBlocks + " - " + blockInstance.getBlockStart());
                 this.emptyBlocks = this.end;
             }
+            System.out.println("EMPTY NOVE " + this.emptyBlocks);
             blockInstance.setPrevious(-1);
             blockInstance.setNext(-1);
 
         } else if (blockInstance.isPartlyEmpty() && blockInstance.getValidCount() == 1) {
             this.mendOldReferences(blockInstance);
-            this.emptyBlocks = blockInstance.getNext();
+            if (blockInstance.getNext() == -1 && blockInstance.getPrevious() == -1 && this.end != this.sizeNum * this.blockSize) {
+                this.emptyBlocks = this.end;
+            } else if (blockInstance.getPrevious() != -1) {
+                this.emptyBlocks = blockInstance.getPrevious();
+            } else {
+                this.emptyBlocks = blockInstance.getNext();
+            }
+
             if (this.partlyEmptyBlocks == -1) {
                 blockInstance.setNext(-1);
             } else {
-                this.insertBlockInBetween(blockInstance, this.partlyEmptyBlocks);
+                this.insertBlockBehind(blockInstance, this.partlyEmptyBlocks);
             }
             this.partlyEmptyBlocks = blockInstance.getBlockStart();
 
         }
+
+        if (blockInstance.getPrevious() == blockInstance.getBlockStart()) {
+            System.out.println("JE KONEC P");
+            System.out.println(blockInstance.getPrevious());
+            this.printBlock((T)blockInstance.getInstanceCreator(), blockInstance.getBlockStart());
+            System.out.println("____________________________________");
+        } else if (blockInstance.getNext() == blockInstance.getBlockStart()) {
+            System.out.println("JE KONEC N");
+        }
     }
 
     private void checkStatusDelete(Block blockInstance) {
+
         if (blockInstance.isPartlyEmpty() && !blockInstance.hasReferences()) {
             if (this.partlyEmptyBlocks == -1) {
                 blockInstance.setNext(-1);
             } else {
-                this.insertBlockInBetween(blockInstance, this.partlyEmptyBlocks);
+                this.insertBlockBehind(blockInstance, this.partlyEmptyBlocks);
             }
             this.partlyEmptyBlocks = blockInstance.getBlockStart();
 
@@ -188,10 +207,19 @@ public class HeapFile<T extends IData> {
             if (this.emptyBlocks == this.end) {
                 blockInstance.setNext(this.emptyBlocks);
             } else {
-                this.insertBlockInBetween(blockInstance, this.emptyBlocks);
+                this.insertBlockBehind(blockInstance, this.emptyBlocks);
             }
             this.emptyBlocks = blockInstance.getBlockStart();
 
+        }
+
+        if (blockInstance.getPrevious() == blockInstance.getBlockStart()) {
+            System.out.println("JE KONEC P");
+            System.out.println(blockInstance.getPrevious());
+            this.printBlock((T)blockInstance.getInstanceCreator(), blockInstance.getBlockStart());
+            System.out.println("____________________________________");
+        } else if (blockInstance.getNext() == blockInstance.getBlockStart()) {
+            System.out.println("JE KONEC N");
         }
     }
 
@@ -206,6 +234,7 @@ public class HeapFile<T extends IData> {
 
                 this.randomAccessFileWriter.seek(blockInstance.getPrevious());
                 this.randomAccessFileWriter.write(previousBlock.toByteArray());
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -217,10 +246,16 @@ public class HeapFile<T extends IData> {
                 try {
                     this.randomAccessFileWriter.seek(blockInstance.getNext());
                     Block nextBlock = this.makeBlockInstance((T)blockInstance.getInstanceCreator());
+                    printBlock((T)blockInstance.getInstanceCreator(), blockInstance.getBlockStart());
+                    System.out.println("Previous - " + nextBlock.getPrevious());
+                    printBlock((T)nextBlock.getInstanceCreator(), nextBlock.getBlockStart());
                     nextBlock.setPrevious(blockInstance.getPrevious());
 
                     this.randomAccessFileWriter.seek(blockInstance.getNext());
                     this.randomAccessFileWriter.write(nextBlock.toByteArray());
+
+                    printBlock((T)nextBlock.getInstanceCreator(), nextBlock.getBlockStart());
+                    System.out.println("New previous - " + nextBlock.getPrevious());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -231,31 +266,18 @@ public class HeapFile<T extends IData> {
 
     }
 
-    private void insertBlockInBetween(Block blockInstance, int newNext) {
+    private void insertBlockBehind(Block blockInstance, int newPrevious) {
         try {
 
-            this.randomAccessFileWriter.seek(newNext);
-            Block nextBlock = this.makeBlockInstance((T)blockInstance.getInstanceCreator());
 
+            this.randomAccessFileWriter.seek(newPrevious);
+            Block prevBlock = this.makeBlockInstance((T)blockInstance.getInstanceCreator());
+            prevBlock.setNext(blockInstance.getBlockStart());
+            blockInstance.setPrevious(prevBlock.getBlockStart());
+            blockInstance.setNext(-1);
 
-            if (nextBlock.getPrevious() == -1) {
-                nextBlock.setPrevious(blockInstance.getBlockStart());
-
-            } else {
-                this.randomAccessFileWriter.seek(nextBlock.getPrevious());
-                Block previousBlock = this.makeBlockInstance((T)blockInstance.getInstanceCreator());
-                previousBlock.setNext(blockInstance.getBlockStart());
-                blockInstance.setPrevious(previousBlock.getBlockStart());
-
-                this.randomAccessFileWriter.seek(previousBlock.getBlockStart());
-                this.randomAccessFileWriter.write(previousBlock.toByteArray());
-
-            }
-
-            blockInstance.setNext(nextBlock.getBlockStart());
-
-            this.randomAccessFileWriter.seek(nextBlock.getBlockStart());
-            this.randomAccessFileWriter.write(nextBlock.toByteArray());
+            this.randomAccessFileWriter.seek(prevBlock.getBlockStart());
+            this.randomAccessFileWriter.write(prevBlock.toByteArray());
 
             this.randomAccessFileWriter.seek(blockInstance.getBlockStart());
             this.randomAccessFileWriter.write(blockInstance.toByteArray());
@@ -288,6 +310,7 @@ public class HeapFile<T extends IData> {
 
     public void delete(int paAdress, T paData) {
         try {
+
             this.randomAccessFileWriter.seek(paAdress);
 
             Block blockInstance = this.makeBlockInstance(paData);

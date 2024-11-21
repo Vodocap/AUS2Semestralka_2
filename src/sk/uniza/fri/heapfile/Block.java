@@ -18,7 +18,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     private int previous;
     private int blockStart;
     private int size;
-    private static int RECORD_LIMIT = 4;
+    private static int RECORD_LIMIT = 1;
     private ArrayList<T> recordArray;
     T instanceCreator;
 
