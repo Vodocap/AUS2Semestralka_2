@@ -25,7 +25,7 @@ public class GeneratorOperaci {
     }
 
     public void generujOperacie(int pocetOperacii) {
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 50; i++) {
             OsobaTest vlozenaOsoba = new OsobaTest(this.nahodnyGen.vygenerujUnikatnyString(0,15),
                     this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt());
 
@@ -44,9 +44,14 @@ public class GeneratorOperaci {
                         this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt());
 
                 int adresaVlozenej = this.heapFile.insert(vlozenaOsoba);
+                if (adresaVlozenej != -1) {
+                    System.out.println("INSERT: " + vlozenaOsoba + "Na adrese: " + adresaVlozenej);
+                    this.vypisheapFile();
+                    this.kontrolneData.put(vlozenaOsoba, adresaVlozenej);
+                }
                 System.out.println("INSERT: " + vlozenaOsoba + "Na adrese: " + adresaVlozenej);
                 this.vypisheapFile();
-                this.kontrolneData.put(vlozenaOsoba, adresaVlozenej);
+
 
             } else if (generovanaHodnota < 0.66) {
                 if (!this.kontrolneData.isEmpty()) {
@@ -83,6 +88,7 @@ public class GeneratorOperaci {
 
         }
         this.vypisheapFile();
+        this.skontrolujHeapFile();
 
     }
 
@@ -93,9 +99,17 @@ public class GeneratorOperaci {
 
     private void skontrolujHeapFile() {
         ArrayList keys = new ArrayList(this.kontrolneData.keySet());
+        int hladane = 0;
+        int najdene = 0;
         for (OsobaTest osobaTest : kontrolneData.keySet()) {
-            this.heapFile.get(this.kontrolneData.get(osobaTest), osobaTest);
-
+            if (osobaTest.myEquals((OsobaTest) this.heapFile.get(this.kontrolneData.get(osobaTest), osobaTest))) {
+                najdene++;
+            }
+            hladane++;
+        }
+        System.out.println("Najdene: " + najdene + " hladane: " + hladane);
+        if (hladane != najdene) {
+            throw new RuntimeException("Nenaslo sa co sa malo");
         }
 
     }

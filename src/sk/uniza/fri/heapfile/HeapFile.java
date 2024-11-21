@@ -344,15 +344,10 @@ public class HeapFile<T extends IData> {
         System.out.println("Empty Blocks: " + this.emptyBlocks);
         System.out.println("Partly Empty Blocks: " + this.partlyEmptyBlocks);
         for (int i = 0; i < this.actualSize; i++) {
-            try {
-                long address = i * this.blockSize;
-                System.out.println("ADDRESS PRINTED " + address);;
-                this.randomAccessFileWriter.seek(address);
-                Block blockInstance = this.makeBlockInstance(paData);
-                blockInstance.printBlock();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            int address = i * this.blockSize;
+            System.out.println("ADDRESS PRINTED " + address);;
+            this.printBlock(paData, address);
+
         }
     }
 
@@ -360,10 +355,14 @@ public class HeapFile<T extends IData> {
 
 
         try {
-            System.out.println("ADDRESS PRINTED " + paAddress);;
-            this.randomAccessFileWriter.seek(paAddress);
-            Block blockInstance = this.makeBlockInstance(paData);
-            blockInstance.printBlock();
+            System.out.println("ADDRESS PRINTED " + paAddress);
+            if (paAddress <= this.end) {
+                this.randomAccessFileWriter.seek(paAddress);
+
+                Block blockInstance = this.makeBlockInstance(paData);
+                blockInstance.printBlock();
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
