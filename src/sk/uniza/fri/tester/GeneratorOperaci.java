@@ -25,15 +25,14 @@ public class GeneratorOperaci {
     }
 
     public void generujOperacie(int pocetOperacii) {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 1000; i++) {
             OsobaTest vlozenaOsoba = new OsobaTest(this.nahodnyGen.vygenerujUnikatnyString(0,15),
                     this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt());
 
             int adresaVlozenej = this.heapFile.insert(vlozenaOsoba);
-            System.out.println("INSERT: " + vlozenaOsoba + "Na adrese: " + adresaVlozenej);
+            System.out.println("INSERT: " + vlozenaOsoba + " Na adrese: " + adresaVlozenej);
             this.kontrolneData.put(vlozenaOsoba, adresaVlozenej);
         }
-        this.vypisheapFile();
 
 
         for (int i = 0; i < pocetOperacii; i++) {
@@ -44,13 +43,13 @@ public class GeneratorOperaci {
                         this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt());
 
                 int adresaVlozenej = this.heapFile.insert(vlozenaOsoba);
+                System.out.println("INSERT: " + vlozenaOsoba + " Na adrese: " + adresaVlozenej);
                 if (adresaVlozenej != -1) {
-                    System.out.println("INSERT: " + vlozenaOsoba + "Na adrese: " + adresaVlozenej);
                     this.vypisheapFile();
                     this.kontrolneData.put(vlozenaOsoba, adresaVlozenej);
                 }
-                System.out.println("INSERT: " + vlozenaOsoba + "Na adrese: " + adresaVlozenej);
-                this.vypisheapFile();
+
+//                this.vypisheapFile();
 
 
             } else if (generovanaHodnota < 0.66) {
@@ -101,7 +100,9 @@ public class GeneratorOperaci {
         ArrayList keys = new ArrayList(this.kontrolneData.keySet());
         int hladane = 0;
         int najdene = 0;
+
         for (OsobaTest osobaTest : kontrolneData.keySet()) {
+            System.out.println("Hladana osoba " + osobaTest.toString() + " na adrese: " + this.kontrolneData.get(osobaTest));
             if (osobaTest.myEquals((OsobaTest) this.heapFile.get(this.kontrolneData.get(osobaTest), osobaTest))) {
                 najdene++;
             }
