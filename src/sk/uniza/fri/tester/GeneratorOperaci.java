@@ -45,7 +45,7 @@ public class GeneratorOperaci {
                 int adresaVlozenej = this.heapFile.insert(vlozenaOsoba);
                 System.out.println("INSERT: " + vlozenaOsoba + " Na adrese: " + adresaVlozenej);
                 if (adresaVlozenej != -1) {
-                    this.vypisheapFile();
+//                    this.vypisheapFile();
                     this.kontrolneData.put(vlozenaOsoba, adresaVlozenej);
                 }
 
@@ -58,7 +58,7 @@ public class GeneratorOperaci {
                     ArrayList keys = new ArrayList(this.kontrolneData.keySet());
                     this.heapFile.delete(this.kontrolneData.get(keys.get(mazanyindex)), (OsobaTest)keys.get(mazanyindex));
                     System.out.println("DELETE: " + (OsobaTest)keys.get(mazanyindex) + "Na adrese: " + this.kontrolneData.get(keys.get(mazanyindex)));
-                    this.vypisheapFile();
+//                    this.vypisheapFile();
                     this.kontrolneData.remove((OsobaTest)keys.get(mazanyindex),this.kontrolneData.get(keys.get(mazanyindex)));
                 }
 
@@ -68,7 +68,7 @@ public class GeneratorOperaci {
                     ArrayList keys = new ArrayList(this.kontrolneData.keySet());
                     OsobaTest hladanaOsoba = (OsobaTest)keys.get(hladanyIndex);
                     int hladanaAdresa = this.kontrolneData.get(keys.get(hladanyIndex));
-                    this.vypisheapFile();
+//                    this.vypisheapFile();
                     System.out.println("Hladana adresa: " + hladanaAdresa);
                     System.out.println("Hladana osoba" + hladanaOsoba.toString());
                     OsobaTest najdenaOsoba = (OsobaTest)this.heapFile.get(hladanaAdresa, hladanaOsoba);
