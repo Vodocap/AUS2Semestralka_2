@@ -56,33 +56,37 @@ public class HeapFile<T extends IData> {
                 return blockInstance.getBlockStart();
 
 
-            } else if (this.emptyBlocks != -1) {
+            } else {
 
-                if (this.emptyBlocks == this.end) {
-                    this.randomAccessFileWriter.seek(this.end);
-//                    this.addEmptyBlock(paData);
-                    this.actualSize++;
-
-                }
 
                 if ((this.end + this.blockSize > this.sizeNum * this.blockSize) && this.emptyBlocks == this.end) {
                     System.out.println("The Heapfile is full");
                     return -1;
                 }
 
-                this.randomAccessFileWriter.seek(this.emptyBlocks);
+                if (this.emptyBlocks == -1 || this.emptyBlocks == this.end) {
+                    this.randomAccessFileWriter.seek(this.end);
+                    this.actualSize++;
+                } else {
+                    this.randomAccessFileWriter.seek(this.emptyBlocks);
+                }
+
+
+
+
                 Block blockInstance = null;
-                if (this.end == this.emptyBlocks) {
+
+                System.out.println("THIS EMPTYBLOCKS POINT " + this.emptyBlocks);
+                System.out.println("THIS END POINT " + this.end);
+                if (this.end == this.emptyBlocks || this.emptyBlocks == -1) {
                     this.end += this.blockSize;
                     blockInstance = this.makeEmptyBlockInstance(paData);
                     blockInstance.setBlockStart((int)(this.randomAccessFileWriter.getFilePointer()));
-//                    blockInstance.setNext(this.end);
 
                 } else {
                     blockInstance = this.makeBlockInstance(paData);
                     blockInstance.setBlockStart((int)(this.randomAccessFileWriter.getFilePointer() - this.blockSize));
                 }
-
 
                 blockInstance.insertData(paData);
 
@@ -100,19 +104,9 @@ public class HeapFile<T extends IData> {
             throw new RuntimeException(e);
         }
 
-        return -1;
-    }
-
-    private void addEmptyBlock(T paData) {
-        Block emptyBlock = new Block<>(paData, this.blockSize);
-        try {
-            this.randomAccessFileWriter.write(emptyBlock.toByteArray());
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
     }
+
 
     private Block makeBlockInstance(T paData) {
         Block blockInstance = new Block(paData, this.blockSize);
@@ -217,41 +211,31 @@ public class HeapFile<T extends IData> {
 
         } else if (blockInstance.isEmpty()) {
 
-
-            if (blockInstance.getNext() != -1) {
-                System.out.println("//////////////////////////////////////////////////////////////");
-                System.out.println("NEXT BEFORE MENDING: ");
-                this.printBlock((T)blockInstance.getInstanceCreator(), blockInstance.getNext());
-            }
-
             this.mendOldReferences(blockInstance);
-
 
             this.partlyEmptyBlocks = blockInstance.getPrevious();
 
-            if (blockInstance.getNext() != -1) {
-                System.out.println("NEXT AFTER MENDING: ");
-                this.printBlock((T)blockInstance.getInstanceCreator(), blockInstance.getNext());
-                System.out.println("//////////////////////////////////////////////////////////////");
-            }
+
+//            if (blockInstance.getBlockStart() + this.blockSize == this.end) {
+//                this.shortenFile(blockInstance);
+//
+//            } else {
+                if (this.emptyBlocks == this.end || this.emptyBlocks == -1) {
+                    blockInstance.setNext(-1);
+                    blockInstance.setPrevious(-1);
+
+                    System.out.println("SETTING AS END " + blockInstance.getNext());
 
 
-            if (this.emptyBlocks == this.end) {
-
-                blockInstance.setNext(-1);
-                blockInstance.setPrevious(-1);
-                System.out.println("SETTING AS END " + blockInstance.getNext());
-
-
-            } else {
-                System.out.println("DELETE NEW EMPTY");
-                if (this.emptyBlocks == -1) {
-                    System.out.println("adsdas");
+                } else {
+                    System.out.println("DELETE NEW EMPTY");
+                    this.insertBlockInFront(blockInstance, this.emptyBlocks);
                 }
-                this.insertBlockInFront(blockInstance, this.emptyBlocks);
-            }
 
-            this.emptyBlocks = blockInstance.getBlockStart();
+                this.emptyBlocks = blockInstance.getBlockStart();
+
+
+
 
 
         }
@@ -292,7 +276,7 @@ public class HeapFile<T extends IData> {
 
 
         if (blockInstance.getNext() != -1) {
-            if (blockInstance.getNext() != this.end) {
+            if (blockInstance.getNext() < this.end) {
                 try {
                     this.randomAccessFileWriter.seek(blockInstance.getNext());
                     Block nextBlock = this.makeBlockInstance((T)blockInstance.getInstanceCreator());
@@ -371,20 +355,51 @@ public class HeapFile<T extends IData> {
     }
 
     public void shortenFile(Block blockInstance) {
-        if (blockInstance.getBlockStart() + this.blockSize == this.end) {
+        System.out.println("END: " + this.end + " BLOCKSTART: " + blockInstance.getBlockStart());
+
+        this.printBlock((T)blockInstance.getInstanceCreator(), this.end - this.blockSize);
+        if (blockInstance.isEmpty()) {
+            System.out.println("SKRACUJE SA SUBOR " + this.end);
             int numberOfEmptyBlocks = 0;
-            while (blockInstance.isEmpty()) {
+
+            while (blockInstance.isEmpty() && blockInstance.getBlockStart() - this.blockSize > 0) {
                 try {
+
+                        this.mendOldReferences(blockInstance);
+
+                        System.out.println("EMPTY BLOCKS: " + this.emptyBlocks + " BLOCKSTART: " + blockInstance.getBlockStart() + " END: " + this.end);
+                        if (this.emptyBlocks == blockInstance.getBlockStart()) {
+
+                            this.emptyBlocks = blockInstance.getNext();
+
+
+                        }
+                        System.out.println("After change");
+                        System.out.println("EMPTY BLOCKS: " + this.emptyBlocks + " BLOCKSTART: " + blockInstance.getBlockStart() + " END: " + this.end);
+                        numberOfEmptyBlocks++;
+
+
                     this.randomAccessFileWriter.seek(blockInstance.getBlockStart() - this.blockSize);
                     blockInstance = this.makeBlockInstance((T) blockInstance.getInstanceCreator());
-                    numberOfEmptyBlocks++;
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 
             }
 
+            this.end -= this.blockSize * numberOfEmptyBlocks;
             this.actualSize -= numberOfEmptyBlocks;
+            try {
+                this.randomAccessFileWriter.setLength(this.end);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
+            System.out.println("SUBOR SKRATENY NA " + this.end);
+
+
         }
 
     }
@@ -398,10 +413,23 @@ public class HeapFile<T extends IData> {
             Block blockInstance = this.makeBlockInstance(paData);
             blockInstance.removeData(paData);
 
+
             this.checkStatusDelete(blockInstance);
 
             this.randomAccessFileWriter.seek(paAdress);
             this.randomAccessFileWriter.write(blockInstance.toByteArray());
+
+
+            try {
+                this.randomAccessFileWriter.seek(this.end - this.blockSize);
+                Block lastBlock = this.makeBlockInstance((T)(blockInstance.getInstanceCreator()));
+                if (lastBlock.isEmpty()) {
+                    System.out.println("LAST BLOCK EMPTY");
+                    this.shortenFile(lastBlock);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
 
         } catch (IOException e) {

@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 10000, 250);
+        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 100000, 250);
         generatorOperaci.generujOperacie(1000000);
 
 

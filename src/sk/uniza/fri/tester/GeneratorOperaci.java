@@ -43,10 +43,12 @@ public class GeneratorOperaci {
                         this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt());
 
                 int adresaVlozenej = this.heapFile.insert(vlozenaOsoba);
-                System.out.println("INSERT: " + vlozenaOsoba + " Na adrese: " + adresaVlozenej);
+                System.out.println("INSERT: " + vlozenaOsoba + " Na adrese: " + adresaVlozenej + "jozo");
                 if (adresaVlozenej != -1) {
 //                    this.vypisheapFile();
                     this.kontrolneData.put(vlozenaOsoba, adresaVlozenej);
+                } else {
+                    System.out.println("asdasda");
                 }
 
 //                this.vypisheapFile();
@@ -86,6 +88,9 @@ public class GeneratorOperaci {
 
 
         }
+
+
+        this.vymazNPrvkov(200);
         this.vypisheapFile();
         this.skontrolujHeapFile();
 
@@ -94,6 +99,21 @@ public class GeneratorOperaci {
     private void vypisheapFile() {
 
         this.heapFile.printBlocks(new OsobaTest("Jano", "Hladac", 665));
+    }
+
+
+    private void vymazNPrvkov(int pocetPrvkov) {
+        for (int i = 0; i < pocetPrvkov; i++) {
+            if (!this.kontrolneData.keySet().isEmpty()) {
+                int mazanyindex = this.random.nextInt(this.kontrolneData.keySet().size());
+                ArrayList keys = new ArrayList(this.kontrolneData.keySet());
+                this.heapFile.delete(this.kontrolneData.get(keys.get(mazanyindex)), (OsobaTest)keys.get(mazanyindex));
+                System.out.println("DELETE: " + (OsobaTest)keys.get(mazanyindex) + "Na adrese: " + this.kontrolneData.get(keys.get(mazanyindex)));
+//                    this.vypisheapFile();
+                this.kontrolneData.remove((OsobaTest)keys.get(mazanyindex),this.kontrolneData.get(keys.get(mazanyindex)));
+            }
+        }
+
     }
 
     private void skontrolujHeapFile() {
