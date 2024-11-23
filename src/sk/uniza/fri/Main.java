@@ -1,6 +1,11 @@
 package sk.uniza.fri;
 
+import sk.uniza.fri.data.Navsteva;
+import sk.uniza.fri.data.Zakaznik;
+import sk.uniza.fri.heapfile.HeapFile;
 import sk.uniza.fri.tester.GeneratorOperaci;
+
+import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,9 +17,18 @@ public class Main {
 
     public static void main(String[] args) {
 
-        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 100000, 250);
-        generatorOperaci.generujOperacie(1000000);
+        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 1000, 8000);
+        generatorOperaci.generujOperacie(100000);
 
 
+//        HeapFile heapFile = new HeapFile("bin.bin", 10, 8000);
+//        Navsteva navsteva = new Navsteva(Calendar.getInstance(), 500);
+//        Zakaznik zakaznik = new Zakaznik("Jozo", "Fero", 561651, navsteva, "5416541");
+//        for (int i = 0; i < 5; i++) {
+//            zakaznik.addZaznam(navsteva);
+//        }
+//        heapFile.insert(zakaznik);
+//        heapFile.printBlocks(zakaznik);
+//        heapFile.closeHeapFile();
     }
 }

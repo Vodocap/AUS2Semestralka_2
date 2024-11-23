@@ -6,7 +6,7 @@ package sk.uniza.fri.heapfile;
  * @author matus
  */
 public interface IRecord<T> {
-    int getSize();
+    long getSize();
     byte[] toByteArray();
     void fromByteArray(byte[] pabyteArray);
 

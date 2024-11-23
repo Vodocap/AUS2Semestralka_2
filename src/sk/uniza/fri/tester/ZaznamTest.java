@@ -9,7 +9,7 @@ import sk.uniza.fri.heapfile.IRecord;
  */
 public class ZaznamTest implements IRecord {
     @Override
-    public int getSize() {
+    public long getSize() {
         return 0;
     }
 

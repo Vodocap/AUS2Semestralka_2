@@ -10,24 +10,19 @@ import java.io.RandomAccessFile;
  * @author matus
  */
 public class HeapFile<T extends IData> {
-    private int emptyBlocks;
-    private int partlyEmptyBlocks;
+    private long emptyBlocks;
+    private long partlyEmptyBlocks;
     private String filePath;
-    private int sizeNum;
-    private int actualSize;
+    private long sizeNum;
+    private long actualSize;
     private RandomAccessFile randomAccessFileWriter;
 
-    private int end;
-    private int blockSize;
+    private long end;
+    private long blockSize;
 
 
     public HeapFile(String paFilePath, int paSizeNum, int paBlockSize) {
         this.actualSize = 0;
-        this.end = 0;
-        this.sizeNum = paSizeNum;
-        this.emptyBlocks = 0;
-        this.partlyEmptyBlocks = -1;
-        this.blockSize = paBlockSize;
         try {
             this.randomAccessFileWriter = new RandomAccessFile(paFilePath, "rw");
         } catch (FileNotFoundException e) {
@@ -35,10 +30,17 @@ public class HeapFile<T extends IData> {
         }
 
 
+        this.end = 0;
+        this.sizeNum = paSizeNum;
+        this.emptyBlocks = 0;
+        this.partlyEmptyBlocks = -1;
+        this.blockSize = paBlockSize;
+
+
     }
 
 
-    public int insert(T paData) {
+    public long insert(T paData) {
         try {
 
             if (this.partlyEmptyBlocks != -1) {
@@ -121,7 +123,7 @@ public class HeapFile<T extends IData> {
 
 
     private byte[] readBlock() {
-        byte[] readBlock = new byte[this.blockSize];
+        byte[] readBlock = new byte[(int)this.blockSize];
         try {
             this.randomAccessFileWriter.readFully(readBlock);
         } catch (IOException e) {
@@ -329,7 +331,7 @@ public class HeapFile<T extends IData> {
 
     }
 
-    private void insertBlockInFront(Block blockInstance, int newNext) {
+    private void insertBlockInFront(Block blockInstance, long newNext) {
         try {
 
             System.out.println("NEW NEXT " + newNext);
@@ -405,7 +407,7 @@ public class HeapFile<T extends IData> {
     }
 
 
-    public void delete(int paAdress, T paData) {
+    public void delete(long paAdress, T paData) {
         try {
 
             this.randomAccessFileWriter.seek(paAdress);
@@ -454,14 +456,14 @@ public class HeapFile<T extends IData> {
         System.out.println("Empty Blocks: " + this.emptyBlocks);
         System.out.println("Partly Empty Blocks: " + this.partlyEmptyBlocks);
         for (int i = 0; i < this.actualSize; i++) {
-            int address = i * this.blockSize;
+            long address = i * this.blockSize;
             System.out.println("ADDRESS PRINTED " + address);;
             this.printBlock(paData, address);
 
         }
     }
 
-    public void printBlock(T paData, int paAddress) {
+    public void printBlock(T paData, long paAddress) {
 
 
         try {
@@ -476,5 +478,13 @@ public class HeapFile<T extends IData> {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public void closeHeapFile() {
+        try {
+            this.randomAccessFileWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -22,6 +22,7 @@ public class OsobaTest implements IData<OsobaTest> {
     private int ID;
     private ArrayList<ZaznamTest> zaznamy;
     private int size;
+    private int pocetPlatnychNavstev;
 
     public OsobaTest(String paMeno, String paPriezvisko, int paID) {
         this.zaznamy = new ArrayList<>();
@@ -29,6 +30,7 @@ public class OsobaTest implements IData<OsobaTest> {
         this.priezvisko = paPriezvisko;
         this.size = 51;
         this.ID = paID;
+        this.pocetPlatnychNavstev = 0;
 
     }
 
@@ -84,7 +86,7 @@ public class OsobaTest implements IData<OsobaTest> {
     }
 
     @Override
-    public int getSize() {
+    public long getSize() {
         return this.size;
     }
 
