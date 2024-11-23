@@ -76,11 +76,7 @@ public class HeapFile<T extends IData> {
                     this.end += this.blockSize;
                     blockInstance = this.makeEmptyBlockInstance(paData);
                     blockInstance.setBlockStart((int)(this.randomAccessFileWriter.getFilePointer()));
-
-
-                    if (blockInstance.getNext() == blockInstance.getBlockStart()) {
-                        System.out.println("SAM SEBA NEXT MENDOLD GETPREV");
-                    }
+//                    blockInstance.setNext(this.end);
 
                 } else {
                     blockInstance = this.makeBlockInstance(paData);
@@ -155,6 +151,9 @@ public class HeapFile<T extends IData> {
 
 
             System.out.println("EMPTY NOVE " + this.emptyBlocks);
+            if (blockInstance.getValidCount() == 1) {
+                this.emptyBlocks = this.end;
+            }
 
             blockInstance.setPrevious(-1);
             blockInstance.setNext(-1);
