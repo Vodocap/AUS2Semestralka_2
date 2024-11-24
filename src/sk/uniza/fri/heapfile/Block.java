@@ -23,7 +23,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     T instanceCreator;
 
 
-    public Block(T data, long paBlockSize, int sizeFactor) {
+    public Block(T data, long paBlockSize, int paSizeFactor) {
         this.instanceCreator = data;
         this.size = paBlockSize;
         this.validCount = 0;
@@ -31,10 +31,11 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         this.previous = -1;
         this.blockStart = 0;
         this.recordArray = new ArrayList<>();
+        this.sizeFactor = paSizeFactor;
     }
 
     public boolean isPartlyEmpty() {
-        return (this.validCount < sizeFactor) && this.validCount > 0;
+        return (this.validCount < this.sizeFactor) && this.validCount > 0;
     }
 
     public void insertData(T paData) {
