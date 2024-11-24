@@ -48,7 +48,7 @@ public class HashFile<T extends IData> implements IRecord {
     }
 
 
-    public long calculateHash(int painput) {
+    public int calculateHash(int painput) {
 
         BitSet bitSet = this.intToBitset(painput);
         int resultHash = 0;
@@ -492,9 +492,10 @@ public class HashFile<T extends IData> implements IRecord {
         }
     }
 
-    public T get(long paAddress, T paData) {
+    public T get(int hashParam, T paData) {
         try {
-            this.randomAccessFileWriter.seek(paAddress);
+
+            this.randomAccessFileWriter.seek(this.addreses[this.calculateHash(hashParam)]);
             Block foundBlock = this.makeBlockInstance(paData);
             return (T) foundBlock.getRecord(paData);
 
