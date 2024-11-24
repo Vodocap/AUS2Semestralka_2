@@ -18,12 +18,12 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     private long previous;
     private long blockStart;
     private long size;
-    private static long RECORD_LIMIT = 4;
+    private long sizeFactor;
     private ArrayList<T> recordArray;
     T instanceCreator;
 
 
-    public Block(T data, long paBlockSize) {
+    public Block(T data, long paBlockSize, int sizeFactor) {
         this.instanceCreator = data;
         this.size = paBlockSize;
         this.validCount = 0;
@@ -34,11 +34,11 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     }
 
     public boolean isPartlyEmpty() {
-        return (this.validCount < RECORD_LIMIT) && this.validCount > 0;
+        return (this.validCount < sizeFactor) && this.validCount > 0;
     }
 
     public void insertData(T paData) {
-        if (this.recordArray.size() < RECORD_LIMIT) {
+        if (this.recordArray.size() < sizeFactor) {
             this.recordArray.add(paData);
             this.validCount++;
         }
@@ -133,7 +133,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     }
 
     public boolean isFull() {
-        return this.validCount == RECORD_LIMIT;
+        return this.validCount == sizeFactor;
     }
 
     public void setNext(long next) {
@@ -153,7 +153,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     }
 
     public boolean isAlmostFull() {
-        return RECORD_LIMIT - this.recordArray.size() == 1;
+        return sizeFactor - this.recordArray.size() == 1;
     }
 
     public long getSize() {

@@ -8,13 +8,13 @@ import java.util.Random;
  *
  * @author matus
  */
-public class NahodnyGeneratorStringov {
+public class NahodnyGenerator {
     private ArrayList<String> vygenerovaneStringy;
     private ArrayList<Integer> vygenerovaneInty;
     private Random random;
 
 
-    public NahodnyGeneratorStringov() {
+    public NahodnyGenerator() {
 
         this.vygenerovaneStringy = new ArrayList<>();
         this.vygenerovaneInty = new ArrayList<>();

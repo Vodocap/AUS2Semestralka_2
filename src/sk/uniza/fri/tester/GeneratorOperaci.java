@@ -1,6 +1,6 @@
 package sk.uniza.fri.tester;
 
-import sk.uniza.fri.data.NahodnyGeneratorStringov;
+import sk.uniza.fri.data.NahodnyGenerator;
 import sk.uniza.fri.data.Navsteva;
 import sk.uniza.fri.data.Zakaznik;
 import sk.uniza.fri.heapfile.HeapFile;
@@ -20,12 +20,12 @@ public class GeneratorOperaci {
 
     private HashMap<Zakaznik, Long> kontrolneData;
     private Random random;
-    private NahodnyGeneratorStringov nahodnyGen;
+    private NahodnyGenerator nahodnyGen;
     public GeneratorOperaci(String cestakSuboru, int velkostHeapfilu, int velkostBlokov) {
-        this.heapFile = new HeapFile<>(cestakSuboru, velkostHeapfilu, velkostBlokov);
+        this.heapFile = new HeapFile<>(cestakSuboru, velkostHeapfilu, velkostBlokov, 4);
         this.kontrolneData = new HashMap<>();
         this.random = new Random();
-        this.nahodnyGen = new NahodnyGeneratorStringov();
+        this.nahodnyGen = new NahodnyGenerator();
     }
 
     public void generujOperacie(int pocetOperacii) {
@@ -98,12 +98,13 @@ public class GeneratorOperaci {
         this.vymazNPrvkov(200);
         this.vypisheapFile();
         this.skontrolujHeapFile();
+        this.heapFile.closeHeapFile();
 
     }
 
     private void vypisheapFile() {
 
-        this.heapFile.printBlocks(new OsobaTest("Jano", "Hladac", 665));
+        this.heapFile.printBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(Calendar.getInstance(), 10), "ASDADSD"));
     }
 
 

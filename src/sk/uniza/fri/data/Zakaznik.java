@@ -107,11 +107,8 @@ public class Zakaznik implements IData<Zakaznik> {
 
     @Override
     public void print() {
-        System.out.println("Meno: " + this.meno);
-        System.out.println("Priezvisko: " + this.priezvisko);
-        System.out.println("ID: " + this.ID);
-        System.out.println("Size: " + this.size);
-        System.out.println("ECV: " + this.ECV);
+        System.out.println(this.toString());
+
     }
 
     @Override

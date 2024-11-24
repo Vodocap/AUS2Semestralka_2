@@ -32,7 +32,7 @@ public class Navsteva implements IData<Navsteva> {
     }
 
     public void addPRaca(String novaPraca) {
-        if (this.vykonanePrace.size() + 1 > MAX_PRAC) {
+        if (this.vykonanePrace.size() < MAX_PRAC) {
             this.vykonanePrace.add(novaPraca);
             this.pocetPlatnychPrac++;
         }
@@ -74,7 +74,6 @@ public class Navsteva implements IData<Navsteva> {
                 if (praca.length() <= MAX_LENGHT_PRACE) {
                     for (int i = praca.length(); i < MAX_LENGHT_PRACE; i++) {
                         praca += "x";
-
                         recordsBytes += 24;
                     }
 

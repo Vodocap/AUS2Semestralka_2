@@ -23,7 +23,10 @@ public class Main {
 
 //        HeapFile heapFile = new HeapFile("bin.bin", 10, 8000);
 //        Navsteva navsteva = new Navsteva(Calendar.getInstance(), 500);
-//        Zakaznik zakaznik = new Zakaznik("Jozo", "Fero", 561651, navsteva, "5416541");
+//        String praca = "Katalyzator";
+//        navsteva.addPRaca(praca);
+//        System.out.println(navsteva);
+//        Zakaznik zakaznik = new Zakaznik("Jozo", "Fero", 561651, navsteva, "AAEEDASF");
 //        for (int i = 0; i < 5; i++) {
 //            zakaznik.addZaznam(navsteva);
 //        }
