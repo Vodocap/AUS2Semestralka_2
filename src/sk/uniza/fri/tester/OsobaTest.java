@@ -86,6 +86,17 @@ public class OsobaTest implements IData<OsobaTest> {
     }
 
     @Override
+    public int getHashparameter() {
+        return 0;
+    }
+
+    @Override
+    public String getHashParameter() {
+        return "";
+    }
+
+
+    @Override
     public long getSize() {
         return this.size;
     }

@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * 15. 11. 2024 - 13:25
@@ -42,7 +43,7 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
 
 
 
-            byte[] emptyArrray = new byte[(int)(this.getSize() - recordsBytes - 40)];
+            byte[] emptyArrray = new byte[(int)(this.getSize() - recordsBytes - 28)];
 
             hlpOutStream.write(emptyArrray);
 
@@ -79,6 +80,15 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
             throw new IllegalStateException("Error during conversion from byte array.");
         }
 
+    }
+
+    public ArrayList<T> getDataList () {
+        return this.recordArray;
+    }
+
+    public void clearList() {
+        this.recordArray.clear();
+        this.validCount = 0;
     }
 
     public int getDepth() {

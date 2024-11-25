@@ -1,8 +1,6 @@
 package sk.uniza.fri.data;
 
 import sk.uniza.fri.heapfile.IData;
-import sk.uniza.fri.tester.ZaznamTest;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -109,6 +107,16 @@ public class Zakaznik implements IData<Zakaznik> {
     public void print() {
         System.out.println(this.toString());
 
+    }
+
+    @Override
+    public int getHashparameter() {
+        return this.ID;
+    }
+
+    @Override
+    public String getHashParameter() {
+        return this.ECV;
     }
 
     @Override

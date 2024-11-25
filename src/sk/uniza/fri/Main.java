@@ -1,7 +1,9 @@
 package sk.uniza.fri;
 
+import sk.uniza.fri.data.NahodnyGenerator;
 import sk.uniza.fri.data.Navsteva;
 import sk.uniza.fri.data.Zakaznik;
+import sk.uniza.fri.hashfile.HashFile;
 import sk.uniza.fri.heapfile.HeapFile;
 import sk.uniza.fri.tester.GeneratorOperaci;
 
@@ -17,12 +19,28 @@ public class Main {
 
     public static void main(String[] args) {
 
-        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 100000, 8000);
-        generatorOperaci.generujOperacie(1000000);
+//        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 100000, 8000);
+//        generatorOperaci.generujOperacie(1000000);
 
 
-//        HeapFile heapFile = new HeapFile("bin.bin", 10, 8000);
-//        Navsteva navsteva = new Navsteva(Calendar.getInstance(), 500);
+        HashFile hashFile = new HashFile("hsh.bin", 8000, 3);
+        Navsteva navsteva = new Navsteva(Calendar.getInstance(), 500);
+        Zakaznik zakaznik = new Zakaznik("Jozo", "Fero", 561651, navsteva, "AAEEDASF");
+
+        NahodnyGenerator nahodnyGenerator = new NahodnyGenerator();
+
+
+        for (int i = 0; i < 7; i++) {
+            int nahodnyInt = nahodnyGenerator.vugenerujUnikatnyInt();
+            hashFile.insert(new Zakaznik("Jozo", "Fero", nahodnyInt, navsteva, "AAEEDASF"), nahodnyInt);
+        }
+
+        hashFile.printBlocks(zakaznik);
+        hashFile.closeHashFile();
+
+
+
+//
 //        String praca = "Katalyzator";
 //        navsteva.addPRaca(praca);
 //        System.out.println(navsteva);

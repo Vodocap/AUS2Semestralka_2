@@ -110,6 +110,7 @@ public class GeneratorOperaci {
     private void vypisheapFile() {
 
         this.heapFile.printBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(Calendar.getInstance(), 10), "ASDADSD"));
+
     }
 
 

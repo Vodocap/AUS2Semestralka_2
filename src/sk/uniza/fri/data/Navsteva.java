@@ -147,6 +147,17 @@ public class Navsteva implements IData<Navsteva> {
         System.out.println(this.toString());
     }
 
+    @Override
+    public int getHashparameter() {
+        return 0;
+    }
+
+    @Override
+    public String getHashParameter() {
+        return "";
+    }
+
+
     public double getCena() {
         return this.cena;
     }

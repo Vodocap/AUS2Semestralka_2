@@ -5,8 +5,10 @@ package sk.uniza.fri.heapfile;
  *
  * @author matus
  */
-public interface IData<T> extends IRecord<T>{
+public interface IData<T> extends IRecord<T> {
     boolean myEquals(T data);
     T createInstance();
     void print();
+    int getHashparameter();
+    String getHashParameter();
 }
