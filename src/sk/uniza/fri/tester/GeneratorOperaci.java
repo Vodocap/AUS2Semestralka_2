@@ -29,13 +29,18 @@ public class GeneratorOperaci {
     }
 
     public void generujOperacie(int pocetOperacii) {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
                     this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
 
             long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
             System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
-            this.kontrolneData.put(vlozenyZakaznik, adresaVlozenej);
+            if (adresaVlozenej != -1) {
+//                    this.vypisheapFile();
+                this.kontrolneData.put(vlozenyZakaznik, adresaVlozenej);
+            } else {
+                System.out.println("asdasda");
+            }
         }
 
 

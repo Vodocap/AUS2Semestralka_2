@@ -17,8 +17,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 1000, 8000);
-        generatorOperaci.generujOperacie(100);
+        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 100000, 8000);
+        generatorOperaci.generujOperacie(1000000);
 
 
 //        HeapFile heapFile = new HeapFile("bin.bin", 10, 8000);

@@ -13,14 +13,14 @@ import java.util.ArrayList;
  * @author matus
  */
 public class Block<T extends IData<T>> implements IRecord<T> {
-    private long validCount;
+    protected long validCount;
     private long next;
     private long previous;
-    private long blockStart;
-    private long size;
-    private long sizeFactor;
-    private ArrayList<T> recordArray;
-    T instanceCreator;
+    protected long blockStart;
+    protected long size;
+    protected long sizeFactor;
+    protected ArrayList<T> recordArray;
+    protected T instanceCreator;
 
 
     public Block(T data, long paBlockSize, int paSizeFactor) {
@@ -85,20 +85,20 @@ public class Block<T extends IData<T>> implements IRecord<T> {
             hlpOutStream.writeLong(this.previous);
             hlpOutStream.writeLong(this.size);
 
-            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
+
             long recordsBytes = 0;
             for (T record : this.recordArray) {
                 hlpOutStream.write(record.toByteArray());
                 recordsBytes += record.getSize();
             }
-            System.out.println(this.size);
-            System.out.println(recordsBytes);
-            System.out.println(this.size - recordsBytes - 40);
+
+
+
             byte[] emptyArrray = new byte[(int)(this.size - recordsBytes - 40)];
 
             hlpOutStream.write(emptyArrray);
 
-            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
+
             return hlpByteArrayOutputStream.toByteArray();
 
 
@@ -188,7 +188,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         return this.blockStart;
     }
 
-    public void setBlockStart(int blockStart) {
+    public void setBlockStart(long blockStart) {
         this.blockStart = blockStart;
     }
 
@@ -199,6 +199,8 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     public long getValidCount() {
         return this.validCount;
     }
+
+
 
 
 

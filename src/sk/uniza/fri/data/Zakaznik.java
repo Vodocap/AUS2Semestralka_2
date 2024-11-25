@@ -154,7 +154,7 @@ public class Zakaznik implements IData<Zakaznik> {
 
             int recordsBytes = 0;
 
-            System.out.println(hlpByteArrayOutputStream.toByteArray().length);
+
 
             for (Navsteva navsteva : this.zaznamyONasvsteve) {
 
