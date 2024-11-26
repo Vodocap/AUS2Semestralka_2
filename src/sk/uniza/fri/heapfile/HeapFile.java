@@ -336,7 +336,8 @@ public class HeapFile<T extends IData> {
     public void shortenFile(Block blockInstance) {
         System.out.println("END: " + this.end + " BLOCKSTART: " + blockInstance.getBlockStart());
 
-        this.printBlock((T)blockInstance.getInstanceCreator(), this.end - this.blockSize);
+//        this.printBlock((T)blockInstance.getInstanceCreator(), this.end - this.blockSize);
+
         if (blockInstance.isEmpty()) {
             System.out.println("SKRACUJE SA SUBOR " + this.end);
             int numberOfEmptyBlocks = 0;
@@ -395,20 +396,16 @@ public class HeapFile<T extends IData> {
 
             this.checkStatusDelete(blockInstance);
 
+            if (blockInstance.isEmpty() && blockInstance.getBlockStart() == this.end - this.blockSize) {
+                System.out.println("LAST BLOCK EMPTY");
+                this.shortenFile(blockInstance);
+                return;
+            }
+
             this.randomAccessFileWriter.seek(paAdress);
             this.randomAccessFileWriter.write(blockInstance.toByteArray());
 
 
-            try {
-                this.randomAccessFileWriter.seek(this.end - this.blockSize);
-                Block lastBlock = this.makeBlockInstance((T)(blockInstance.getInstanceCreator()));
-                if (lastBlock.isEmpty()) {
-                    System.out.println("LAST BLOCK EMPTY");
-                    this.shortenFile(lastBlock);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
 
 
         } catch (IOException e) {

@@ -19,24 +19,24 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 100000, 8000);
-//        generatorOperaci.generujOperacie(1000000);
+        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 10000, 8000);
+        generatorOperaci.generujOperacie(100000);
 
 
-        HashFile hashFile = new HashFile("hsh.bin", 8000, 3);
-        Navsteva navsteva = new Navsteva(Calendar.getInstance(), 500);
-        Zakaznik zakaznik = new Zakaznik("Jozo", "Fero", 561651, navsteva, "AAEEDASF");
-
-        NahodnyGenerator nahodnyGenerator = new NahodnyGenerator();
-
-
-        for (int i = 0; i < 7; i++) {
-            int nahodnyInt = nahodnyGenerator.vugenerujUnikatnyInt();
-            hashFile.insert(new Zakaznik("Jozo", "Fero", nahodnyInt, navsteva, "AAEEDASF"), nahodnyInt);
-        }
-
-        hashFile.printBlocks(zakaznik);
-        hashFile.closeHashFile();
+//        HashFile hashFile = new HashFile("hsh.bin", 8000, 3);
+//        Navsteva navsteva = new Navsteva(Calendar.getInstance(), 500);
+//        Zakaznik zakaznik = new Zakaznik("Jozo", "Fero", 561651, navsteva, "AAEEDASF");
+//
+//        NahodnyGenerator nahodnyGenerator = new NahodnyGenerator();
+//
+//
+//        for (int i = 0; i < 7; i++) {
+//            int nahodnyInt = nahodnyGenerator.vugenerujUnikatnyInt();
+//            hashFile.insert(new Zakaznik("Jozo", "Fero", nahodnyInt, navsteva, "AAEEDASF"), nahodnyInt);
+//        }
+//
+//        hashFile.printBlocks(zakaznik);
+//        hashFile.closeHashFile();
 
 
 

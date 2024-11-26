@@ -29,7 +29,7 @@ public class GeneratorOperaci {
     }
 
     public void generujOperacie(int pocetOperacii) {
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
                     this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
 
@@ -55,8 +55,8 @@ public class GeneratorOperaci {
                 System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
                 this.kontrolneData.put(vlozenyZakaznik, adresaVlozenej);
                 if (adresaVlozenej != -1) {
-//                    this.vypisheapFile();
                     this.kontrolneData.put(vlozenyZakaznik, adresaVlozenej);
+                    this.skontrolujHeapFile();
                 } else {
                     System.out.println("asdasda");
                 }
@@ -70,8 +70,8 @@ public class GeneratorOperaci {
                     ArrayList keys = new ArrayList(this.kontrolneData.keySet());
                     this.heapFile.delete(this.kontrolneData.get(keys.get(mazanyindex)), (Zakaznik)keys.get(mazanyindex));
                     System.out.println("DELETE: " + keys.get(mazanyindex) + "Na adrese: " + this.kontrolneData.get(keys.get(mazanyindex)));
-//                    this.vypisheapFile();
                     this.kontrolneData.remove((Zakaznik) keys.get(mazanyindex),this.kontrolneData.get(keys.get(mazanyindex)));
+                    this.skontrolujHeapFile();
                 }
 
             } else if (generovanaHodnota > 0.66) {
@@ -100,7 +100,7 @@ public class GeneratorOperaci {
         }
 
 
-        this.vymazNPrvkov(200);
+        this.vymazNPrvkov(1000);
         this.vypisheapFile();
         this.skontrolujHeapFile();
         this.heapFile.closeHeapFile();
@@ -134,13 +134,13 @@ public class GeneratorOperaci {
         int najdene = 0;
 
         for (Zakaznik zakaznik : kontrolneData.keySet()) {
-            System.out.println("Hladana osoba " + zakaznik.toString() + " na adrese: " + this.kontrolneData.get(zakaznik));
+//            System.out.println("Hladana osoba " + zakaznik.toString() + " na adrese: " + this.kontrolneData.get(zakaznik));
             if (zakaznik.myEquals((Zakaznik) this.heapFile.get(this.kontrolneData.get(zakaznik), zakaznik))) {
                 najdene++;
             }
             hladane++;
         }
-        System.out.println("Najdene: " + najdene + " hladane: " + hladane);
+//        System.out.println("Najdene: " + najdene + " hladane: " + hladane);
         if (hladane != najdene) {
             throw new RuntimeException("Nenaslo sa co sa malo");
         }
