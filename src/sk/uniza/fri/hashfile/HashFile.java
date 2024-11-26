@@ -51,6 +51,7 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
     public int calculateHash(int paInput, int hashDept) {
 
         BitSet bitSet = this.intToBitset(paInput);
+
         int resultHash = 0;
         for (int i = 0; i < hashDept; i++) {
             if (bitSet.get(i)) {
@@ -65,6 +66,7 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
 
 
     private BitSet intToBitset(int paInput) {
+
         return BitSet.valueOf(new long[]{paInput});
 
 
@@ -126,6 +128,7 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
                         this.randomAccessFileWriter.seek(this.addreses[newHash]);
                         HashBlock rehashedBlock = this.makeBlockInstance(record);
                         rehashedBlock.insertData(record);
+                        this.randomAccessFileWriter.seek(this.addreses[newHash]);
                         this.randomAccessFileWriter.write(rehashedBlock.toByteArray());
                     } else {
                         this.randomAccessFileWriter.seek(this.end);
@@ -144,6 +147,7 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
                     this.randomAccessFileWriter.seek(this.addreses[newHash]);
                     HashBlock rehashedBlock = this.makeBlockInstance(record);
                     rehashedBlock.insertData(record);
+                    this.randomAccessFileWriter.seek(this.addreses[newHash]);
                     this.randomAccessFileWriter.write(rehashedBlock.toByteArray());
                 }
 

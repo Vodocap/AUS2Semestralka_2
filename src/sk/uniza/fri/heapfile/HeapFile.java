@@ -14,7 +14,7 @@ public class HeapFile<T extends IData> {
     private long partlyEmptyBlocks;
     private String filePath;
     private long sizeNum;
-    private long actualSize;
+    private long numberOfBlocks;
     private RandomAccessFile randomAccessFileWriter;
     private int blockingFactor;
     private long end;
@@ -22,7 +22,7 @@ public class HeapFile<T extends IData> {
 
 
     public HeapFile(String paFilePath, int paSizeNum, int paBlockSize, int paBlockingFactor) {
-        this.actualSize = 0;
+        this.numberOfBlocks = 0;
         try {
             this.randomAccessFileWriter = new RandomAccessFile(paFilePath, "rw");
         } catch (FileNotFoundException e) {
@@ -64,15 +64,9 @@ public class HeapFile<T extends IData> {
 
             } else {
 
-
-                if ((this.end + this.blockSize > this.sizeNum * this.blockSize) && this.emptyBlocks == this.end) {
-                    System.out.println("The Heapfile is full");
-                    return -1;
-                }
-
                 if (this.emptyBlocks == -1 || this.emptyBlocks == this.end) {
                     this.randomAccessFileWriter.seek(this.end);
-                    this.actualSize++;
+                    this.numberOfBlocks++;
                 } else {
                     this.randomAccessFileWriter.seek(this.emptyBlocks);
                 }
@@ -89,17 +83,22 @@ public class HeapFile<T extends IData> {
                     blockInstance = this.makeEmptyBlockInstance(paData);
                     blockInstance.setBlockStart((int)(this.randomAccessFileWriter.getFilePointer()));
 
+                    blockInstance.insertData(paData);
+
+                    this.checkStatusInsert(blockInstance);
+                    this.randomAccessFileWriter.write(blockInstance.toByteArray());
+
                 } else {
                     blockInstance = this.makeBlockInstance(paData);
                     blockInstance.setBlockStart((int)(this.randomAccessFileWriter.getFilePointer() - this.blockSize));
+
+                    blockInstance.insertData(paData);
+
+                    this.checkStatusInsert(blockInstance);
+                    this.randomAccessFileWriter.seek(blockInstance.getBlockStart());
+                    this.randomAccessFileWriter.write(blockInstance.toByteArray());
                 }
 
-                blockInstance.insertData(paData);
-
-                this.checkStatusInsert(blockInstance);
-
-                this.randomAccessFileWriter.seek(blockInstance.getBlockStart());
-                this.randomAccessFileWriter.write(blockInstance.toByteArray());
 
                 return blockInstance.getBlockStart();
             }
@@ -222,10 +221,6 @@ public class HeapFile<T extends IData> {
             this.partlyEmptyBlocks = blockInstance.getPrevious();
 
 
-//            if (blockInstance.getBlockStart() + this.blockSize == this.end) {
-//                this.shortenFile(blockInstance);
-//
-//            } else {
                 if (this.emptyBlocks == this.end || this.emptyBlocks == -1) {
                     blockInstance.setNext(-1);
                     blockInstance.setPrevious(-1);
@@ -369,7 +364,7 @@ public class HeapFile<T extends IData> {
             }
 
             this.end -= this.blockSize * numberOfEmptyBlocks;
-            this.actualSize -= numberOfEmptyBlocks;
+            this.numberOfBlocks -= numberOfEmptyBlocks;
             try {
                 this.randomAccessFileWriter.setLength(this.end);
             } catch (IOException e) {
@@ -391,8 +386,8 @@ public class HeapFile<T extends IData> {
             this.randomAccessFileWriter.seek(paAdress);
 
             Block blockInstance = this.makeBlockInstance(paData);
-            blockInstance.removeData(paData);
 
+            blockInstance.removeData(paData);
 
             this.checkStatusDelete(blockInstance);
 
@@ -426,10 +421,10 @@ public class HeapFile<T extends IData> {
     }
 
     public void printBlocks(T paData) {
-        System.out.println("HeapFile size: " + this.actualSize);
+        System.out.println("HeapFile size: " + this.numberOfBlocks);
         System.out.println("Empty Blocks: " + this.emptyBlocks);
         System.out.println("Partly Empty Blocks: " + this.partlyEmptyBlocks);
-        for (int i = 0; i < this.actualSize; i++) {
+        for (int i = 0; i < this.numberOfBlocks; i++) {
             long address = i * this.blockSize;
             System.out.println("ADDRESS PRINTED " + address);;
             this.printBlock(paData, address);

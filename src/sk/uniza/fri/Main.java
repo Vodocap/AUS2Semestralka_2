@@ -1,13 +1,6 @@
 package sk.uniza.fri;
 
-import sk.uniza.fri.data.NahodnyGenerator;
-import sk.uniza.fri.data.Navsteva;
-import sk.uniza.fri.data.Zakaznik;
-import sk.uniza.fri.hashfile.HashFile;
-import sk.uniza.fri.heapfile.HeapFile;
 import sk.uniza.fri.tester.GeneratorOperaci;
-
-import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,8 +12,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 10000, 8000);
-        generatorOperaci.generujOperacie(100000);
+        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 10000, 8000, 3);
+        generatorOperaci.generujOperacieHeapFile(10000);
+//        generatorOperaci.generujOperacieHash(1000);
 
 
 //        HashFile hashFile = new HashFile("hsh.bin", 8000, 3);
