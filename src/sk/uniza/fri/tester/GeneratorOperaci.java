@@ -138,13 +138,13 @@ public class GeneratorOperaci {
         int najdene = 0;
 
         for (Zakaznik zakaznik : kontrolneData.keySet()) {
-//            System.out.println("Hladana osoba " + zakaznik.toString() + " na adrese: " + this.kontrolneData.get(zakaznik));
+            System.out.println("Hladana osoba " + zakaznik.toString() + " na adrese: " + this.kontrolneData.get(zakaznik));
             if (zakaznik.myEquals((Zakaznik) this.heapFile.get(this.kontrolneData.get(zakaznik), zakaznik))) {
                 najdene++;
             }
             hladane++;
         }
-//        System.out.println("Najdene: " + najdene + " hladane: " + hladane);
+        System.out.println("Najdene: " + najdene + " hladane: " + hladane);
         if (hladane != najdene) {
             throw new RuntimeException("Nenaslo sa co sa malo");
         }

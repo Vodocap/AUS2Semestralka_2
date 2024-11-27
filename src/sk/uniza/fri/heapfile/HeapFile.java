@@ -141,7 +141,9 @@ public class HeapFile<T extends IData> {
 
             System.out.println("*************************************************");
             System.out.println("Partly empty stare " + this.partlyEmptyBlocks);
-            this.partlyEmptyBlocks = blockInstance.getPrevious();
+
+            this.partlyEmptyBlocks = blockInstance.getNext();
+
             System.out.println("Partly empty nove " + this.partlyEmptyBlocks);
             System.out.println("*************************************************");
 
@@ -164,7 +166,7 @@ public class HeapFile<T extends IData> {
             this.mendOldReferences(blockInstance);
             System.out.println("REF BEFORE MENDING FROM EMPTY " + blockInstance.getPrevious() + " POINTS TO - > " + blockInstance.getNext());
 
-            if (blockInstance.getNext() == -1 && blockInstance.getPrevious() == -1 && this.end != (this.sizeNum * this.blockSize)) {
+            if (blockInstance.getNext() == -1 && blockInstance.getPrevious() == -1) {
                 System.out.println("SETTING TO END FROM - " + this.emptyBlocks);
                 this.emptyBlocks = this.end;
             } else {
@@ -176,10 +178,7 @@ public class HeapFile<T extends IData> {
 
             if (this.partlyEmptyBlocks != -1) {
 
-                if (this.partlyEmptyBlocks != blockInstance.getBlockStart()) {
-                    System.out.println("INSERT NEW PARTLY EMPTY");
-                    this.insertBlockInFront(blockInstance, this.partlyEmptyBlocks);
-                }
+                this.insertBlockInFront(blockInstance, this.partlyEmptyBlocks);
 
             } else {
 
@@ -277,7 +276,6 @@ public class HeapFile<T extends IData> {
 
 
         if (blockInstance.getNext() != -1) {
-            if (blockInstance.getNext() < this.end) {
                 try {
                     this.randomAccessFileWriter.seek(blockInstance.getNext());
                     Block nextBlock = this.makeBlockInstance((T)blockInstance.getInstanceCreator());
@@ -295,7 +293,6 @@ public class HeapFile<T extends IData> {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }
         }
 
 

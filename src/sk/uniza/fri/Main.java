@@ -1,6 +1,12 @@
 package sk.uniza.fri;
 
+import sk.uniza.fri.data.NahodnyGenerator;
+import sk.uniza.fri.data.Navsteva;
+import sk.uniza.fri.data.Zakaznik;
+import sk.uniza.fri.hashfile.HashFile;
 import sk.uniza.fri.tester.GeneratorOperaci;
+
+import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +22,7 @@ public class Main {
         generatorOperaci.generujOperacieHeapFile(10000);
 //        generatorOperaci.generujOperacieHash(1000);
 
-
+//
 //        HashFile hashFile = new HashFile("hsh.bin", 8000, 3);
 //        Navsteva navsteva = new Navsteva(Calendar.getInstance(), 500);
 //        Zakaznik zakaznik = new Zakaznik("Jozo", "Fero", 561651, navsteva, "AAEEDASF");
@@ -33,17 +39,6 @@ public class Main {
 //        hashFile.closeHashFile();
 
 
-
-//
-//        String praca = "Katalyzator";
-//        navsteva.addPRaca(praca);
-//        System.out.println(navsteva);
-//        Zakaznik zakaznik = new Zakaznik("Jozo", "Fero", 561651, navsteva, "AAEEDASF");
-//        for (int i = 0; i < 5; i++) {
-//            zakaznik.addZaznam(navsteva);
-//        }
-//        heapFile.insert(zakaznik);
-//        heapFile.printBlocks(zakaznik);
-//        heapFile.closeHeapFile();
+        
     }
 }
