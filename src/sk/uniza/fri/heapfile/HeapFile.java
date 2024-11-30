@@ -139,16 +139,20 @@ public class HeapFile<T extends IData> {
 
         if (blockInstance.isFull()) {
 
+            System.out.println("REF BEFORE MENDING TO FULL " + blockInstance.getPrevious() + " < - - > " + blockInstance.getNext());
+            this.mendOldReferences(blockInstance);
+
             System.out.println("*************************************************");
             System.out.println("Partly empty stare " + this.partlyEmptyBlocks);
 
-            this.partlyEmptyBlocks = blockInstance.getNext();
+            if (blockInstance.getBlockStart() == this.partlyEmptyBlocks) {
+                this.partlyEmptyBlocks = blockInstance.getNext();
+            }
+
 
             System.out.println("Partly empty nove " + this.partlyEmptyBlocks);
             System.out.println("*************************************************");
 
-            System.out.println("REF BEFORE MENDING TO FULL " + blockInstance.getPrevious() + " < - - > " + blockInstance.getNext());
-            this.mendOldReferences(blockInstance);
 
 
             System.out.println("EMPTY NOVE " + this.emptyBlocks);
@@ -200,11 +204,7 @@ public class HeapFile<T extends IData> {
 
             if (this.partlyEmptyBlocks != -1) {
                 System.out.println("DELETE PARLTY EMPTY FROM FULL");
-                if (this.partlyEmptyBlocks != blockInstance.getBlockStart()) {
-                    this.insertBlockInFront(blockInstance, this.partlyEmptyBlocks);
-                } else {
-                    System.out.println("konec a");
-                }
+                this.insertBlockInFront(blockInstance, this.partlyEmptyBlocks);
             } else {
                 blockInstance.setPrevious(-1);
                 blockInstance.setNext(-1);
@@ -217,7 +217,9 @@ public class HeapFile<T extends IData> {
 
             this.mendOldReferences(blockInstance);
 
-            this.partlyEmptyBlocks = blockInstance.getPrevious();
+            if (blockInstance.getBlockStart() == this.partlyEmptyBlocks) {
+                this.partlyEmptyBlocks = blockInstance.getNext();
+            }
 
 
                 if (this.emptyBlocks == this.end || this.emptyBlocks == -1) {
