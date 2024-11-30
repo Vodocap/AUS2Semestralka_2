@@ -24,8 +24,8 @@ public class GeneratorOperaci {
     private Random random;
     private NahodnyGenerator nahodnyGen;
     public GeneratorOperaci(String cestakSuboru, int velkostHeapfilu, int velkostBlokov, int blokovaciFaktor) {
-        this.heapFile = new HeapFile<>(cestakSuboru, velkostHeapfilu, velkostBlokov, blokovaciFaktor);
-        this.hashFile = new HashFile<>("hsh.bin", velkostBlokov, blokovaciFaktor);
+        this.heapFile = new HeapFile<>(cestakSuboru, velkostBlokov);
+        this.hashFile = new HashFile<>("hsh.bin", velkostBlokov);
         this.kontrolneData = new HashMap<>();
         this.random = new Random();
         this.nahodnyGen = new NahodnyGenerator();
@@ -107,7 +107,7 @@ public class GeneratorOperaci {
         this.vymazNPrvkov(200);
         this.vypisheapFile();
         this.skontrolujHeapFile();
-        this.heapFile.closeHeapFile();
+        this.heapFile.closeHeapFile("hfSave.bin");
 
     }
 
@@ -205,8 +205,8 @@ public class GeneratorOperaci {
         }
 
         this.hashFile.printBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(Calendar.getInstance(), 10), "ASDADSD"));
-        this.skontrolujHeapFile();
-        this.heapFile.closeHeapFile();
+//        this.skontrolujHeapFile();
+//        this.heapFile.closeHeapFile("");
 
     }
 

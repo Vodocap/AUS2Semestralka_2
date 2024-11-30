@@ -18,12 +18,12 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     private long previous;
     protected long blockStart;
     protected long size;
-    protected long sizeFactor;
+    protected int sizeFactor;
     protected ArrayList<T> recordArray;
     protected T instanceCreator;
 
 
-    public Block(T data, long paBlockSize, int paSizeFactor) {
+    public Block(T data, long paBlockSize) {
         this.instanceCreator = data;
         this.size = paBlockSize;
         this.validCount = 0;
@@ -31,7 +31,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         this.previous = -1;
         this.blockStart = 0;
         this.recordArray = new ArrayList<>();
-        this.sizeFactor = paSizeFactor;
+        this.sizeFactor = (int)paBlockSize / (int)data.getSize();
     }
 
     public boolean isPartlyEmpty() {
@@ -170,18 +170,28 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         return this.previous;
     }
 
-    public void printBlock() {
-        System.out.println("BLOCK");
-        System.out.println("_______________________________");
-        System.out.println("Start: " + this.blockStart);
-        System.out.println("Size: " + this.size);
-        System.out.println("Valid Count: " + this.validCount);
-        System.out.println("Next: " + this.next);
-        System.out.println("Previous: " + this.previous);
-        System.out.println("_______________________________");
+    public String toString() {
+        String resultString = "BLOCK" + "\n" +
+                "_______________________________" + "\n" +
+                "Start: " + this.blockStart + "\n" +
+                "Size: " + this.size + "\n" +
+                "Valid Count: " + this.validCount + "\n" +
+                "Next: " + this.next + "\n" +
+                "Previous: " + this.previous + "\n" +
+                "_______________________________" + "\n" +
+                "DATA: " + "\n" +
+                "*****************************" + "\n";
+
         for (T t : this.recordArray) {
-            t.print();
+            resultString += t.toString();
         }
+        resultString += "\n" + "*****************************\n";
+
+        return resultString;
+    }
+
+    public void printBlock() {
+        System.out.println(this.toString());
     }
 
     public long getBlockStart() {

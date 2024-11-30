@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public class HashBlock<T extends IData<T>> extends Block<T> {
     private int depth;
 
-    public HashBlock(IData<T> data, long paBlockSize, int paSizeFactor) {
-        super((T)data, paBlockSize, paSizeFactor);
+    public HashBlock(IData<T> data, long paBlockSize) {
+        super((T)data, paBlockSize);
     }
 
     @Override

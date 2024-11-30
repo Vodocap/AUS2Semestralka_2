@@ -90,7 +90,7 @@ public class Zakaznik implements IData<Zakaznik> {
 
     @Override
     public boolean myEquals(Zakaznik data) {
-        return this.ID == data.getID() && this.meno.equals(data.getMeno()) && this.priezvisko.equals(data.getPriezvisko());
+        return this.ID == data.getID() && this.ECV.equals(data.getECV());
     }
 
 

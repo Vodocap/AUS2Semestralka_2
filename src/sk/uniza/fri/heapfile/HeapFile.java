@@ -1,8 +1,8 @@
 package sk.uniza.fri.heapfile;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * 15. 11. 2024 - 13:25
@@ -12,16 +12,15 @@ import java.io.RandomAccessFile;
 public class HeapFile<T extends IData> {
     private long emptyBlocks;
     private long partlyEmptyBlocks;
-    private String filePath;
-    private long sizeNum;
+
     private long numberOfBlocks;
     private RandomAccessFile randomAccessFileWriter;
-    private int blockingFactor;
+
     private long end;
     private long blockSize;
 
 
-    public HeapFile(String paFilePath, int paSizeNum, int paBlockSize, int paBlockingFactor) {
+    public HeapFile(String paFilePath, int paBlockSize) {
         this.numberOfBlocks = 0;
         try {
             this.randomAccessFileWriter = new RandomAccessFile(paFilePath, "rw");
@@ -29,9 +28,7 @@ public class HeapFile<T extends IData> {
             throw new RuntimeException(e);
         }
 
-        this.blockingFactor = paBlockingFactor;
         this.end = 0;
-        this.sizeNum = paSizeNum;
         this.emptyBlocks = 0;
         this.partlyEmptyBlocks = -1;
         this.blockSize = paBlockSize;
@@ -40,7 +37,18 @@ public class HeapFile<T extends IData> {
     }
 
     public void initialiseHeapFileFromFile(String initFilePath) {
-
+        try {
+            RandomAccessFile loader = new RandomAccessFile(initFilePath, "rw");
+            byte[] initBytes = new byte[40];
+            loader.seek(0);
+            loader.readFully(initBytes);
+            this.fromByteArray(initBytes);
+            loader.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -114,13 +122,13 @@ public class HeapFile<T extends IData> {
 
 
     private Block makeBlockInstance(T paData) {
-        Block blockInstance = new Block(paData, this.blockSize, this.blockingFactor);
+        Block blockInstance = new Block(paData, this.blockSize);
         blockInstance.fromByteArray(this.readBlock());
         return blockInstance;
     }
 
     private Block makeEmptyBlockInstance(T paData) {
-        Block blockInstance = new Block(paData, this.blockSize, this.blockingFactor);
+        Block blockInstance = new Block(paData, this.blockSize);
         return blockInstance;
     }
 
@@ -407,6 +415,19 @@ public class HeapFile<T extends IData> {
         }
     }
 
+    public void update(long paAddress, T oldData, T newData) {
+        try {
+            this.randomAccessFileWriter.seek(paAddress);
+            Block foundBlock = this.makeBlockInstance(oldData);
+            foundBlock.removeData(oldData);
+            foundBlock.insertData(newData);
+            this.randomAccessFileWriter.write(foundBlock.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public T get(long paAddress, T paData) {
         try {
             this.randomAccessFileWriter.seek(paAddress);
@@ -431,6 +452,58 @@ public class HeapFile<T extends IData> {
         }
     }
 
+    public String toString(T paData) {
+        String resultString = "Number of blocks: " + this.numberOfBlocks + "\nEmpty Blocks: " + this.emptyBlocks +
+                "\nPartly Empty Blocks: " + this.partlyEmptyBlocks + "\n";
+        for (int i = 0; i < this.numberOfBlocks; i++) {
+            long address = i * this.blockSize;
+            resultString += this.toStringBlock(paData, address);
+            this.printBlock(paData, address);
+        }
+
+        return resultString;
+    }
+
+    public ArrayList<Block> getAllBlocks(T paData) {
+        ArrayList<Block> blocks = new ArrayList<>();
+        for (int i = 0; i < this.numberOfBlocks; i++) {
+            long address = i * this.blockSize;
+            try {
+                this.randomAccessFileWriter.seek(address);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            Block blockInstance = this.makeBlockInstance(paData);
+            blocks.add(blockInstance);
+            blockInstance.printBlock();
+
+        }
+
+        return blocks;
+
+    }
+
+
+
+    public String toStringBlock(T paData, long paAddress) {
+
+        try {
+            if (paAddress <= this.end) {
+                this.randomAccessFileWriter.seek(paAddress);
+
+                Block blockInstance = this.makeBlockInstance(paData);
+                return blockInstance.toString();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return "";
+
+    }
+
     public void printBlock(T paData, long paAddress) {
 
 
@@ -448,11 +521,54 @@ public class HeapFile<T extends IData> {
 
     }
 
-    public void closeHeapFile() {
+    public void closeHeapFile(String saveFilePath) {
         try {
+            RandomAccessFile saver = new RandomAccessFile(saveFilePath, "rw");
+            saver.seek(0);
+            saver.write(this.toByteArray());
             this.randomAccessFileWriter.close();
+            saver.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private byte[] toByteArray() {
+        ByteArrayOutputStream hlpByteArrayOutputStream = new ByteArrayOutputStream();
+        DataOutputStream hlpOutStream = new DataOutputStream(hlpByteArrayOutputStream);
+
+        try {
+
+            hlpOutStream.writeLong(this.end);
+            hlpOutStream.writeLong(this.emptyBlocks);
+            hlpOutStream.writeLong(this.partlyEmptyBlocks);
+            hlpOutStream.writeLong(this.blockSize);
+            hlpOutStream.writeLong(this.numberOfBlocks);
+
+            return hlpByteArrayOutputStream.toByteArray();
+
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Error during conversion to byte array.");
+        }
+    }
+
+    private void fromByteArray(byte[] paByteArray) {
+        ByteArrayInputStream hlpByteArrayInputStream = new ByteArrayInputStream(paByteArray);
+        DataInputStream hlpInStream = new DataInputStream(hlpByteArrayInputStream);
+
+        try {
+
+            this.end = hlpInStream.readLong();
+            this.emptyBlocks = hlpInStream.readLong();
+            this.partlyEmptyBlocks = hlpInStream.readLong();
+            this.blockSize = hlpInStream.readLong();
+            this.numberOfBlocks = hlpInStream.readLong();
+
+
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Error during conversion from byte array.");
         }
     }
 }
