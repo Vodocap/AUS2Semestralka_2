@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class MainWindow extends JFrame {
     private JPanel panel1;
@@ -31,10 +32,14 @@ public class MainWindow extends JFrame {
     private JList jList2;
     private JButton zrusButton;
     private AppCore appCore;
+    private ArrayList navstevy;
+    private Zakaznik currentZakaznik;
 
     public MainWindow() {
         this.appCore = new AppCore("Bin.bin", 6000);
+        this.navstevy = new ArrayList();
 
+        this.currentZakaznik = null;
 
         this.vygenerujZakaznikovButton.addActionListener(new ActionListener() {
             @Override
@@ -72,12 +77,46 @@ public class MainWindow extends JFrame {
             }
         });
 
+        this.pridajNavstevuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (MainWindow.this.comboBox1.getSelectedIndex() == 1) {
+                    Zakaznik zakaznik = MainWindow.this.appCore.vyhladajUdajeOVozidle(Integer.parseInt(MainWindow.this.parameterVyhladaniaTextField.getText()));
+                    MainWindow.this.zakaznikTextArea.setText(zakaznik.toString());
+                    MainWindow.this.list1.clearSelection();
+                    MainWindow.this.navstevy = zakaznik.getZaznamyONasvsteve();
+                    MainWindow.this.list1.setListData(MainWindow.this.navstevy.toArray());
+                    MainWindow.this.currentZakaznik = zakaznik;
+                    NavstevaPopup navstevaPopup = new NavstevaPopup(MainWindow.this.appCore, zakaznik.getZaznamyONasvsteve(), MainWindow.this);
+                    navstevaPopup.setSize(1000, 800);
+                    navstevaPopup.setContentPane(navstevaPopup.$$$getRootComponent$$$());
+                    navstevaPopup.pack();
+                    navstevaPopup.setVisible(true);
+
+                } else {
+                    Zakaznik zakaznik = MainWindow.this.appCore.vyhladajUdajeOVozidle(MainWindow.this.parameterVyhladaniaTextField.getText());
+                    MainWindow.this.zakaznikTextArea.setText(zakaznik.toString());
+                    MainWindow.this.list1.clearSelection();
+                    MainWindow.this.list1.setListData(zakaznik.getZaznamyONasvsteve().toArray());
+                    MainWindow.this.navstevy = zakaznik.getZaznamyONasvsteve();
+                    MainWindow.this.list1.setListData(MainWindow.this.navstevy.toArray());
+                    MainWindow.this.currentZakaznik = zakaznik;
+                    NavstevaPopup navstevaPopup = new NavstevaPopup(MainWindow.this.appCore, zakaznik.getZaznamyONasvsteve(), MainWindow.this);
+                    navstevaPopup.setSize(1000, 800);
+                    navstevaPopup.setContentPane(navstevaPopup.$$$getRootComponent$$$());
+                    navstevaPopup.pack();
+                    navstevaPopup.setVisible(true);
+                }
+            }
+        });
+
         this.list1.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 MainWindow.this.jList2.clearSelection();
                 Navsteva navsteva = (Navsteva) MainWindow.this.list1.getSelectedValue();
                 MainWindow.this.jList2.setListData(navsteva.getVykonanePrace().toArray());
+
             }
         });
 
@@ -99,6 +138,27 @@ public class MainWindow extends JFrame {
                 MainWindow.this.dispose();
             }
         });
+    }
+
+
+    public void updatelist() {
+
+        this.list1.clearSelection();
+        this.list1.setListData(this.navstevy.toArray());
+
+    }
+
+
+    public JTextField getParameterVyhladaniaTextField() {
+        return this.parameterVyhladaniaTextField;
+    }
+
+    public Zakaznik getCurrentZakaznik() {
+        return this.currentZakaznik;
+    }
+
+    public JComboBox getComboBox1() {
+        return this.comboBox1;
     }
 
     {

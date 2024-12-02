@@ -82,6 +82,21 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
 
     }
 
+    public String toString() {
+        String resultString = "BLOCK" + "\n" +
+                " Start: " + this.blockStart + "\n" +
+                " Size: " + this.size + "\n" +
+                " Valid Count: " + this.validCount + "\n" +
+                " DATA: " + "\n";
+
+
+        for (T t : this.recordArray) {
+            resultString += t.toString();
+        }
+
+        return resultString;
+    }
+
     public ArrayList<T> getDataList () {
         return this.recordArray;
     }

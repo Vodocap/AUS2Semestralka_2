@@ -57,8 +57,9 @@ public class SearchZakaznikID implements IData<SearchZakaznikID> {
 
     @Override
     public String toString() {
-        return "IDSearchData{" +
+        return "SearchZakaznikECV{" +
                 "ID=" + ID +
+                ", ECV='" + ECV + '\'' +
                 ", adresa=" + adresa +
                 '}';
     }
