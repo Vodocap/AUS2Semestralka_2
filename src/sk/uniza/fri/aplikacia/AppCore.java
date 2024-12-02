@@ -73,7 +73,7 @@ public class AppCore {
         pridavanyID.setAdresa(pridanaAdresa);
         pridavanyECV.setAdresa(pridanaAdresa);
         this.hashFileID.insert(pridavanyID, pridavanyID.getID());
-        this.hashFileECV.insert(pridavanyECV, pridavanyID.getECV());
+        this.hashFileECV.insert(pridavanyECV, pridavanyECV.getECV());
 
     }
 
@@ -87,7 +87,7 @@ public class AppCore {
         pridavanyID.setAdresa(pridanaAdresa);
         pridavanyECV.setAdresa(pridanaAdresa);
         this.hashFileID.insert(pridavanyID, pridavanyID.getID());
-        this.hashFileECV.insert(pridavanyECV, pridavanyID.getECV());
+        this.hashFileECV.insert(pridavanyECV, pridavanyECV.getECV());
 
     }
 

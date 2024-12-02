@@ -171,14 +171,20 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     }
 
     public String toString() {
-
-
-        return "BLOCK" + "\n" +
+        String resultString = "BLOCK" + "\n" +
                 " Start: " + this.blockStart + "\n" +
                 " Size: " + this.size + "\n" +
                 " Valid Count: " + this.validCount + "\n" +
                 " Next: " + this.next + "\n" +
-                " Previous: " + this.previous + "\n";
+                " Previous: " + this.previous + "\n" +
+                " DATA: " + "\n";
+
+
+        for (T t : this.recordArray) {
+            resultString += t.toString();
+        }
+
+        return resultString;
     }
 
     public String toStringLonger() {

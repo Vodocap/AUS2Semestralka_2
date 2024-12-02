@@ -2,6 +2,7 @@ package sk.uniza.fri.gui;
 
 import sk.uniza.fri.aplikacia.AppCore;
 import sk.uniza.fri.data.Navsteva;
+import sk.uniza.fri.data.Zakaznik;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,13 +33,17 @@ public class NavstevaPopup extends JFrame {
     private ArrayList<String> prace;
     private Navsteva vytvorenaNavsteva;
     private ArrayList navsetvas;
-    private VozidloPopup parentInstance;
+    private Object parentInstance;
 
-    public NavstevaPopup(AppCore appCoreInstance, ArrayList navstevy, VozidloPopup paParentInstance) {
+    public NavstevaPopup(AppCore appCoreInstance, ArrayList navstevy, Object paParentInstance) {
         this.appCore = appCoreInstance;
         this.prace = new ArrayList<String>();
         this.navsetvas = navstevy;
-        this.parentInstance = paParentInstance;
+        if (paParentInstance instanceof NavstevaPopup) {
+            this.parentInstance = (NavstevaPopup) paParentInstance;
+        } else {
+            this.parentInstance = (MainWindow) paParentInstance;
+        }
 
 
         this.list1.setListData(this.prace.toArray());
@@ -80,7 +85,22 @@ public class NavstevaPopup extends JFrame {
                 }
 
                 NavstevaPopup.this.navsetvas.add(novaNavsteva);
-                NavstevaPopup.this.parentInstance.updatelist();
+
+                if (NavstevaPopup.this.parentInstance instanceof VozidloPopup) {
+                    ((VozidloPopup) NavstevaPopup.this.parentInstance).updatelist();
+                } else {
+                    if (((MainWindow) NavstevaPopup.this.parentInstance).getComboBox1().getSelectedIndex() == 1) {
+                        ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik().addZaznam(novaNavsteva);
+                        NavstevaPopup.this.appCore.zmenVozidlo(Integer.parseInt(((MainWindow) NavstevaPopup.this.parentInstance).getParameterVyhladaniaTextField().getText()),
+                                ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik());
+                    } else {
+                        NavstevaPopup.this.appCore.zmenVozidlo(((MainWindow) NavstevaPopup.this.parentInstance).getParameterVyhladaniaTextField().getText(),
+                                ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik());
+                    }
+
+                    ((MainWindow) NavstevaPopup.this.parentInstance).updatelist();
+                }
+
                 NavstevaPopup.this.dispose();
 
             }

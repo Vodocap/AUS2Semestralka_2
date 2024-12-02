@@ -71,13 +71,15 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
 
     private BitSet stringToBitSet(String inputString) {
         String substring = inputString.substring(0,3);
-        BitSet bitSet = new BitSet();
-        int sumValue = 0;
-        for (int i = 0; i < 3; i++) {
-            sumValue += (int) substring.charAt(i);
-        }
+        BitSet bitSet = BitSet.valueOf(substring.getBytes());;
 
-        return this.intToBitSet(sumValue);
+        return bitSet;
+//        int sumValue = 0;
+//        for (int i = 0; i < 3; i++) {
+//            sumValue += (int) substring.charAt(i);
+//        }
+//
+//        return this.intToBitSet(sumValue);
     }
 
 
