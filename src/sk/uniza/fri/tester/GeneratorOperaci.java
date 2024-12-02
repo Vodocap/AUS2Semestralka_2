@@ -35,7 +35,7 @@ public class GeneratorOperaci {
     public void generujOperacieHeapFile(int pocetOperacii) {
         for (int i = 0; i < 1000; i++) {
             Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
+                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
 
             long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
             System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
@@ -53,7 +53,7 @@ public class GeneratorOperaci {
             double generovanaHodnota = this.random.nextDouble();
             if (generovanaHodnota < 0.33) {
                 Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
+                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
 
                 long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
                 System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
@@ -155,7 +155,7 @@ public class GeneratorOperaci {
     public void generujOperacieHash(int pocetOperacii) {
         for (int i = 0; i < 1000; i++) {
             Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
+                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
 
             this.hashFile.insert(vlozenyZakaznik, vlozenyZakaznik.getID());
             this.kontrolneHash.add(vlozenyZakaznik);
@@ -167,7 +167,7 @@ public class GeneratorOperaci {
             double generovanaHodnota = this.random.nextDouble();
             if (generovanaHodnota < 0.50) {
                 Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vugenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
+                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
 
                 long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
                 System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);

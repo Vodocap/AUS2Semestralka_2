@@ -29,6 +29,10 @@ public class Zakaznik implements IData<Zakaznik> {
     private int size;
     private Navsteva vytvaracInstancii;
 
+    public ArrayList<Navsteva> getZaznamyONasvsteve() {
+        return this.zaznamyONasvsteve;
+    }
+
     public Zakaznik(String paMeno, String paPriezvisko, int paID, Navsteva paVytvaracInstancii, String paEcv) {
         this.vytvaracInstancii = paVytvaracInstancii;
         this.zaznamyONasvsteve = new ArrayList<>();
@@ -41,12 +45,14 @@ public class Zakaznik implements IData<Zakaznik> {
 
     }
 
-    public void addZaznam(Navsteva paNavsteva) {
+    public boolean addZaznam(Navsteva paNavsteva) {
         if (this.zaznamyONasvsteve.size() < MAX_ZAZNAMOV) {
             this.zaznamyONasvsteve.add(paNavsteva);
-            this.pocetPlatnychNavstev--;
+            this.pocetPlatnychNavstev++;
+            return true;
         } else {
             System.out.println("Viac navstev uz je zakazanych");
+            return false;
         }
     }
 
@@ -96,7 +102,7 @@ public class Zakaznik implements IData<Zakaznik> {
 
     @Override
     public Zakaznik createInstance() {
-        Zakaznik zakaznikCopy = new Zakaznik(this.meno, this.priezvisko, this.ID, this.vytvaracInstancii, this.ECV);
+        Zakaznik zakaznikCopy = new Zakaznik(this.meno, this.priezvisko, this.ID, this.vytvaracInstancii.createInstance(), this.ECV);
         for (Navsteva t : this.zaznamyONasvsteve) {
             zakaznikCopy.addZaznam(t.createInstance());
         }
@@ -118,6 +124,7 @@ public class Zakaznik implements IData<Zakaznik> {
     public String getHashParameter() {
         return this.ECV;
     }
+
 
     @Override
     public long getSize() {

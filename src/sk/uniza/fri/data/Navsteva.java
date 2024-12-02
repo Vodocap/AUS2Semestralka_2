@@ -39,6 +39,8 @@ public class Navsteva implements IData<Navsteva> {
 
     }
 
+
+
     public void removePraca(String odstranovanaPraca) {
         this.vykonanePrace.remove(odstranovanaPraca);
     }
@@ -74,10 +76,10 @@ public class Navsteva implements IData<Navsteva> {
                 if (praca.length() <= MAX_LENGHT_PRACE) {
                     for (int i = praca.length(); i < MAX_LENGHT_PRACE; i++) {
                         praca += "x";
-                        recordsBytes += 24;
                     }
 
                 }
+                recordsBytes += 24;
                 hlpOutStream.writeInt(praca.length());
                 hlpOutStream.write(praca.getBytes());
 

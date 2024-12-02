@@ -21,7 +21,7 @@ public class NahodnyGenerator {
         this.random = new Random();
     }
 
-    public int vugenerujUnikatnyInt() {
+    public int vygenerujUnikatnyInt() {
         int returnInt = this.random.nextInt();
         while (this.vygenerovaneInty.contains(returnInt)) {
             returnInt = this.random.nextInt();
@@ -46,7 +46,7 @@ public class NahodnyGenerator {
 
         for (int i = 0; i < paDlzka; i++) {
 
-            novyString += this.dajCharZCisla(this.returnCharpoolFromIndex(this.random.nextInt(0,4)));
+            novyString += this.dajCharZCisla(this.returnCharpoolFromIndex(this.random.nextInt(0,3)));
         }
         return novyString;
 

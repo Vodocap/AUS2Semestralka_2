@@ -4,17 +4,15 @@ import sk.uniza.fri.heapfile.IData;
 
 import java.io.*;
 
-public class SearchZakaznik implements IData<SearchZakaznik> {
+public class SearchZakaznikID implements IData<SearchZakaznikID> {
 
     private int ID;
     private String ECV;
     private long adresa;
     private static int ECV_LENGTH = 10;
 
-    public SearchZakaznik(int paID, String paECV , long paAdresa) {
+    public SearchZakaznikID(int paID) {
         this.ID = paID;
-        this.ECV = paECV;
-        this.adresa = paAdresa;
     }
 
     public int getID() {
@@ -25,16 +23,20 @@ public class SearchZakaznik implements IData<SearchZakaznik> {
         return this.ECV;
     }
 
-    @Override
-    public boolean myEquals(SearchZakaznik data) {
-
-        return this.ID == data.getID() && this.ECV.equals(data.getECV());
+    public void setECV(String ECV) {
+        this.ECV = ECV;
     }
 
     @Override
-    public SearchZakaznik createInstance() {
+    public boolean myEquals(SearchZakaznikID data) {
 
-        return new SearchZakaznik(this.ID, this.ECV, this.adresa);
+        return this.ID == data.getID();
+    }
+
+    @Override
+    public SearchZakaznikID createInstance() {
+
+        return new SearchZakaznikID(this.ID);
     }
 
     @Override
@@ -44,26 +46,27 @@ public class SearchZakaznik implements IData<SearchZakaznik> {
 
     @Override
     public int getHashparameter() {
-        return 0;
+        return this.ID;
     }
+
+    @Override
+    public String getHashParameter() {
+        return this.ECV;
+    }
+
 
     @Override
     public String toString() {
         return "IDSearchData{" +
                 "ID=" + ID +
-                ", ECV='" + ECV + '\'' +
                 ", adresa=" + adresa +
                 '}';
     }
 
-    @Override
-    public String getHashParameter() {
-        return "";
-    }
 
-    @Override
+
     public long getSize() {
-        return 18;
+        return 22;
     }
 
     @Override
@@ -73,18 +76,10 @@ public class SearchZakaznik implements IData<SearchZakaznik> {
 
         try {
 
-
             String writtenECV = this.ECV;
-            if (this.ECV.length() <= ECV_LENGTH) {
-                for (int i = this.ECV.length(); i < ECV_LENGTH; i++) {
-                    writtenECV += "x";
-                }
-            }
-
+            hlpOutStream.writeLong(this.adresa);
             hlpOutStream.writeInt(this.ID);
-            hlpOutStream.writeInt(this.ECV.length());
             hlpOutStream.write(writtenECV.getBytes());
-
 
             return hlpByteArrayOutputStream.toByteArray();
 
@@ -101,15 +96,20 @@ public class SearchZakaznik implements IData<SearchZakaznik> {
 
         try {
 
+            this.adresa = hlpInStream.readLong();
             this.ID = hlpInStream.readInt();
-            int eCVSize = hlpInStream.readInt();
-            this.ECV = new String(hlpInStream.readNBytes(eCVSize));
-            hlpInStream.skipBytes(ECV_LENGTH - eCVSize);
-
-
+            this.ECV = new String(hlpInStream.readNBytes(ECV_LENGTH));
 
         } catch (IOException e) {
             throw new IllegalStateException("Error during conversion from byte array.");
         }
+    }
+
+    public long getAdresa() {
+        return this.adresa;
+    }
+
+    public void setAdresa(long adresa) {
+        this.adresa = adresa;
     }
 }

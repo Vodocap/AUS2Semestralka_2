@@ -171,6 +171,17 @@ public class Block<T extends IData<T>> implements IRecord<T> {
     }
 
     public String toString() {
+
+
+        return "BLOCK" + "\n" +
+                " Start: " + this.blockStart + "\n" +
+                " Size: " + this.size + "\n" +
+                " Valid Count: " + this.validCount + "\n" +
+                " Next: " + this.next + "\n" +
+                " Previous: " + this.previous + "\n";
+    }
+
+    public String toStringLonger() {
         String resultString = "BLOCK" + "\n" +
                 "_______________________________" + "\n" +
                 "Start: " + this.blockStart + "\n" +

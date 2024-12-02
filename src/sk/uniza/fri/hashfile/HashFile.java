@@ -39,12 +39,12 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
     }
 
 
-    public int calculateHash(int paInput, int hashDept) {
+    public int calculateHash(int paInput, int hashDepth) {
 
-        BitSet bitSet = this.intToBitset(paInput);
+        BitSet bitSet = this.intToBitSet(paInput);
 
         int resultHash = 0;
-        for (int i = 0; i < hashDept; i++) {
+        for (int i = 0; i < hashDepth; i++) {
             if (bitSet.get(i)) {
                 resultHash |= (1 << i);
             }
@@ -54,9 +54,35 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
 
     }
 
+    public int calculateHash(String paInput, int hashDepth) {
+
+        BitSet bitSet = this.stringToBitSet(paInput);
+
+        int resultHash = 0;
+        for (int i = 0; i < hashDepth; i++) {
+            if (bitSet.get(i)) {
+                resultHash |= (1 << i);
+            }
+        }
+
+        return resultHash;
+
+    }
+
+    private BitSet stringToBitSet(String inputString) {
+        String substring = inputString.substring(0,3);
+        BitSet bitSet = new BitSet();
+        int sumValue = 0;
+        for (int i = 0; i < 3; i++) {
+            sumValue += (int) substring.charAt(i);
+        }
+
+        return this.intToBitSet(sumValue);
+    }
 
 
-    private BitSet intToBitset(int paInput) {
+
+    private BitSet intToBitSet(int paInput) {
 
         return BitSet.valueOf(new long[]{paInput});
 
@@ -123,7 +149,7 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
         for (T record : oldRecords) {
             try {
 
-                int newHash = this.calculateHash(record.getHashparameter(), blockInstance.getDepth());
+                int newHash = this.calculateHash(record.getHashparameter(), this.depth);
                 int oldhash = this.calculateHash(record.getHashparameter(), blockInstance.getDepth() - 1);
                 if (!alreadySplit) {
                     if (oldhash == newHash) {
@@ -209,6 +235,54 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
         }
     }
 
+    public void insert(T paData, String uniqueHashParam) {
+
+        if (this.actualSize == 0) {
+            try {
+                this.randomAccessFileWriter.seek(this.randomAccessFileWriter.length());
+                for (int i = 0; i < 2; i++) {
+                    this.addEmptyBlock(paData);
+                    this.actualSize++;
+                    this.addreses[i] = this.end;
+                    this.end += this.blockSize;
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        boolean inserted = false;
+        int resultHash = this.calculateHash(uniqueHashParam, this.depth);
+        while (!inserted) {
+
+
+            try {
+                this.randomAccessFileWriter.seek(this.addreses[resultHash]);
+                System.out.println(this.randomAccessFileWriter.getFilePointer());
+                System.out.println(this.randomAccessFileWriter.length());
+                HashBlock blockInstance = this.makeBlockInstance(paData);
+                if (blockInstance.isFull()) {
+                    if (blockInstance.getDepth() == this.depth) {
+                        this.doubleAddressSpace(paData);
+                    }
+                    this.splitBlock(blockInstance);
+                } else {
+                    blockInstance.insertData(paData);
+                    this.randomAccessFileWriter.seek(this.addreses[resultHash]);
+                    this.randomAccessFileWriter.write(blockInstance.toByteArray());
+                    inserted = true;
+                }
+
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
+        }
+    }
+
 
     private HashBlock makeBlockInstance(T paData) {
         HashBlock blockInstance = new HashBlock(paData, this.blockSize);
@@ -234,6 +308,19 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
 
 
     public T get(int hashParam, T paData) {
+        try {
+
+            this.randomAccessFileWriter.seek(this.addreses[this.calculateHash(hashParam, this.depth)]);
+            HashBlock foundBlock = this.makeBlockInstance(paData);
+            return (T) foundBlock.getRecord(paData);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public T get(String hashParam, T paData) {
         try {
 
             this.randomAccessFileWriter.seek(this.addreses[this.calculateHash(hashParam, this.depth)]);
@@ -319,6 +406,26 @@ public class HashFile<T extends IData<T>> implements IRecord<T> {
         } catch (IOException e) {
             throw new IllegalStateException("Error during conversion from byte array.");
         }
+    }
+
+    public ArrayList<HashBlock> getAllBlocks(T paData) {
+        ArrayList<HashBlock> blocks = new ArrayList<>();
+        for (int i = 0; i < this.actualSize; i++) {
+            long address = i * this.blockSize;
+            try {
+                this.randomAccessFileWriter.seek(address);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            HashBlock blockInstance = this.makeBlockInstance(paData);
+            blocks.add(blockInstance);
+            blockInstance.printBlock();
+
+        }
+
+        return blocks;
+
     }
 
     @Override
