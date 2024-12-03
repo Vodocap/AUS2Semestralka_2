@@ -2,6 +2,8 @@ package sk.uniza.fri.tester;
 
 import sk.uniza.fri.data.NahodnyGenerator;
 import sk.uniza.fri.data.Navsteva;
+import sk.uniza.fri.data.SearchZakaznikECV;
+import sk.uniza.fri.data.SearchZakaznikID;
 import sk.uniza.fri.data.Zakaznik;
 import sk.uniza.fri.hashfile.HashFile;
 import sk.uniza.fri.heapfile.HeapFile;
@@ -20,22 +22,22 @@ public class GeneratorOperaci {
     private HeapFile heapFile;
     private HashFile hashFile;
     private HashMap<Zakaznik, Long> kontrolneData;
-    private ArrayList kontrolneHash;
+    private ArrayList<SearchZakaznikID> kontrolneHash;
     private Random random;
     private NahodnyGenerator nahodnyGen;
-    public GeneratorOperaci(String cestakSuboru, int velkostHeapfilu, int velkostBlokov, int blokovaciFaktor) {
+    public GeneratorOperaci(String cestakSuboru, int velkostBlokov) {
         this.heapFile = new HeapFile<>(cestakSuboru, velkostBlokov);
-        this.hashFile = new HashFile<>("hsh.bin", velkostBlokov);
+        this.hashFile = new HashFile<>("hsh.bin", 100);
         this.kontrolneData = new HashMap<>();
         this.random = new Random();
-        this.nahodnyGen = new NahodnyGenerator();
+        this.nahodnyGen = new NahodnyGenerator(1212121212);
         this.kontrolneHash = new ArrayList();
     }
 
     public void generujOperacieHeapFile(int pocetOperacii) {
         for (int i = 0; i < 1000; i++) {
             Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
+                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatneID(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujECV());
 
             long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
             System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
@@ -53,7 +55,7 @@ public class GeneratorOperaci {
             double generovanaHodnota = this.random.nextDouble();
             if (generovanaHodnota < 0.33) {
                 Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
+                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujECV());
 
                 long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
                 System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
@@ -151,44 +153,60 @@ public class GeneratorOperaci {
 
     }
 
+    private void skontrolujHashFile() {
+
+        int hladane = 0;
+        int najdene = 0;
+
+        for (SearchZakaznikID zakaznik : this.kontrolneHash) {
+            System.out.println("Hladana osoba " + zakaznik.toString());
+            if (zakaznik.myEquals((SearchZakaznikID) this.hashFile.get(zakaznik))) {
+                najdene++;
+            }
+            hladane++;
+        }
+        System.out.println("Najdene: " + najdene + " hladane: " + hladane);
+        if (hladane != najdene) {
+            throw new RuntimeException("Nenaslo sa co sa malo");
+        }
+
+    }
+
 
     public void generujOperacieHash(int pocetOperacii) {
-        for (int i = 0; i < 1000; i++) {
-            Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
-
-            this.hashFile.insert(vlozenyZakaznik, vlozenyZakaznik.getID());
-            this.kontrolneHash.add(vlozenyZakaznik);
-        }
+//        for (int i = 0; i < 1000; i++) {
+//            Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
+//                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatneID(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujECV());
+//
+//            this.hashFile.insert(vlozenyZakaznik, vlozenyZakaznik.getID());
+//            this.kontrolneHash.add(vlozenyZakaznik);
+//        }
 
 
         for (int i = 0; i < pocetOperacii; i++) {
 
             double generovanaHodnota = this.random.nextDouble();
-            if (generovanaHodnota < 0.50) {
-                Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujUnikatnyString(0,10));
 
-                long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
-                System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
-                this.kontrolneData.put(vlozenyZakaznik, adresaVlozenej);
-                if (adresaVlozenej != -1) {
-                    this.kontrolneData.put(vlozenyZakaznik, adresaVlozenej);
-                    this.skontrolujHeapFile();
-                } else {
-                    System.out.println("asdasda");
-                }
+            if (generovanaHodnota < 0.50) {
+
+
+
+                SearchZakaznikID searchZakaznikID = new SearchZakaznikID(this.nahodnyGen.vygenerujUnikatneID());
+                searchZakaznikID.setECV(this.nahodnyGen.vygenerujECV());
+                this.hashFile.insert(searchZakaznikID);
+                System.out.println("INSERT: " + searchZakaznikID);
+                this.kontrolneHash.add(searchZakaznikID);
 
 //                this.vypisheapFile();
 
 
             } else if (generovanaHodnota > 0.50) {
-                if (!this.kontrolneData.isEmpty()) {
+                if (!this.kontrolneHash.isEmpty()) {
                     int hladanyIndex = this.random.nextInt(this.kontrolneHash.size());
-                    Zakaznik hladanyZakaznik = (Zakaznik) this.kontrolneHash.get(hladanyIndex);
+                    SearchZakaznikID hladanyZakaznik = this.kontrolneHash.get(hladanyIndex);
 //                    this.vypisheapFile();
                     System.out.println("Hladana osoba" + hladanyZakaznik.toString());
-                    Zakaznik najdenyZakaznik = (Zakaznik) this.hashFile.get(hladanyZakaznik.getID(), hladanyZakaznik);
+                    SearchZakaznikID najdenyZakaznik = (SearchZakaznikID) this.hashFile.get(hladanyZakaznik);
                     System.out.println("Najdena osoba: " + najdenyZakaznik.toString());
                     if (!najdenyZakaznik.myEquals(hladanyZakaznik)) {
                         try {
@@ -205,7 +223,7 @@ public class GeneratorOperaci {
         }
 
         this.hashFile.printBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(Calendar.getInstance(), 10), "ASDADSD"));
-//        this.skontrolujHeapFile();
+        this.skontrolujHashFile();
 //        this.heapFile.closeHeapFile("");
 
     }

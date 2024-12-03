@@ -1,10 +1,12 @@
 package sk.uniza.fri.data;
 
 import sk.uniza.fri.heapfile.IData;
+import sk.uniza.fri.heapfile.IHash;
 
 import java.io.*;
+import java.util.BitSet;
 
-public class SearchZakaznikID implements IData<SearchZakaznikID> {
+public class SearchZakaznikID implements IData<SearchZakaznikID>, IHash {
 
     private int ID;
     private String ECV;
@@ -78,6 +80,7 @@ public class SearchZakaznikID implements IData<SearchZakaznikID> {
         try {
 
             String writtenECV = this.ECV;
+//            System.out.println("ECVL: " + writtenECV.length());
             hlpOutStream.writeLong(this.adresa);
             hlpOutStream.writeInt(this.ID);
             hlpOutStream.write(writtenECV.getBytes());
@@ -112,5 +115,11 @@ public class SearchZakaznikID implements IData<SearchZakaznikID> {
 
     public void setAdresa(long adresa) {
         this.adresa = adresa;
+    }
+
+    @Override
+    public BitSet getHash() {
+
+        return BitSet.valueOf(new long[]{(Integer.reverse(this.ID))});
     }
 }

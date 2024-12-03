@@ -11,14 +11,18 @@ import java.util.Random;
 public class NahodnyGenerator {
     private ArrayList<String> vygenerovaneStringy;
     private ArrayList<Integer> vygenerovaneInty;
+    private ArrayList<Integer> vygenerovaneID;
     private Random random;
+    private int currentID;
 
 
-    public NahodnyGenerator() {
+    public NahodnyGenerator(int paZaciatokID) {
 
         this.vygenerovaneStringy = new ArrayList<>();
         this.vygenerovaneInty = new ArrayList<>();
+        this.vygenerovaneID = new ArrayList<>();
         this.random = new Random();
+        this.currentID = paZaciatokID;
     }
 
     public int vygenerujUnikatnyInt() {
@@ -26,6 +30,12 @@ public class NahodnyGenerator {
         while (this.vygenerovaneInty.contains(returnInt)) {
             returnInt = this.random.nextInt();
         }
+        return returnInt;
+    }
+
+    public int vygenerujUnikatneID() {
+        int returnInt = this.currentID;
+        this.currentID++;
         return returnInt;
     }
 
@@ -50,6 +60,18 @@ public class NahodnyGenerator {
         }
         return novyString;
 
+    }
+
+    public String vygenerujECV() {
+        String noveECV = vygenerujString(4);
+        while (this.vygenerovaneStringy.contains(noveECV)) {
+            noveECV = vygenerujString(4);
+        }
+        String koniecECV = vygenerujUnikatnyString(6);
+        noveECV += koniecECV;
+
+
+        return noveECV;
     }
 
     public String vygenerujString(int minDlzka, int maxDlzka) {

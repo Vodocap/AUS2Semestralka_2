@@ -21,9 +21,9 @@ public class AppCore {
 
     public AppCore(String mainStorageFilePath, int blockSize) {
         this.heapFileStorage = new HeapFile<Zakaznik>(mainStorageFilePath, blockSize);
-        this.hashFileID = new HashFile("id.bin", blockSize);
-        this.hashFileECV = new HashFile("ecv.bin", blockSize);
-        this.nahodnyGen = new NahodnyGenerator();
+        this.hashFileID = new HashFile("id.bin", 55);
+        this.hashFileECV = new HashFile("ecv.bin", 55);
+        this.nahodnyGen = new NahodnyGenerator(1212341);
         this.random = new Random();
     }
 
@@ -31,13 +31,13 @@ public class AppCore {
     private Object vratSearchZakaznika(Object parameterVyhladania) {
         if (parameterVyhladania instanceof String) {
             SearchZakaznikECV dummyZakaznik = new SearchZakaznikECV((String) parameterVyhladania);
-            dummyZakaznik = (SearchZakaznikECV) this.hashFileECV.get((String)parameterVyhladania, dummyZakaznik.createInstance());
+            dummyZakaznik = this.hashFileECV.get(dummyZakaznik.createInstance());
 
             return dummyZakaznik;
 
         } else {
             SearchZakaznikID dummyZakaznik = new SearchZakaznikID((int) parameterVyhladania);
-            dummyZakaznik = (SearchZakaznikID)this.hashFileID.get((int)parameterVyhladania, dummyZakaznik.createInstance());
+            dummyZakaznik = this.hashFileID.get(dummyZakaznik.createInstance());
 
             return dummyZakaznik;
 
@@ -51,13 +51,13 @@ public class AppCore {
             SearchZakaznikECV dummyZakaznik = (SearchZakaznikECV)this.vratSearchZakaznika(parameterVyhladania);
 
             Zakaznik hladaciZakaznik = new Zakaznik("Hladaci", "Zakaznik", dummyZakaznik.getID(), new Navsteva(Calendar.getInstance(), 10), dummyZakaznik.getECV());
-            return (Zakaznik) this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance();
+            return this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance();
 
         } else {
             SearchZakaznikID dummyZakaznik = (SearchZakaznikID)this.vratSearchZakaznika(parameterVyhladania);
 
             Zakaznik hladaciZakaznik = new Zakaznik("Hladaci", "Zakaznik", dummyZakaznik.getID(), new Navsteva(Calendar.getInstance(), 10), dummyZakaznik.getECV());
-            return (Zakaznik) this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance();
+            return this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance();
 
         }
 
@@ -72,8 +72,8 @@ public class AppCore {
         long pridanaAdresa = this.heapFileStorage.insert(pridavanyZakaznik);
         pridavanyID.setAdresa(pridanaAdresa);
         pridavanyECV.setAdresa(pridanaAdresa);
-        this.hashFileID.insert(pridavanyID, pridavanyID.getID());
-        this.hashFileECV.insert(pridavanyECV, pridavanyECV.getECV());
+        this.hashFileID.insert(pridavanyID);
+        this.hashFileECV.insert(pridavanyECV);
 
     }
 
@@ -86,8 +86,8 @@ public class AppCore {
         long pridanaAdresa = this.heapFileStorage.insert(zakaznik.createInstance());
         pridavanyID.setAdresa(pridanaAdresa);
         pridavanyECV.setAdresa(pridanaAdresa);
-        this.hashFileID.insert(pridavanyID, pridavanyID.getID());
-        this.hashFileECV.insert(pridavanyECV, pridavanyECV.getECV());
+        this.hashFileID.insert(pridavanyID);
+        this.hashFileECV.insert(pridavanyECV);
 
     }
 
@@ -118,19 +118,13 @@ public class AppCore {
 
     }
 
-    public void zmenNavstevu(Zakaznik zakaznik, Navsteva novaNavsteva) {
 
-    }
-
-    public void zmenPracu(String novaPraca) {
-
-    }
 
     public void vygenerujNZakaznikov(int pocetVygenerovanychZakaznikov) {
         for (int i = 0; i < pocetVygenerovanychZakaznikov; i++) {
 
             this.pridajVozidlo(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), this.nahodnyGen.vygenerujUnikatnyString(10));
+                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatneID(), this.nahodnyGen.vygenerujECV());
 
 
         }

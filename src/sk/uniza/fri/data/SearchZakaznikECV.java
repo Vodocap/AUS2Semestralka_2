@@ -1,19 +1,21 @@
 package sk.uniza.fri.data;
 
 import sk.uniza.fri.heapfile.IData;
+import sk.uniza.fri.heapfile.IHash;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.BitSet;
 
 /**
  * 15. 11. 2024 - 13:25
  *
  * @author matus
  */
-public class SearchZakaznikECV implements IData<SearchZakaznikECV> {
+public class SearchZakaznikECV implements IData<SearchZakaznikECV>, IHash {
     private int ID;
     private String ECV;
     private long adresa;
@@ -88,7 +90,7 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV> {
         try {
 
             String writtenECV = this.ECV;
-
+//            System.out.println("ECVL: " + writtenECV.length());
             hlpOutStream.writeLong(this.adresa);
             hlpOutStream.writeInt(this.ID);
             hlpOutStream.write(writtenECV.getBytes());
@@ -123,5 +125,15 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV> {
 
     public void setAdresa(long adresa) {
         this.adresa = adresa;
+    }
+
+    @Override
+    public BitSet getHash() {
+        String substring = this.ECV.substring(0,4);
+        System.out.println(substring.length());
+//        System.out.println(substring.length());
+
+        return BitSet.valueOf(substring.getBytes());
+
     }
 }

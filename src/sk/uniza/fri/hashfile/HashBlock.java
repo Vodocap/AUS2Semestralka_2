@@ -17,9 +17,14 @@ import java.util.ArrayList;
  */
 public class HashBlock<T extends IData<T>> extends Block<T> {
     private int depth;
+    private final int dataSize;
 
     public HashBlock(IData<T> data, long paBlockSize) {
         super((T)data, paBlockSize);
+        this.dataSize = 28;
+        if (this.sizeFactor * data.getSize() + this.dataSize > this.size) {
+            this.sizeFactor -= 1;
+        }
     }
 
     @Override
@@ -46,6 +51,7 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
             byte[] emptyArrray = new byte[(int)(this.getSize() - recordsBytes - 28)];
 
             hlpOutStream.write(emptyArrray);
+//            System.out.println(hlpOutStream.size());
 
 
             return hlpByteArrayOutputStream.toByteArray();
