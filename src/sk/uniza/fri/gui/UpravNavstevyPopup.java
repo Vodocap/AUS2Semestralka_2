@@ -2,14 +2,13 @@ package sk.uniza.fri.gui;
 
 import sk.uniza.fri.aplikacia.AppCore;
 import sk.uniza.fri.data.Navsteva;
-import sk.uniza.fri.data.Zakaznik;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -18,110 +17,91 @@ import java.util.Calendar;
  *
  * @author matus
  */
-public class NavstevaPopup extends JFrame {
-    private JButton pridajNavstevuButton;
-    private JTextField textFieldDen;
-    private JTextField textFieldMesiac;
-    private JTextField textFieldRok;
-    private JTextField textFieldCena;
-    private JButton pridajPracuButton;
-    private JTextField textFieldPrace;
-    private JList list1;
+public class UpravNavstevyPopup extends JFrame {
     private JPanel panel1;
+    private JTextField textFieldRok;
+    private JTextField textFieldMesiac;
+    private JTextField textFieldDen;
+    private JTextField textFieldCena;
+    private JList list1;
+    private JButton upravNavstevuButton;
+    private JButton upravPracuButton;
+    private JTextField textFieldPrace;
     private JButton zrusButton;
-    private AppCore appCore;
+    private JPanel jpanel1;
     private ArrayList<String> prace;
-    private Navsteva vytvorenaNavsteva;
-    private ArrayList navsetvas;
-    private Object parentInstance;
+    private Navsteva upravovanaNavsteva;
+    private MainWindow parentInstance;
+    private AppCore appCore;
 
-    public NavstevaPopup(AppCore appCoreInstance, ArrayList navstevy, Object paParentInstance) {
+    public UpravNavstevyPopup(AppCore appCoreInstance, Navsteva paUpravovanaNavsteva, MainWindow paParentInstance) {
         this.appCore = appCoreInstance;
-        this.prace = new ArrayList<String>();
-        this.navsetvas = navstevy;
         this.parentInstance = paParentInstance;
-//        if (paParentInstance instanceof NavstevaPopup) {
-//            this.parentInstance = (NavstevaPopup) paParentInstance;
-//        } else {
-//            this.parentInstance = (MainWindow) paParentInstance;
-//        }
-
-
+        this.upravovanaNavsteva = paUpravovanaNavsteva;
+        this.prace = this.upravovanaNavsteva.getVykonanePrace();
+        this.textFieldCena.setText(String.valueOf(paUpravovanaNavsteva.getCena()));
+        this.textFieldDen.setText(String.valueOf(paUpravovanaNavsteva.getCalendar().get(Calendar.DAY_OF_MONTH)));
+        this.textFieldMesiac.setText(String.valueOf(paUpravovanaNavsteva.getCalendar().get(Calendar.MONTH)));
+        this.textFieldRok.setText(String.valueOf(paUpravovanaNavsteva.getCalendar().get(Calendar.YEAR)));
+        this.list1.clearSelection();
         this.list1.setListData(this.prace.toArray());
-
-        this.textFieldPrace.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                boolean maxReached = NavstevaPopup.this.textFieldPrace.getText().length() > 20;
-                if (maxReached) {
-                    JOptionPane.showMessageDialog(null, "Limit je 20 znakov");
-                }
-            }
-        });
-
-        this.pridajPracuButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                if (NavstevaPopup.this.prace.size() + 1 > 10) {
-                    JOptionPane.showMessageDialog(null, "Limit je 10 prác");
-                } else {
-                    NavstevaPopup.this.prace.add(NavstevaPopup.this.textFieldPrace.getText());
-                    NavstevaPopup.this.updateList();
-                }
-
-            }
-        });
-
-        this.pridajNavstevuButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Calendar datum = Calendar.getInstance();
-                datum.set(Calendar.DAY_OF_MONTH, Integer.parseInt(NavstevaPopup.this.textFieldDen.getText()));
-                datum.set(Calendar.MONTH, Integer.parseInt(NavstevaPopup.this.textFieldMesiac.getText()));
-                datum.set(Calendar.YEAR, Integer.parseInt(NavstevaPopup.this.textFieldRok.getText()));
-                Navsteva novaNavsteva = new Navsteva(datum, Double.parseDouble(NavstevaPopup.this.textFieldCena.getText()));
-                for (String s : prace) {
-                    novaNavsteva.addPRaca(s);
-                }
-
-
-                if (NavstevaPopup.this.parentInstance instanceof VozidloPopup) {
-                    NavstevaPopup.this.navsetvas.add(novaNavsteva);
-                    ((VozidloPopup) NavstevaPopup.this.parentInstance).updatelist();
-
-                } else {
-                    if (((MainWindow) NavstevaPopup.this.parentInstance).getComboBox1().getSelectedIndex() == 1) {
-                        ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik().addZaznam(novaNavsteva);
-                        NavstevaPopup.this.appCore.zmenVozidlo(Integer.parseInt(((MainWindow) NavstevaPopup.this.parentInstance).getParameterVyhladaniaTextField().getText()),
-                                ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik());
-                    } else {
-                        ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik().addZaznam(novaNavsteva);
-                        NavstevaPopup.this.appCore.zmenVozidlo(((MainWindow) NavstevaPopup.this.parentInstance).getParameterVyhladaniaTextField().getText(),
-                                ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik().createInstance());
-
-                    }
-
-                    ((MainWindow) NavstevaPopup.this.parentInstance).updatelist();
-                }
-
-                NavstevaPopup.this.dispose();
-
-            }
-        });
 
         this.zrusButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                NavstevaPopup.this.dispose();
+                UpravNavstevyPopup.this.dispose();
             }
         });
 
-    }
+        this.upravPracuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UpravNavstevyPopup.this.prace.set(UpravNavstevyPopup.this.list1.getSelectedIndex(), UpravNavstevyPopup.this.textFieldPrace.getText());
+                if (UpravNavstevyPopup.this.parentInstance.getComboBox1().getSelectedIndex() == 1) {
+                    UpravNavstevyPopup.this.appCore.zmenVozidlo(Integer.parseInt(UpravNavstevyPopup.this.parentInstance.getParameterVyhladaniaTextField().getText()),
+                            UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik());
+                } else {
+                    UpravNavstevyPopup.this.appCore.zmenVozidlo(UpravNavstevyPopup.this.parentInstance.getParameterVyhladaniaTextField().getText(),
+                            UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik().createInstance());
+                }
+                UpravNavstevyPopup.this.parentInstance.updateZakaznikText();
+            }
+        });
 
-    public void updateList() {
-        this.list1.clearSelection();
-        this.list1.setListData(this.prace.toArray());
+        this.list1.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                UpravNavstevyPopup.this.textFieldPrace.setText((String) UpravNavstevyPopup.this.list1.getSelectedValue());
+            }
+        });
+
+        this.upravNavstevuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UpravNavstevyPopup.this.upravovanaNavsteva.setCena(Double.parseDouble(UpravNavstevyPopup.this.textFieldCena.getText()));
+                Calendar editedCalendar = Calendar.getInstance();
+                editedCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(UpravNavstevyPopup.this.textFieldDen.getText()));
+                editedCalendar.set(Calendar.MONTH, Integer.parseInt(UpravNavstevyPopup.this.textFieldMesiac.getText()));
+                editedCalendar.set(Calendar.YEAR, Integer.parseInt(UpravNavstevyPopup.this.textFieldRok.getText()));
+                UpravNavstevyPopup.this.upravovanaNavsteva.setCena(Double.parseDouble(UpravNavstevyPopup.this.textFieldCena.getText()));
+                UpravNavstevyPopup.this.upravovanaNavsteva.setCalendar(editedCalendar);
+
+                if (UpravNavstevyPopup.this.parentInstance.getComboBox1().getSelectedIndex() == 1) {
+                    UpravNavstevyPopup.this.appCore.zmenVozidlo(Integer.parseInt(UpravNavstevyPopup.this.parentInstance.getParameterVyhladaniaTextField().getText()),
+                            UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik());
+                } else {
+                    UpravNavstevyPopup.this.appCore.zmenVozidlo(UpravNavstevyPopup.this.parentInstance.getParameterVyhladaniaTextField().getText(),
+                            UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik().createInstance());
+                }
+                UpravNavstevyPopup.this.parentInstance.updateZakaznikText();
+
+            }
+        });
+
+
+
+
+
     }
 
     {
@@ -139,10 +119,16 @@ public class NavstevaPopup extends JFrame {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        jpanel1 = new JPanel();
+        jpanel1.setLayout(new GridBagLayout());
         panel1 = new JPanel();
         panel1.setLayout(new GridBagLayout());
-        textFieldRok = new JTextField();
         GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        jpanel1.add(panel1, gbc);
+        textFieldRok = new JTextField();
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 1;
@@ -210,20 +196,20 @@ public class NavstevaPopup extends JFrame {
         panel1.add(scrollPane1, gbc);
         list1 = new JList();
         scrollPane1.setViewportView(list1);
-        pridajNavstevuButton = new JButton();
-        pridajNavstevuButton.setText("Pridaj návštevu");
+        upravNavstevuButton = new JButton();
+        upravNavstevuButton.setText("Uprav návštevu");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel1.add(pridajNavstevuButton, gbc);
-        pridajPracuButton = new JButton();
-        pridajPracuButton.setText("PridajPracu");
+        panel1.add(upravNavstevuButton, gbc);
+        upravPracuButton = new JButton();
+        upravPracuButton.setText("Uprav prácu");
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 6;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel1.add(pridajPracuButton, gbc);
+        panel1.add(upravPracuButton, gbc);
         textFieldPrace = new JTextField();
         textFieldPrace.setText("");
         gbc = new GridBagConstraints();
@@ -233,7 +219,7 @@ public class NavstevaPopup extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel1.add(textFieldPrace, gbc);
         final JLabel label5 = new JLabel();
-        label5.setText("TextPrace");
+        label5.setText("Novy text prace");
         gbc = new GridBagConstraints();
         gbc.gridx = 2;
         gbc.gridy = 4;
@@ -252,7 +238,6 @@ public class NavstevaPopup extends JFrame {
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
-        return panel1;
+        return jpanel1;
     }
-
 }

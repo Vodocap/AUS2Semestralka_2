@@ -66,11 +66,13 @@ public class MainWindow extends JFrame {
                     MainWindow.this.zakaznikTextArea.setText(zakaznik.toString());
                     MainWindow.this.list1.clearSelection();
                     MainWindow.this.list1.setListData(zakaznik.getZaznamyONasvsteve().toArray());
+                    MainWindow.this.currentZakaznik = zakaznik;
                 } else {
                     Zakaznik zakaznik = MainWindow.this.appCore.vyhladajUdajeOVozidle(MainWindow.this.parameterVyhladaniaTextField.getText());
                     MainWindow.this.zakaznikTextArea.setText(zakaznik.toString());
                     MainWindow.this.list1.clearSelection();
                     MainWindow.this.list1.setListData(zakaznik.getZaznamyONasvsteve().toArray());
+                    MainWindow.this.currentZakaznik = zakaznik;
                 }
 
 
@@ -110,15 +112,15 @@ public class MainWindow extends JFrame {
             }
         });
 
-        this.list1.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                MainWindow.this.jList2.clearSelection();
-                Navsteva navsteva = (Navsteva) MainWindow.this.list1.getSelectedValue();
-                MainWindow.this.jList2.setListData(navsteva.getVykonanePrace().toArray());
-
-            }
-        });
+//        this.list1.addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent e) {
+//                MainWindow.this.jList2.clearSelection();
+//                Navsteva navsteva = (Navsteva) MainWindow.this.list1.getSelectedValue();
+//                MainWindow.this.jList2.setListData(navsteva.getVykonanePrace().toArray());
+//
+//            }
+//        });
 
         this.pridajAutoButton.addActionListener(new ActionListener() {
             @Override
@@ -136,6 +138,17 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainWindow.this.dispose();
+            }
+        });
+
+        this.upravAktualneVozidloButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UpravVozidloPopup upravVozidloPopup = new UpravVozidloPopup(MainWindow.this.appCore, MainWindow.this);
+                upravVozidloPopup.setSize(1000, 800);
+                upravVozidloPopup.setContentPane(upravVozidloPopup.$$$getRootComponent$$$());
+                upravVozidloPopup.pack();
+                upravVozidloPopup.setVisible(true);
             }
         });
     }
@@ -159,6 +172,25 @@ public class MainWindow extends JFrame {
 
     public JComboBox getComboBox1() {
         return this.comboBox1;
+    }
+
+    public void updateZakaznikText() {
+        if (MainWindow.this.comboBox1.getSelectedIndex() == 1) {
+            Zakaznik zakaznik = MainWindow.this.appCore.vyhladajUdajeOVozidle(Integer.parseInt(MainWindow.this.parameterVyhladaniaTextField.getText()));
+            MainWindow.this.zakaznikTextArea.setText(zakaznik.toString());
+            MainWindow.this.list1.clearSelection();
+            MainWindow.this.navstevy = zakaznik.getZaznamyONasvsteve();
+            MainWindow.this.list1.setListData(MainWindow.this.navstevy.toArray());
+
+
+        } else {
+            Zakaznik zakaznik = MainWindow.this.appCore.vyhladajUdajeOVozidle(MainWindow.this.parameterVyhladaniaTextField.getText());
+            MainWindow.this.zakaznikTextArea.setText(zakaznik.toString());
+            MainWindow.this.list1.clearSelection();
+            MainWindow.this.list1.setListData(zakaznik.getZaznamyONasvsteve().toArray());
+            MainWindow.this.navstevy = zakaznik.getZaznamyONasvsteve();
+            MainWindow.this.list1.setListData(MainWindow.this.navstevy.toArray());
+        }
     }
 
     {
