@@ -101,9 +101,21 @@ public class AppCore {
     }
 
     public void zmenVozidlo(Object parameterVyhladania, Zakaznik noveVozidlo) {
+
         Zakaznik zmeneneVozidlo = this.vyhladajUdajeOVozidle(parameterVyhladania);
-        SearchZakaznikECV searchZakaznikECV = (SearchZakaznikECV) this.vratSearchZakaznika(parameterVyhladania);
-        this.heapFileStorage.update(searchZakaznikECV.getAdresa(), zmeneneVozidlo.createInstance(), noveVozidlo.createInstance());
+        if (parameterVyhladania instanceof String) {
+            SearchZakaznikECV dummyZakaznik = new SearchZakaznikECV((String) parameterVyhladania);
+
+            this.heapFileStorage.update(dummyZakaznik.getAdresa(), zmeneneVozidlo.createInstance(), noveVozidlo.createInstance());
+
+        } else {
+            SearchZakaznikID dummyZakaznik = new SearchZakaznikID((int) parameterVyhladania);
+
+            this.heapFileStorage.update(dummyZakaznik.getAdresa(), zmeneneVozidlo.createInstance(), noveVozidlo.createInstance());
+
+
+        }
+
     }
 
     public void zmenNavstevu(Zakaznik zakaznik, Navsteva novaNavsteva) {

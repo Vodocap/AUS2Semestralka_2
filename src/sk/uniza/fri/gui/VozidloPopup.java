@@ -38,7 +38,7 @@ public class VozidloPopup extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Navsteva dummyNavsteva = new Navsteva(Calendar.getInstance(), 10);
                 Zakaznik pridavanyZakaznik = new Zakaznik(VozidloPopup.this.menoTextField.getText(), VozidloPopup.this.priezviskoTextField.getText(),
-                        Integer.valueOf(VozidloPopup.this.IDTextField.getText().charAt(0)), dummyNavsteva.createInstance(), VozidloPopup.this.ECVTextField.getText());
+                        Integer.parseInt(VozidloPopup.this.IDTextField.getText()), dummyNavsteva.createInstance(), VozidloPopup.this.ECVTextField.getText());
 
 
                 for (Navsteva navsteva : VozidloPopup.this.navstevas) {
@@ -46,6 +46,7 @@ public class VozidloPopup extends JFrame {
                 }
 
                 VozidloPopup.this.appCore.pridajVozidlo(pridavanyZakaznik.createInstance());
+                VozidloPopup.this.dispose();
 
             }
         });
@@ -98,8 +99,9 @@ public class VozidloPopup extends JFrame {
         jpanel1 = new JPanel();
         jpanel1.setLayout(new GridBagLayout());
         jpanel1.setMinimumSize(new Dimension(400, 400));
-        jpanel1.setPreferredSize(new Dimension(400, 400));
+        jpanel1.setPreferredSize(new Dimension(600, 600));
         menoTextField = new JTextField();
+        menoTextField.setPreferredSize(new Dimension(100, 30));
         GridBagConstraints gbc;
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -108,6 +110,7 @@ public class VozidloPopup extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         jpanel1.add(menoTextField, gbc);
         priezviskoTextField = new JTextField();
+        priezviskoTextField.setPreferredSize(new Dimension(100, 30));
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -143,6 +146,7 @@ public class VozidloPopup extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         jpanel1.add(label3, gbc);
         IDTextField = new JTextField();
+        IDTextField.setPreferredSize(new Dimension(100, 30));
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -150,6 +154,8 @@ public class VozidloPopup extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         jpanel1.add(IDTextField, gbc);
         ECVTextField = new JTextField();
+        ECVTextField.setPreferredSize(new Dimension(100, 30));
+        ECVTextField.setText("");
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 3;

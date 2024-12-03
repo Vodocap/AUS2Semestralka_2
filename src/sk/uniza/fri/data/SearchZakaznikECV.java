@@ -88,6 +88,7 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV> {
         try {
 
             String writtenECV = this.ECV;
+
             hlpOutStream.writeLong(this.adresa);
             hlpOutStream.writeInt(this.ID);
             hlpOutStream.write(writtenECV.getBytes());

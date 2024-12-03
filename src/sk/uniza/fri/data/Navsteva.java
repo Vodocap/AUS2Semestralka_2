@@ -195,8 +195,8 @@ public class Navsteva implements IData<Navsteva> {
     @Override
     public String toString() {
         return "Navsteva{" +
-                "calendar=" + calendar +
-                ", cena=" + cena +
+                "datum=" + this.calendar.get(Calendar.DAY_OF_MONTH) + " - " + this.calendar.get(Calendar.MONTH) + " - " + this.calendar.get(Calendar.YEAR) +
+                " , cena=" + cena +
                 ", vykonanePrace=" + vykonanePrace +
                 ", pocetPlatnychPrac=" + pocetPlatnychPrac +
                 '}';

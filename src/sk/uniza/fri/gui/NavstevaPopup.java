@@ -39,11 +39,12 @@ public class NavstevaPopup extends JFrame {
         this.appCore = appCoreInstance;
         this.prace = new ArrayList<String>();
         this.navsetvas = navstevy;
-        if (paParentInstance instanceof NavstevaPopup) {
-            this.parentInstance = (NavstevaPopup) paParentInstance;
-        } else {
-            this.parentInstance = (MainWindow) paParentInstance;
-        }
+        this.parentInstance = paParentInstance;
+//        if (paParentInstance instanceof NavstevaPopup) {
+//            this.parentInstance = (NavstevaPopup) paParentInstance;
+//        } else {
+//            this.parentInstance = (MainWindow) paParentInstance;
+//        }
 
 
         this.list1.setListData(this.prace.toArray());
@@ -84,18 +85,21 @@ public class NavstevaPopup extends JFrame {
                     novaNavsteva.addPRaca(s);
                 }
 
-                NavstevaPopup.this.navsetvas.add(novaNavsteva);
 
                 if (NavstevaPopup.this.parentInstance instanceof VozidloPopup) {
+                    NavstevaPopup.this.navsetvas.add(novaNavsteva);
                     ((VozidloPopup) NavstevaPopup.this.parentInstance).updatelist();
+
                 } else {
                     if (((MainWindow) NavstevaPopup.this.parentInstance).getComboBox1().getSelectedIndex() == 1) {
                         ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik().addZaznam(novaNavsteva);
                         NavstevaPopup.this.appCore.zmenVozidlo(Integer.parseInt(((MainWindow) NavstevaPopup.this.parentInstance).getParameterVyhladaniaTextField().getText()),
                                 ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik());
                     } else {
+                        ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik().addZaznam(novaNavsteva);
                         NavstevaPopup.this.appCore.zmenVozidlo(((MainWindow) NavstevaPopup.this.parentInstance).getParameterVyhladaniaTextField().getText(),
                                 ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik());
+
                     }
 
                     ((MainWindow) NavstevaPopup.this.parentInstance).updatelist();

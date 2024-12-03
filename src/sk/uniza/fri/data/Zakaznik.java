@@ -228,13 +228,12 @@ public class Zakaznik implements IData<Zakaznik> {
     @Override
     public String toString() {
         return "Zakaznik{" +
-                "meno='" + meno + '\'' +
-                ", priezvisko='" + priezvisko + '\'' +
-                ", ECV='" + ECV + '\'' +
-                ", ID=" + ID +
-                ", zaznamyONasvsteve=" + zaznamyONasvsteve +
-                ", pocetPlatnychNavstev=" + pocetPlatnychNavstev +
-                ", size=" + size +
+                "meno='" + meno + '\n' +
+                ", priezvisko='" + priezvisko + '\n' +
+                ", ECV='" + ECV + '\n' +
+                ", ID=" + ID + '\n' +
+                ", zaznamyONasvsteve=" + zaznamyONasvsteve + '\n' +
+                ", pocetPlatnychNavstev=" + pocetPlatnychNavstev + '\n' +
                 '}';
     }
 

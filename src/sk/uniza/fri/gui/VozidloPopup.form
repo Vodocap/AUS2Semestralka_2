@@ -6,7 +6,7 @@
     </constraints>
     <properties>
       <minimumSize width="400" height="400"/>
-      <preferredSize width="400" height="400"/>
+      <preferredSize width="600" height="600"/>
     </properties>
     <border type="none"/>
     <children>
@@ -17,7 +17,9 @@
           </grid>
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
-        <properties/>
+        <properties>
+          <preferredSize width="100" height="30"/>
+        </properties>
       </component>
       <component id="5be00" class="javax.swing.JTextField" binding="priezviskoTextField">
         <constraints>
@@ -26,7 +28,9 @@
           </grid>
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
-        <properties/>
+        <properties>
+          <preferredSize width="100" height="30"/>
+        </properties>
       </component>
       <component id="b70e5" class="javax.swing.JButton" binding="pridajVozidloButton" default-binding="true">
         <constraints>
@@ -71,7 +75,9 @@
           </grid>
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
-        <properties/>
+        <properties>
+          <preferredSize width="100" height="30"/>
+        </properties>
       </component>
       <component id="76962" class="javax.swing.JTextField" binding="ECVTextField">
         <constraints>
@@ -80,7 +86,10 @@
           </grid>
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
-        <properties/>
+        <properties>
+          <preferredSize width="100" height="30"/>
+          <text value=""/>
+        </properties>
       </component>
       <component id="674cc" class="javax.swing.JLabel">
         <constraints>

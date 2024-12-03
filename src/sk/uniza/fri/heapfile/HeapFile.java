@@ -421,6 +421,7 @@ public class HeapFile<T extends IData> {
             Block foundBlock = this.makeBlockInstance(oldData);
             foundBlock.removeData(oldData);
             foundBlock.insertData(newData);
+            this.randomAccessFileWriter.seek(paAddress);
             this.randomAccessFileWriter.write(foundBlock.toByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e);
