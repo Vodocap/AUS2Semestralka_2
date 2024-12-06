@@ -30,7 +30,7 @@ public class GeneratorOperaci {
         this.hashFile = new HashFile<>("hsh.bin", 100);
         this.kontrolneData = new HashMap<>();
         this.random = new Random();
-        this.nahodnyGen = new NahodnyGenerator(1212121212);
+        this.nahodnyGen = new NahodnyGenerator(12100);
         this.kontrolneHash = new ArrayList();
     }
 

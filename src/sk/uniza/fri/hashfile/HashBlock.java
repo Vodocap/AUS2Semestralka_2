@@ -21,7 +21,7 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
 
     public HashBlock(IData<T> data, long paBlockSize) {
         super((T)data, paBlockSize);
-        this.dataSize = 28;
+        this.dataSize = 20;
         if (this.sizeFactor * data.getSize() + this.dataSize > this.size) {
             this.sizeFactor -= 1;
         }
@@ -36,7 +36,6 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
 
             hlpOutStream.writeLong(this.blockStart);
             hlpOutStream.writeLong(this.validCount);
-            hlpOutStream.writeLong(this.size);
             hlpOutStream.writeInt(this.depth);
 
 
@@ -48,7 +47,7 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
 
 
 
-            byte[] emptyArrray = new byte[(int)(this.getSize() - recordsBytes - 28)];
+            byte[] emptyArrray = new byte[(int)(this.getSize() - recordsBytes - this.dataSize)];
 
             hlpOutStream.write(emptyArrray);
 //            System.out.println(hlpOutStream.size());
@@ -71,7 +70,6 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
 
             this.blockStart = hlpInStream.readLong();
             this.validCount = hlpInStream.readLong();
-            this.size = hlpInStream.readLong();
             this.depth = hlpInStream.readInt();
 
             for (int i = 0; i < this.validCount; i++) {

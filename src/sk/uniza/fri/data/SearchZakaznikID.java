@@ -120,6 +120,7 @@ public class SearchZakaznikID implements IData<SearchZakaznikID>, IHash {
     @Override
     public BitSet getHash() {
 
-        return BitSet.valueOf(new long[]{(Integer.reverse(this.ID))});
+        return BitSet.valueOf(new long[]{(this.ID)});
+
     }
 }

@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 
 /**
@@ -133,7 +134,7 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV>, IHash {
         System.out.println(substring.length());
 //        System.out.println(substring.length());
 
-        return BitSet.valueOf(substring.getBytes());
+        return BitSet.valueOf(substring.getBytes(StandardCharsets.UTF_8));
 
     }
 }

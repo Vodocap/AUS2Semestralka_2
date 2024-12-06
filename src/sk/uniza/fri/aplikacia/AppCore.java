@@ -21,9 +21,9 @@ public class AppCore {
 
     public AppCore(String mainStorageFilePath, int blockSize) {
         this.heapFileStorage = new HeapFile<Zakaznik>(mainStorageFilePath, blockSize);
-        this.hashFileID = new HashFile("id.bin", 55);
-        this.hashFileECV = new HashFile("ecv.bin", 55);
-        this.nahodnyGen = new NahodnyGenerator(1212341);
+        this.hashFileID = new HashFile("id.bin", 100);
+        this.hashFileECV = new HashFile("ecv.bin", 100);
+        this.nahodnyGen = new NahodnyGenerator(2854);
         this.random = new Random();
     }
 
