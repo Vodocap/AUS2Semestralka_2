@@ -27,10 +27,10 @@ public class GeneratorOperaci {
     private NahodnyGenerator nahodnyGen;
     public GeneratorOperaci(String cestakSuboru, int velkostBlokov) {
         this.heapFile = new HeapFile<>(cestakSuboru, velkostBlokov);
-        this.hashFile = new HashFile<>("hsh.bin", 100);
+        this.hashFile = new HashFile<>("hsh.bin", 70);
         this.kontrolneData = new HashMap<>();
         this.random = new Random();
-        this.nahodnyGen = new NahodnyGenerator(12100);
+        this.nahodnyGen = new NahodnyGenerator(511302);
         this.kontrolneHash = new ArrayList();
     }
 

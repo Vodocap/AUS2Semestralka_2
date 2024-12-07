@@ -23,6 +23,7 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     private long blockSize;
     private int depth;
     private long[] addreses;
+    private static int HASH_OFFSET = 7;
 
 
     public HashFile(String paFilePath, int paBlockSize) {
@@ -44,16 +45,17 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     public int calculateHash(T paData ,int hashDepth) {
 
         System.out.println(paData.getHash().toString());
+
         BitSet bitSet = this.reverseBitset(paData.getHash());
+
         System.out.println(bitSet.toString());
 
         int resultHash = 0;
 
-        for (int i = 0; i < hashDepth; i++) {
+        for (int i = HASH_OFFSET; i < hashDepth + HASH_OFFSET ; i++) {
             if (bitSet.get(i)) {
-                resultHash |= (1 << i);
+                resultHash += Math.pow(2, hashDepth - i + HASH_OFFSET - 1);
             }
-            System.out.println(resultHash);
 
         }
 
@@ -92,12 +94,14 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
 
     BitSet reverseBitset(BitSet bitSetToReverse) {
-        BitSet revertedBitset = new BitSet(bitSetToReverse.length());
+        BitSet revertedBitset = new BitSet(32);
 
 
-        for (int i = 0; i < bitSetToReverse.length(); i++) {
+        for (int i = 0; i < 32; i++) {
             if (bitSetToReverse.get(i)) {
-                revertedBitset.set(bitSetToReverse.length() - i - 1);
+
+                revertedBitset.set(32 - i - 1);
+
             }
         }
 
@@ -280,16 +284,17 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
                     System.out.println("Hash " + resultHash);
                     System.out.println("Adresa na insert " + this.addreses[resultHash]);
-                    System.out.println(Arrays.toString(this.addreses));
+
                     HashBlock blockInstance = this.makeBlockInstance(paData);
 
                     if (blockInstance.isFull()) {
                         if (blockInstance.getDepth() == this.depth) {
                             this.doubleAddressSpace();
                             resultHash = this.calculateHash(paData, this.depth);
+                            System.out.println("Nova hlpka: " + this.depth);
                             System.out.println("Hash " + resultHash);
                         }
-                        System.out.println(Arrays.toString(this.addreses));
+
                         this.splitBlock(blockInstance, resultHash);
 
                     } else {
