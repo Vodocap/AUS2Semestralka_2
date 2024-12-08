@@ -20,7 +20,7 @@ public class Main {
 
         GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 6000);
 //        generatorOperaci.generujOperacieHeapFile(10000);
-        generatorOperaci.generujOperacieHash(1000);
+        generatorOperaci.generujOperacieHash(1000, false);
 
 
 //        HashFile hashFile = new HashFile("hsh.bin", 8000);

@@ -59,7 +59,7 @@ public class SearchZakaznikID implements IData<SearchZakaznikID>, IHash {
 
     @Override
     public String toString() {
-        return "SearchZakaznikECV{" +
+        return "SearchZakaznikID{" +
                 "ID=" + ID +
                 ", ECV='" + ECV + '\'' +
                 ", adresa=" + adresa +

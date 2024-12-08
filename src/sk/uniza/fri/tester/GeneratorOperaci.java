@@ -22,7 +22,8 @@ public class GeneratorOperaci {
     private HeapFile heapFile;
     private HashFile hashFile;
     private HashMap<Zakaznik, Long> kontrolneData;
-    private ArrayList<SearchZakaznikID> kontrolneHash;
+    private ArrayList<SearchZakaznikID> kontrolneHashID;
+    private ArrayList<SearchZakaznikECV> kontrolneHashECV;
     private Random random;
     private NahodnyGenerator nahodnyGen;
     public GeneratorOperaci(String cestakSuboru, int velkostBlokov) {
@@ -30,8 +31,9 @@ public class GeneratorOperaci {
         this.hashFile = new HashFile<>("hsh.bin", 70);
         this.kontrolneData = new HashMap<>();
         this.random = new Random();
-        this.nahodnyGen = new NahodnyGenerator(511302);
-        this.kontrolneHash = new ArrayList();
+        this.nahodnyGen = new NahodnyGenerator(262223);
+        this.kontrolneHashID = new ArrayList();
+        this.kontrolneHashECV = new ArrayList();
     }
 
     public void generujOperacieHeapFile(int pocetOperacii) {
@@ -153,27 +155,43 @@ public class GeneratorOperaci {
 
     }
 
-    private void skontrolujHashFile() {
+    private void skontrolujHashFile(boolean iDOrECV) {
 
         int hladane = 0;
         int najdene = 0;
 
-        for (SearchZakaznikID zakaznik : this.kontrolneHash) {
-            System.out.println("Hladana osoba " + zakaznik.toString());
-            if (zakaznik.myEquals((SearchZakaznikID) this.hashFile.get(zakaznik))) {
-                najdene++;
+        if (iDOrECV) {
+            for (SearchZakaznikID zakaznik : this.kontrolneHashID) {
+                System.out.println("Hladana osoba " + zakaznik.toString());
+                if (zakaznik.myEquals((SearchZakaznikID) this.hashFile.get(zakaznik))) {
+                    najdene++;
+                }
+                hladane++;
             }
-            hladane++;
+            System.out.println("Najdene: " + najdene + " hladane: " + hladane);
+            if (hladane != najdene) {
+                throw new RuntimeException("Nenaslo sa co sa malo");
+            }
+        } else {
+            for (SearchZakaznikECV zakaznik : this.kontrolneHashECV) {
+                System.out.println("Hladana osoba " + zakaznik.toString());
+                if (zakaznik.myEquals((SearchZakaznikECV) this.hashFile.get(zakaznik))) {
+                    najdene++;
+                }
+                hladane++;
+            }
+            System.out.println("Najdene: " + najdene + " hladane: " + hladane);
+            if (hladane != najdene) {
+                throw new RuntimeException("Nenaslo sa co sa malo");
+            }
         }
-        System.out.println("Najdene: " + najdene + " hladane: " + hladane);
-        if (hladane != najdene) {
-            throw new RuntimeException("Nenaslo sa co sa malo");
-        }
+
+
 
     }
 
 
-    public void generujOperacieHash(int pocetOperacii) {
+    public void generujOperacieHash(int pocetOperacii, boolean iDOrECV) {
 //        for (int i = 0; i < 1000; i++) {
 //            Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
 //                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatneID(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujECV());
@@ -183,47 +201,94 @@ public class GeneratorOperaci {
 //        }
 
 
-        for (int i = 0; i < pocetOperacii; i++) {
+        if (iDOrECV) {
+            for (int i = 0; i < pocetOperacii; i++) {
 
-            double generovanaHodnota = this.random.nextDouble();
+                double generovanaHodnota = this.random.nextDouble();
 
-            if (generovanaHodnota < 0.50) {
+                if (generovanaHodnota < 0.50) {
 
 
 
-                SearchZakaznikID searchZakaznikID = new SearchZakaznikID(this.nahodnyGen.vygenerujUnikatneID());
-                searchZakaznikID.setECV(this.nahodnyGen.vygenerujECV());
-                this.hashFile.insert(searchZakaznikID);
-                System.out.println("INSERT: " + searchZakaznikID);
-                this.kontrolneHash.add(searchZakaznikID);
+                    SearchZakaznikID searchZakaznikID = new SearchZakaznikID(this.nahodnyGen.vygenerujUnikatneID());
+                    searchZakaznikID.setECV(this.nahodnyGen.vygenerujECV());
+                    this.hashFile.insert(searchZakaznikID);
+                    System.out.println("INSERT: " + searchZakaznikID);
+                    this.kontrolneHashID.add(searchZakaznikID);
 
 //                this.vypisheapFile();
 
 
-            } else if (generovanaHodnota > 0.50) {
-                if (!this.kontrolneHash.isEmpty()) {
-                    int hladanyIndex = this.random.nextInt(this.kontrolneHash.size());
-                    SearchZakaznikID hladanyZakaznik = this.kontrolneHash.get(hladanyIndex);
+                } else if (generovanaHodnota > 0.50) {
+                    if (!this.kontrolneHashID.isEmpty()) {
+                        int hladanyIndex = this.random.nextInt(this.kontrolneHashID.size());
+                        SearchZakaznikID hladanyZakaznik = this.kontrolneHashID.get(hladanyIndex);
 //                    this.vypisheapFile();
-                    System.out.println("Hladana osoba" + hladanyZakaznik.toString());
-                    SearchZakaznikID najdenyZakaznik = (SearchZakaznikID) this.hashFile.get(hladanyZakaznik);
-                    System.out.println("Najdena osoba: " + najdenyZakaznik.toString());
-                    if (!najdenyZakaznik.myEquals(hladanyZakaznik)) {
-                        try {
-                            throw new Exception ("Nenasla sa osoba co sa mala");
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
+                        System.out.println("Hladana osoba" + hladanyZakaznik.toString());
+                        SearchZakaznikID najdenyZakaznik = (SearchZakaznikID) this.hashFile.get(hladanyZakaznik);
+                        System.out.println("Najdena osoba: " + najdenyZakaznik.toString());
+                        if (!najdenyZakaznik.myEquals(hladanyZakaznik)) {
+                            try {
+                                throw new Exception ("Nenasla sa osoba co sa mala");
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
+
                 }
+
 
             }
 
+            this.hashFile.printBlocks(new SearchZakaznikID(10));
+            this.skontrolujHashFile(iDOrECV);
 
+        } else {
+            for (int i = 0; i < pocetOperacii; i++) {
+
+                double generovanaHodnota = this.random.nextDouble();
+
+                if (generovanaHodnota < 0.50) {
+
+
+
+                    SearchZakaznikECV searchZakaznikECV = new SearchZakaznikECV(this.nahodnyGen.vygenerujECV());
+                    searchZakaznikECV.setID(this.nahodnyGen.vygenerujUnikatneID());
+                    this.hashFile.insert(searchZakaznikECV);
+                    System.out.println("INSERT: " + searchZakaznikECV);
+                    this.kontrolneHashECV.add(searchZakaznikECV);
+
+//                this.vypisheapFile();
+
+
+                } else if (generovanaHodnota > 0.50) {
+                    if (!this.kontrolneHashECV.isEmpty()) {
+                        int hladanyIndex = this.random.nextInt(this.kontrolneHashECV.size());
+                        SearchZakaznikECV hladanyZakaznik = this.kontrolneHashECV.get(hladanyIndex);
+//                    this.vypisheapFile();
+                        System.out.println("Hladana osoba" + hladanyZakaznik.toString());
+                        SearchZakaznikECV najdenyZakaznik = (SearchZakaznikECV) this.hashFile.get(hladanyZakaznik);
+                        System.out.println("Najdena osoba: " + najdenyZakaznik.toString());
+                        if (!najdenyZakaznik.myEquals(hladanyZakaznik)) {
+                            try {
+                                throw new Exception ("Nenasla sa osoba co sa mala");
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+
+                }
+
+
+            }
+
+            this.hashFile.printBlocks(new SearchZakaznikECV("bigchungus"));
+            this.skontrolujHashFile(iDOrECV);
         }
 
-        this.hashFile.printBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(Calendar.getInstance(), 10), "ASDADSD"));
-        this.skontrolujHashFile();
+
 //        this.heapFile.closeHeapFile("");
 
     }
