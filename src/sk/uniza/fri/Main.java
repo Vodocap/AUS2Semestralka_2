@@ -21,9 +21,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 6000);
-////        generatorOperaci.generujOperacieHeapFile(10000);
-//        generatorOperaci.generujOperacieHash(5000, false);
+        GeneratorOperaci generatorOperaci = new GeneratorOperaci("sub.bin", 6000);
+//        generatorOperaci.generujOperacieHeapFile(10000);
+        generatorOperaci.generujOperacieHash(5000, false);
 
 
 //        HashFile hashFile = new HashFile("hsh.bin", 8000);
@@ -43,11 +43,11 @@ public class Main {
 //        hashFile.closeHashFile();
 
 
-        LocalDate localDate = LocalDate.now();
-
-        System.out.println(localDate);
-        System.out.println(localDate.getLong(ChronoField.EPOCH_DAY));
-        System.out.println(LocalDate.ofEpochDay(localDate.getLong(ChronoField.EPOCH_DAY)));
+//        LocalDate localDate = LocalDate.now();
+//
+//        System.out.println(localDate);
+//        System.out.println(localDate.getLong(ChronoField.EPOCH_DAY));
+//        System.out.println(LocalDate.ofEpochDay(localDate.getLong(ChronoField.EPOCH_DAY)));
 
         
     }

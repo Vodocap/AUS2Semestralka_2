@@ -50,15 +50,6 @@ public class NavstevaPopup extends JFrame {
 
         this.list1.setListData(this.prace.toArray());
 
-//        this.textFieldPrace.addPropertyChangeListener(new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                boolean maxReached = NavstevaPopup.this.textFieldPrace.getText().length() > 20;
-//                if (maxReached) {
-//                    JOptionPane.showMessageDialog(null, "Limit je 20 znakov");
-//                }
-//            }
-//        });
 
         this.pridajPracuButton.addActionListener(new ActionListener() {
             @Override
@@ -90,6 +81,7 @@ public class NavstevaPopup extends JFrame {
 
                 } else {
                     if (((MainWindow) NavstevaPopup.this.parentInstance).getComboBox1().getSelectedIndex() == 1) {
+
                         ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik().addZaznam(novaNavsteva);
                         NavstevaPopup.this.appCore.zmenVozidlo(Integer.parseInt(((MainWindow) NavstevaPopup.this.parentInstance).getParameterVyhladaniaTextField().getText()),
                                 ((MainWindow) NavstevaPopup.this.parentInstance).getCurrentZakaznik());

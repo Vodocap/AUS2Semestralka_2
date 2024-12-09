@@ -58,12 +58,13 @@ public class UpravNavstevyPopup extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 UpravNavstevyPopup.this.prace.set(UpravNavstevyPopup.this.list1.getSelectedIndex(), UpravNavstevyPopup.this.textFieldPrace.getText());
+
                 if (UpravNavstevyPopup.this.parentInstance.getComboBox1().getSelectedIndex() == 1) {
                     UpravNavstevyPopup.this.appCore.zmenVozidlo(Integer.parseInt(UpravNavstevyPopup.this.parentInstance.getParameterVyhladaniaTextField().getText()),
                             UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik());
                 } else {
                     UpravNavstevyPopup.this.appCore.zmenVozidlo(UpravNavstevyPopup.this.parentInstance.getParameterVyhladaniaTextField().getText(),
-                            UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik().createInstance());
+                            UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik());
                 }
                 UpravNavstevyPopup.this.parentInstance.updateZakaznikText();
             }
@@ -80,7 +81,6 @@ public class UpravNavstevyPopup extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 UpravNavstevyPopup.this.upravovanaNavsteva.setCena(Double.parseDouble(UpravNavstevyPopup.this.textFieldCena.getText()));
-                Calendar editedCalendar = Calendar.getInstance();
                 LocalDate upravenyDatum = LocalDate.of(Integer.parseInt(UpravNavstevyPopup.this.textFieldRok.getText()),
                         Integer.parseInt(UpravNavstevyPopup.this.textFieldMesiac.getText()),
                         Integer.parseInt(UpravNavstevyPopup.this.textFieldDen.getText()));
@@ -93,7 +93,7 @@ public class UpravNavstevyPopup extends JFrame {
                             UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik());
                 } else {
                     UpravNavstevyPopup.this.appCore.zmenVozidlo(UpravNavstevyPopup.this.parentInstance.getParameterVyhladaniaTextField().getText(),
-                            UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik().createInstance());
+                            UpravNavstevyPopup.this.parentInstance.getCurrentZakaznik());
                 }
                 UpravNavstevyPopup.this.parentInstance.updateZakaznikText();
 

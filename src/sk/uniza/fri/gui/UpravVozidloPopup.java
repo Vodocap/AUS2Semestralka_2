@@ -50,11 +50,12 @@ public class UpravVozidloPopup extends JFrame {
                 UpravVozidloPopup.this.parentInstance.getCurrentZakaznik().setPriezvisko(UpravVozidloPopup.this.priezviskoTextField.getText());
 
                 if (UpravVozidloPopup.this.parentInstance.getComboBox1().getSelectedIndex() == 1) {
+
                     UpravVozidloPopup.this.appCore.zmenVozidlo(Integer.parseInt(UpravVozidloPopup.this.parentInstance.getParameterVyhladaniaTextField().getText()),
                             UpravVozidloPopup.this.parentInstance.getCurrentZakaznik());
                 } else {
                     UpravVozidloPopup.this.appCore.zmenVozidlo(UpravVozidloPopup.this.parentInstance.getParameterVyhladaniaTextField().getText(),
-                            UpravVozidloPopup.this.parentInstance.getCurrentZakaznik().createInstance());
+                            UpravVozidloPopup.this.parentInstance.getCurrentZakaznik());
                 }
 
                 UpravVozidloPopup.this.parentInstance.updateZakaznikText();

@@ -57,13 +57,18 @@ public class AppCore {
             SearchZakaznikECV dummyZakaznik = (SearchZakaznikECV)this.vratSearchZakaznika(parameterVyhladania);
 
             Zakaznik hladaciZakaznik = new Zakaznik("Hladaci", "Zakaznik", dummyZakaznik.getID(), new Navsteva(LocalDate.now(), 10), dummyZakaznik.getECV());
+            System.out.println(hladaciZakaznik);
+            System.out.println(this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance());
             return this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance();
 
         } else {
             SearchZakaznikID dummyZakaznik = (SearchZakaznikID)this.vratSearchZakaznika(parameterVyhladania);
 
             Zakaznik hladaciZakaznik = new Zakaznik("Hladaci", "Zakaznik", dummyZakaznik.getID(), new Navsteva(LocalDate.now(), 10), dummyZakaznik.getECV());
+            System.out.println(hladaciZakaznik);
+            System.out.println(this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance());
             return this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance();
+
 
         }
 
@@ -112,13 +117,17 @@ public class AppCore {
         Zakaznik zmeneneVozidlo = this.vyhladajUdajeOVozidle(parameterVyhladania);
         if (parameterVyhladania instanceof String) {
             SearchZakaznikECV dummyZakaznik = new SearchZakaznikECV((String) parameterVyhladania);
-
-            this.heapFileStorage.update(dummyZakaznik.getAdresa(), zmeneneVozidlo.createInstance(), noveVozidlo.createInstance());
+            dummyZakaznik = this.hashFileECV.get(dummyZakaznik);
+            System.out.println(zmeneneVozidlo);
+            System.out.println(noveVozidlo);
+            this.heapFileStorage.update(dummyZakaznik.getAdresa(), zmeneneVozidlo, noveVozidlo.createInstance());
 
         } else {
             SearchZakaznikID dummyZakaznik = new SearchZakaznikID((int) parameterVyhladania);
-
-            this.heapFileStorage.update(dummyZakaznik.getAdresa(), zmeneneVozidlo.createInstance(), noveVozidlo.createInstance());
+            dummyZakaznik = this.hashFileID.get(dummyZakaznik);
+            System.out.println(zmeneneVozidlo);
+            System.out.println(noveVozidlo);
+            this.heapFileStorage.update(dummyZakaznik.getAdresa(), zmeneneVozidlo, noveVozidlo.createInstance());
 
 
         }

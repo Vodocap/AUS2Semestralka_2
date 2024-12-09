@@ -61,6 +61,7 @@ public class Navsteva implements IData<Navsteva> {
 
 
             hlpOutStream.writeLong(this.datum.getLong(ChronoField.EPOCH_DAY));
+
             hlpOutStream.writeDouble(this.cena);
             hlpOutStream.writeInt(this.pocetPlatnychPrac);
 
