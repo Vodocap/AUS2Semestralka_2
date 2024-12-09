@@ -34,7 +34,7 @@ public class UpravVozidloPopup extends JFrame {
         this.priezviskoTextField.setText(this.parentInstance.getCurrentZakaznik().getPriezvisko());
         this.list1.clearSelection();
         this.list1.setListData(this.parentInstance.getCurrentZakaznik().getZaznamyONasvsteve().toArray());
-
+        this.upravNavstevuButton.setVisible(!this.parentInstance.getCurrentZakaznik().getZaznamyONasvsteve().isEmpty());
 
         this.zrusButton.addActionListener(new ActionListener() {
             @Override

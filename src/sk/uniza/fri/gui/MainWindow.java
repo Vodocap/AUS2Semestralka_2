@@ -36,7 +36,8 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         this.appCore = new AppCore("Bin.bin", 6000, 70, 262223);
         this.navstevy = new ArrayList();
-
+        this.pridajNavstevuButton.setVisible(false);
+        this.upravAktualneVozidloButton.setVisible(false);
         this.currentZakaznik = null;
 
         this.vygenerujZakaznikovButton.addActionListener(new ActionListener() {
@@ -51,9 +52,6 @@ public class MainWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 MainWindow.this.list1.clearSelection();
                 MainWindow.this.list1.setListData(MainWindow.this.appCore.dajVsetkyBloky(MainWindow.this.comboBox2.getSelectedIndex()).toArray());
-//                if (MainWindow.this.comboBox2.getSelectedIndex() > 0) {
-//                    MainWindow.this.zakaznikTextArea.setText(Arrays.toString(MainWindow.this.appCore.dajAdresar(MainWindow.this.comboBox2.getSelectedIndex())));
-//                }
 
 
 
@@ -75,6 +73,11 @@ public class MainWindow extends JFrame {
                     MainWindow.this.list1.clearSelection();
                     MainWindow.this.list1.setListData(zakaznik.getZaznamyONasvsteve().toArray());
                     MainWindow.this.currentZakaznik = zakaznik;
+                }
+
+                if (MainWindow.this.currentZakaznik != null) {
+                    MainWindow.this.pridajNavstevuButton.setVisible(true);
+                    MainWindow.this.upravAktualneVozidloButton.setVisible(true);
                 }
 
 

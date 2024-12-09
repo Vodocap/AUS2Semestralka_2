@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -49,15 +50,15 @@ public class NavstevaPopup extends JFrame {
 
         this.list1.setListData(this.prace.toArray());
 
-        this.textFieldPrace.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                boolean maxReached = NavstevaPopup.this.textFieldPrace.getText().length() > 20;
-                if (maxReached) {
-                    JOptionPane.showMessageDialog(null, "Limit je 20 znakov");
-                }
-            }
-        });
+//        this.textFieldPrace.addPropertyChangeListener(new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                boolean maxReached = NavstevaPopup.this.textFieldPrace.getText().length() > 20;
+//                if (maxReached) {
+//                    JOptionPane.showMessageDialog(null, "Limit je 20 znakov");
+//                }
+//            }
+//        });
 
         this.pridajPracuButton.addActionListener(new ActionListener() {
             @Override
@@ -76,12 +77,9 @@ public class NavstevaPopup extends JFrame {
         this.pridajNavstevuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Calendar datum = Calendar.getInstance();
-                datum.set(Calendar.DAY_OF_MONTH, Integer.parseInt(NavstevaPopup.this.textFieldDen.getText()));
-                datum.set(Calendar.MONTH, Integer.parseInt(NavstevaPopup.this.textFieldMesiac.getText()));
-                datum.set(Calendar.YEAR, Integer.parseInt(NavstevaPopup.this.textFieldRok.getText()));
+                LocalDate datum = LocalDate.of(Integer.parseInt(NavstevaPopup.this.textFieldRok.getText()), Integer.parseInt(NavstevaPopup.this.textFieldMesiac.getText()), Integer.parseInt(NavstevaPopup.this.textFieldDen.getText()));
                 Navsteva novaNavsteva = new Navsteva(datum, Double.parseDouble(NavstevaPopup.this.textFieldCena.getText()));
-                for (String s : prace) {
+                for (String s : NavstevaPopup.this.prace) {
                     novaNavsteva.addPRaca(s);
                 }
 

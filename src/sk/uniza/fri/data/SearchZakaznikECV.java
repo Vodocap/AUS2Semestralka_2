@@ -118,8 +118,6 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV>, IHash {
     public BitSet getHash() {
         String substring = this.ECV.substring(0,4);
 
-
-
         return BitSet.valueOf(substring.getBytes(StandardCharsets.UTF_8));
 
     }

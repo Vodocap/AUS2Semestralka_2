@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -36,17 +37,22 @@ public class VozidloPopup extends JFrame {
         this.pridajVozidloButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Navsteva dummyNavsteva = new Navsteva(Calendar.getInstance(), 10);
+                Navsteva dummyNavsteva = new Navsteva(LocalDate.now(), 10);
                 Zakaznik pridavanyZakaznik = new Zakaznik(VozidloPopup.this.menoTextField.getText(), VozidloPopup.this.priezviskoTextField.getText(),
                         Integer.parseInt(VozidloPopup.this.IDTextField.getText()), dummyNavsteva.createInstance(), VozidloPopup.this.ECVTextField.getText());
 
+                if (VozidloPopup.this.appCore.vratSearchZakaznika(pridavanyZakaznik.getECV()) == null &&
+                        VozidloPopup.this.appCore.vratSearchZakaznika(pridavanyZakaznik.getID()) == null) {
+                    for (Navsteva navsteva : VozidloPopup.this.navstevas) {
+                        pridavanyZakaznik.addZaznam(navsteva);
+                    }
 
-                for (Navsteva navsteva : VozidloPopup.this.navstevas) {
-                    pridavanyZakaznik.addZaznam(navsteva);
+                    VozidloPopup.this.appCore.pridajVozidlo(pridavanyZakaznik.createInstance());
+                    VozidloPopup.this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Vozidlo s takym ID/ECV uz existuje");
                 }
 
-                VozidloPopup.this.appCore.pridajVozidlo(pridavanyZakaznik.createInstance());
-                VozidloPopup.this.dispose();
 
             }
         });

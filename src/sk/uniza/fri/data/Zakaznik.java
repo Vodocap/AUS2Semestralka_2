@@ -39,7 +39,7 @@ public class Zakaznik implements IData<Zakaznik> {
         this.ECV = paEcv;
         this.meno = paMeno;
         this.priezvisko = paPriezvisko;
-        this.size = 1393;
+        this.size = 1369;
         this.ID = paID;
         this.pocetPlatnychNavstev = 0;
 

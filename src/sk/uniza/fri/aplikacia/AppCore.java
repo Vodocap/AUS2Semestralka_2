@@ -15,6 +15,7 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -33,7 +34,7 @@ public class AppCore {
     }
 
 
-    private Object vratSearchZakaznika(Object parameterVyhladania) {
+    public Object vratSearchZakaznika(Object parameterVyhladania) {
         if (parameterVyhladania instanceof String) {
             SearchZakaznikECV dummyZakaznik = new SearchZakaznikECV((String) parameterVyhladania);
             dummyZakaznik = this.hashFileECV.get(dummyZakaznik.createInstance());
@@ -55,13 +56,13 @@ public class AppCore {
 
             SearchZakaznikECV dummyZakaznik = (SearchZakaznikECV)this.vratSearchZakaznika(parameterVyhladania);
 
-            Zakaznik hladaciZakaznik = new Zakaznik("Hladaci", "Zakaznik", dummyZakaznik.getID(), new Navsteva(Calendar.getInstance(), 10), dummyZakaznik.getECV());
+            Zakaznik hladaciZakaznik = new Zakaznik("Hladaci", "Zakaznik", dummyZakaznik.getID(), new Navsteva(LocalDate.now(), 10), dummyZakaznik.getECV());
             return this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance();
 
         } else {
             SearchZakaznikID dummyZakaznik = (SearchZakaznikID)this.vratSearchZakaznika(parameterVyhladania);
 
-            Zakaznik hladaciZakaznik = new Zakaznik("Hladaci", "Zakaznik", dummyZakaznik.getID(), new Navsteva(Calendar.getInstance(), 10), dummyZakaznik.getECV());
+            Zakaznik hladaciZakaznik = new Zakaznik("Hladaci", "Zakaznik", dummyZakaznik.getID(), new Navsteva(LocalDate.now(), 10), dummyZakaznik.getECV());
             return this.heapFileStorage.get(dummyZakaznik.getAdresa(), hladaciZakaznik).createInstance();
 
         }
@@ -69,7 +70,7 @@ public class AppCore {
     }
 
     public void pridajVozidlo(String paMeno, String paPriezvisko, int paID, String paECV) {
-        Zakaznik pridavanyZakaznik = new Zakaznik(paMeno, paPriezvisko, paID,new Navsteva(Calendar.getInstance(), 20),paECV);
+        Zakaznik pridavanyZakaznik = new Zakaznik(paMeno, paPriezvisko, paID,new Navsteva(LocalDate.now(), 20),paECV);
         System.out.println("Pridany novy zagaznik: " + pridavanyZakaznik.toString());
         SearchZakaznikID pridavanyID = new SearchZakaznikID(paID);
         SearchZakaznikECV pridavanyECV = new SearchZakaznikECV(paECV);
@@ -97,7 +98,7 @@ public class AppCore {
 
     }
 
-    public boolean pridajNavstevu(Object parameterVyhladania, Calendar paDatum, double paCena, ArrayList<String> prace) {
+    public boolean pridajNavstevu(Object parameterVyhladania, LocalDate paDatum, double paCena, ArrayList<String> prace) {
         Zakaznik pridavaneDoZakaznika = this.vyhladajUdajeOVozidle(parameterVyhladania);
         Navsteva pridavanaNavsteva = new Navsteva(paDatum, paCena);
         for (String s : prace) {
@@ -144,7 +145,7 @@ public class AppCore {
     public ArrayList dajVsetkyBloky(int typ) {
         return switch (typ) {
             case 0 ->
-                    this.heapFileStorage.getAllBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(Calendar.getInstance(), 10), "ASDADSD"));
+                    this.heapFileStorage.getAllBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(LocalDate.now(), 10), "ASDADSD"));
             case 1 ->
                     this.hashFileID.getAllBlocks(new SearchZakaznikID(10000));
             case 2 ->

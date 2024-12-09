@@ -9,6 +9,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -40,9 +41,9 @@ public class UpravNavstevyPopup extends JFrame {
         this.upravovanaNavsteva = paUpravovanaNavsteva;
         this.prace = this.upravovanaNavsteva.getVykonanePrace();
         this.textFieldCena.setText(String.valueOf(paUpravovanaNavsteva.getCena()));
-        this.textFieldDen.setText(String.valueOf(paUpravovanaNavsteva.getCalendar().get(Calendar.DAY_OF_MONTH)));
-        this.textFieldMesiac.setText(String.valueOf(paUpravovanaNavsteva.getCalendar().get(Calendar.MONTH)));
-        this.textFieldRok.setText(String.valueOf(paUpravovanaNavsteva.getCalendar().get(Calendar.YEAR)));
+        this.textFieldDen.setText(String.valueOf(paUpravovanaNavsteva.getDatum().getDayOfMonth()));
+        this.textFieldMesiac.setText(String.valueOf(paUpravovanaNavsteva.getDatum().getMonthValue()));
+        this.textFieldRok.setText(String.valueOf(paUpravovanaNavsteva.getDatum().getYear()));
         this.list1.clearSelection();
         this.list1.setListData(this.prace.toArray());
 
@@ -80,11 +81,12 @@ public class UpravNavstevyPopup extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 UpravNavstevyPopup.this.upravovanaNavsteva.setCena(Double.parseDouble(UpravNavstevyPopup.this.textFieldCena.getText()));
                 Calendar editedCalendar = Calendar.getInstance();
-                editedCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(UpravNavstevyPopup.this.textFieldDen.getText()));
-                editedCalendar.set(Calendar.MONTH, Integer.parseInt(UpravNavstevyPopup.this.textFieldMesiac.getText()));
-                editedCalendar.set(Calendar.YEAR, Integer.parseInt(UpravNavstevyPopup.this.textFieldRok.getText()));
+                LocalDate upravenyDatum = LocalDate.of(Integer.parseInt(UpravNavstevyPopup.this.textFieldRok.getText()),
+                        Integer.parseInt(UpravNavstevyPopup.this.textFieldMesiac.getText()),
+                        Integer.parseInt(UpravNavstevyPopup.this.textFieldDen.getText()));
+
                 UpravNavstevyPopup.this.upravovanaNavsteva.setCena(Double.parseDouble(UpravNavstevyPopup.this.textFieldCena.getText()));
-                UpravNavstevyPopup.this.upravovanaNavsteva.setCalendar(editedCalendar);
+                UpravNavstevyPopup.this.upravovanaNavsteva.setDatum(upravenyDatum);
 
                 if (UpravNavstevyPopup.this.parentInstance.getComboBox1().getSelectedIndex() == 1) {
                     UpravNavstevyPopup.this.appCore.zmenVozidlo(Integer.parseInt(UpravNavstevyPopup.this.parentInstance.getParameterVyhladaniaTextField().getText()),

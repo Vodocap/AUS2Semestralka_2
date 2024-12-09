@@ -418,6 +418,9 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
             System.out.println("Hlada sa na adrese: " + this.addreses[this.calculateHash(paData, this.depth)]);
             System.out.println("Podla hashu " + this.calculateHash(paData, this.depth));
+            if (this.addreses[this.calculateHash(paData, this.depth)] == -1) {
+                return null;
+            }
             this.randomAccessFileWriter.seek(this.addreses[this.calculateHash(paData, this.depth)]);
             HashBlock foundBlock = this.makeBlockInstance(paData);
             return (T) foundBlock.getRecord(paData);

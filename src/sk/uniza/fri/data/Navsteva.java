@@ -7,8 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * 15. 11. 2024 - 13:25
@@ -17,15 +18,15 @@ import java.util.Calendar;
  */
 
 public class Navsteva implements IData<Navsteva> {
-    private Calendar calendar;
+    private LocalDate datum;
     private double cena;
     private ArrayList<String> vykonanePrace;
     private static int MAX_PRAC = 10;
     private static int MAX_LENGHT_PRACE = 20;
     private int pocetPlatnychPrac;
 
-    public Navsteva(Calendar paDatum, double paCena) {
-        this.calendar = paDatum;
+    public Navsteva(LocalDate paDatum, double paCena) {
+        this.datum = paDatum;
         this.cena = paCena;
         this.vykonanePrace = new ArrayList<>();
         this.pocetPlatnychPrac = 0;
@@ -47,7 +48,7 @@ public class Navsteva implements IData<Navsteva> {
 
     @Override
     public long getSize() {
-        return 264;
+        return 260;
     }
 
     @Override
@@ -57,22 +58,17 @@ public class Navsteva implements IData<Navsteva> {
 
         try {
 
-            int den = this.calendar.get(Calendar.DAY_OF_MONTH);
-            int mesiac = this.calendar.get(Calendar.MONTH);
-            int rok = this.calendar.get(Calendar.YEAR);
 
 
-            hlpOutStream.writeInt(den);
-            hlpOutStream.writeInt(mesiac);
-            hlpOutStream.writeInt(rok);
+            hlpOutStream.writeLong(this.datum.getLong(ChronoField.EPOCH_DAY));
             hlpOutStream.writeDouble(this.cena);
             hlpOutStream.writeInt(this.pocetPlatnychPrac);
 
             int recordsBytes = 0;
 
             for (String praca : this.vykonanePrace) {
-                String writtenPraca = praca;
 
+                int validLength = praca.length();
                 if (praca.length() <= MAX_LENGHT_PRACE) {
                     for (int i = praca.length(); i < MAX_LENGHT_PRACE; i++) {
                         praca += "x";
@@ -80,12 +76,13 @@ public class Navsteva implements IData<Navsteva> {
 
                 }
                 recordsBytes += 24;
-                hlpOutStream.writeInt(praca.length());
+
+                hlpOutStream.writeInt(validLength);
                 hlpOutStream.write(praca.getBytes());
 
             }
 
-            byte[] emptyArrray = new byte[(int)this.getSize() - recordsBytes - 24];
+            byte[] emptyArrray = new byte[(int)this.getSize() - recordsBytes - 20];
 
             hlpOutStream.write(emptyArrray);
 
@@ -106,12 +103,8 @@ public class Navsteva implements IData<Navsteva> {
         try {
 
 
-            int den = hlpInStream.readInt();
-            int mesiac = hlpInStream.readInt();
-            int rok = hlpInStream.readInt();
-            this.calendar.set(Calendar.DAY_OF_MONTH, den);
-            this.calendar.set(Calendar.MONTH, mesiac);
-            this.calendar.set(Calendar.YEAR, rok);
+
+            this.datum = LocalDate.ofEpochDay(hlpInStream.readLong());
             this.cena = hlpInStream.readDouble();
             this.pocetPlatnychPrac = hlpInStream.readInt();
 
@@ -132,12 +125,12 @@ public class Navsteva implements IData<Navsteva> {
     @Override
     public boolean myEquals(Navsteva data) {
         return data.getCena() == this.cena && data.getPocetPlatnychPrac() == this.getPocetPlatnychPrac() &&
-                this.calendar.equals(data.getCalendar()) && data.getVykonanePrace().equals(this.vykonanePrace);
+                this.datum.equals(data.getDatum()) && data.getVykonanePrace().equals(this.vykonanePrace);
     }
 
     @Override
     public Navsteva createInstance() {
-        Navsteva navstevaCopy = new Navsteva(this.calendar, this.cena );
+        Navsteva navstevaCopy = new Navsteva(this.datum, this.cena );
         for (String praca : vykonanePrace) {
             navstevaCopy.addPRaca(praca);
         }
@@ -159,12 +152,12 @@ public class Navsteva implements IData<Navsteva> {
         this.cena = cena;
     }
 
-    public Calendar getCalendar() {
-        return this.calendar;
+    public LocalDate getDatum() {
+        return this.datum;
     }
 
-    public void setCalendar(Calendar calendar) {
-        this.calendar = calendar;
+    public void setDatum(LocalDate calendar) {
+        this.datum = calendar;
     }
 
     public ArrayList<String> getVykonanePrace() {
@@ -185,11 +178,11 @@ public class Navsteva implements IData<Navsteva> {
 
     @Override
     public String toString() {
-        return "Navsteva{" +
-                "datum=" + this.calendar.get(Calendar.DAY_OF_MONTH) + " - " + this.calendar.get(Calendar.MONTH) + " - " + this.calendar.get(Calendar.YEAR) +
-                " , cena=" + cena +
-                ", vykonanePrace=" + vykonanePrace +
-                ", pocetPlatnychPrac=" + pocetPlatnychPrac +
+        return "Navsteva{\n" +
+                "datum=" + this.datum.toString() +
+                "\n, cena=" + cena +
+                "\n, vykonanePrace=" + vykonanePrace +
+                "\n, pocetPlatnychPrac=" + pocetPlatnychPrac +
                 '}';
     }
 }

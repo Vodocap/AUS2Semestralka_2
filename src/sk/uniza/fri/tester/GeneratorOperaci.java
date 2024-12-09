@@ -8,6 +8,7 @@ import sk.uniza.fri.data.Zakaznik;
 import sk.uniza.fri.hashfile.HashFile;
 import sk.uniza.fri.heapfile.HeapFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class GeneratorOperaci {
     public void generujOperacieHeapFile(int pocetOperacii) {
         for (int i = 0; i < 1000; i++) {
             Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatneID(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujECV());
+                    this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatneID(), new Navsteva(LocalDate.now(), this.random.nextDouble()), this.nahodnyGen.vygenerujECV());
 
             long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
             System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
@@ -57,7 +58,7 @@ public class GeneratorOperaci {
             double generovanaHodnota = this.random.nextDouble();
             if (generovanaHodnota < 0.33) {
                 Zakaznik vlozenyZakaznik = new Zakaznik(this.nahodnyGen.vygenerujUnikatnyString(0,15),
-                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(Calendar.getInstance(), this.random.nextDouble()), this.nahodnyGen.vygenerujECV());
+                        this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatnyInt(), new Navsteva(LocalDate.now(), this.random.nextDouble()), this.nahodnyGen.vygenerujECV());
 
                 long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
                 System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
@@ -117,7 +118,7 @@ public class GeneratorOperaci {
 
     private void vypisheapFile() {
 
-        this.heapFile.printBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(Calendar.getInstance(), 10), "ASDADSD"));
+        this.heapFile.printBlocks(new Zakaznik("Jano", "Hladac", 665, new Navsteva(LocalDate.now(), 10), "ASDADSD"));
 
     }
 
