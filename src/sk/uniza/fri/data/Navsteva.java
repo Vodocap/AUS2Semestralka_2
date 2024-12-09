@@ -145,19 +145,10 @@ public class Navsteva implements IData<Navsteva> {
     }
 
     @Override
-    public void print() {
+    public void printData() {
         System.out.println(this.toString());
     }
 
-    @Override
-    public int getHashparameter() {
-        return 0;
-    }
-
-    @Override
-    public String getHashParameter() {
-        return "";
-    }
 
 
     public double getCena() {

@@ -1,16 +1,14 @@
 package sk.uniza.fri.gui;
 
 import sk.uniza.fri.aplikacia.AppCore;
-import sk.uniza.fri.data.Navsteva;
 import sk.uniza.fri.data.Zakaznik;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainWindow extends JFrame {
     private JPanel panel1;
@@ -21,7 +19,7 @@ public class MainWindow extends JFrame {
     private JButton pridajAutoButton;
     private JButton pridajNavstevuButton;
     private JComboBox comboBox1;
-    private JTextField textField1;
+    private JTextField nazovSuboruTextField;
     private JTextField parameterVyhladaniaTextField;
     private JTextField textField4;
     private JButton zobrazBlokyButton;
@@ -36,7 +34,7 @@ public class MainWindow extends JFrame {
     private Zakaznik currentZakaznik;
 
     public MainWindow() {
-        this.appCore = new AppCore("Bin.bin", 6000);
+        this.appCore = new AppCore("Bin.bin", 6000, 70, 262223);
         this.navstevy = new ArrayList();
 
         this.currentZakaznik = null;
@@ -53,6 +51,10 @@ public class MainWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 MainWindow.this.list1.clearSelection();
                 MainWindow.this.list1.setListData(MainWindow.this.appCore.dajVsetkyBloky(MainWindow.this.comboBox2.getSelectedIndex()).toArray());
+//                if (MainWindow.this.comboBox2.getSelectedIndex() > 0) {
+//                    MainWindow.this.zakaznikTextArea.setText(Arrays.toString(MainWindow.this.appCore.dajAdresar(MainWindow.this.comboBox2.getSelectedIndex())));
+//                }
+
 
 
             }
@@ -112,16 +114,6 @@ public class MainWindow extends JFrame {
             }
         });
 
-//        this.list1.addListSelectionListener(new ListSelectionListener() {
-//            @Override
-//            public void valueChanged(ListSelectionEvent e) {
-//                MainWindow.this.jList2.clearSelection();
-//                Navsteva navsteva = (Navsteva) MainWindow.this.list1.getSelectedValue();
-//                MainWindow.this.jList2.setListData(navsteva.getVykonanePrace().toArray());
-//
-//            }
-//        });
-
         this.pridajAutoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -144,11 +136,26 @@ public class MainWindow extends JFrame {
         this.upravAktualneVozidloButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 UpravVozidloPopup upravVozidloPopup = new UpravVozidloPopup(MainWindow.this.appCore, MainWindow.this);
                 upravVozidloPopup.setSize(1000, 800);
                 upravVozidloPopup.setContentPane(upravVozidloPopup.$$$getRootComponent$$$());
                 upravVozidloPopup.pack();
                 upravVozidloPopup.setVisible(true);
+            }
+        });
+
+        this.ulozDoSUboruButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.this.appCore.ulozAplikaciu(MainWindow.this.nazovSuboruTextField.getText());
+            }
+        });
+
+        this.nacitajZoSuboruButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainWindow.this.appCore.nacitajAplikaciu(MainWindow.this.nazovSuboruTextField.getText());
             }
         });
     }
@@ -228,8 +235,8 @@ public class MainWindow extends JFrame {
         ulozDoSUboruButton = new JButton();
         ulozDoSUboruButton.setText("UlozDoSUboru");
         panel1.add(ulozDoSUboruButton, new com.intellij.uiDesigner.core.GridConstraints(6, 3, 2, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        textField1 = new JTextField();
-        panel1.add(textField1, new com.intellij.uiDesigner.core.GridConstraints(4, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        nazovSuboruTextField = new JTextField();
+        panel1.add(nazovSuboruTextField, new com.intellij.uiDesigner.core.GridConstraints(4, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         final JLabel label2 = new JLabel();
         label2.setText("Nazov Suboru");
         panel1.add(label2, new com.intellij.uiDesigner.core.GridConstraints(3, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

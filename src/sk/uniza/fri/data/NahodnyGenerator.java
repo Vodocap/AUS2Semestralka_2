@@ -25,6 +25,14 @@ public class NahodnyGenerator {
         this.currentID = paZaciatokID;
     }
 
+    public int getCurrentID() {
+        return this.currentID;
+    }
+
+    public void setCurrentID(int newCurrentID) {
+        this.currentID = newCurrentID;
+    }
+
     public int vygenerujUnikatnyInt() {
         int returnInt = this.random.nextInt();
         while (this.vygenerovaneInty.contains(returnInt)) {
@@ -65,11 +73,12 @@ public class NahodnyGenerator {
     public String vygenerujECV() {
         String noveECV = vygenerujString(4);
         while (this.vygenerovaneStringy.contains(noveECV)) {
+
             noveECV = vygenerujString(4);
         }
+        this.vygenerovaneStringy.add(noveECV);
         String koniecECV = vygenerujUnikatnyString(6);
         noveECV += koniecECV;
-
 
         return noveECV;
     }

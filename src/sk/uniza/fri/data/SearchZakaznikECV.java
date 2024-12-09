@@ -1,7 +1,7 @@
 package sk.uniza.fri.data;
 
 import sk.uniza.fri.heapfile.IData;
-import sk.uniza.fri.heapfile.IHash;
+import sk.uniza.fri.hashfile.IHash;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,18 +51,8 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV>, IHash {
     }
 
     @Override
-    public void print() {
+    public void printData() {
         System.out.println(this.toString());
-    }
-
-    @Override
-    public int getHashparameter() {
-        return this.ID;
-    }
-
-    @Override
-    public String getHashParameter() {
-        return this.ECV;
     }
 
 
@@ -74,9 +64,6 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV>, IHash {
                 ", adresa=" + adresa +
                 '}';
     }
-
-
-
 
     @Override
     public long getSize() {
@@ -91,7 +78,6 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV>, IHash {
         try {
 
             String writtenECV = this.ECV;
-//            System.out.println("ECVL: " + writtenECV.length());
             hlpOutStream.writeLong(this.adresa);
             hlpOutStream.writeInt(this.ID);
             hlpOutStream.write(writtenECV.getBytes());
@@ -131,8 +117,8 @@ public class SearchZakaznikECV implements IData<SearchZakaznikECV>, IHash {
     @Override
     public BitSet getHash() {
         String substring = this.ECV.substring(0,4);
-        System.out.println(substring.length());
-//        System.out.println(substring.length());
+
+
 
         return BitSet.valueOf(substring.getBytes(StandardCharsets.UTF_8));
 

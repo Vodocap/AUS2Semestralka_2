@@ -8,23 +8,28 @@ import sk.uniza.fri.data.Zakaznik;
 import sk.uniza.fri.hashfile.HashFile;
 import sk.uniza.fri.heapfile.HeapFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Random;
 
 public class AppCore {
     private HashFile<SearchZakaznikID> hashFileID;
     private HashFile<SearchZakaznikECV> hashFileECV;
     private HeapFile<Zakaznik> heapFileStorage;
     private NahodnyGenerator nahodnyGen;
-    private Random random;
 
-    public AppCore(String mainStorageFilePath, int blockSize) {
-        this.heapFileStorage = new HeapFile<Zakaznik>(mainStorageFilePath, blockSize);
-        this.hashFileID = new HashFile("id.bin", 100);
-        this.hashFileECV = new HashFile("ecv.bin", 100);
-        this.nahodnyGen = new NahodnyGenerator(2854);
-        this.random = new Random();
+    public AppCore(String mainStorageFilePath, int blockSizeHeapFile, int blocksizeHashFiles, int zaciatokIdCislovania) {
+        this.heapFileStorage = new HeapFile<Zakaznik>(mainStorageFilePath, blockSizeHeapFile);
+        this.hashFileID = new HashFile("id.bin", blocksizeHashFiles);
+        this.hashFileECV = new HashFile("ecv.bin", blocksizeHashFiles);
+        this.nahodnyGen = new NahodnyGenerator(zaciatokIdCislovania);
     }
 
 
@@ -65,6 +70,7 @@ public class AppCore {
 
     public void pridajVozidlo(String paMeno, String paPriezvisko, int paID, String paECV) {
         Zakaznik pridavanyZakaznik = new Zakaznik(paMeno, paPriezvisko, paID,new Navsteva(Calendar.getInstance(), 20),paECV);
+        System.out.println("Pridany novy zagaznik: " + pridavanyZakaznik.toString());
         SearchZakaznikID pridavanyID = new SearchZakaznikID(paID);
         SearchZakaznikECV pridavanyECV = new SearchZakaznikECV(paECV);
         pridavanyECV.setID(paID);
@@ -118,14 +124,19 @@ public class AppCore {
 
     }
 
-
+    public long[] dajAdresar(int iDOrECV) {
+        if (iDOrECV == 1) {
+            return Arrays.copyOf(this.hashFileID.getAddreses(), this.hashFileID.getAddreses().length);
+        } else {
+            return Arrays.copyOf(this.hashFileECV.getAddreses(), this.hashFileECV.getAddreses().length);
+        }
+    }
 
     public void vygenerujNZakaznikov(int pocetVygenerovanychZakaznikov) {
         for (int i = 0; i < pocetVygenerovanychZakaznikov; i++) {
 
             this.pridajVozidlo(this.nahodnyGen.vygenerujUnikatnyString(0,15),
                     this.nahodnyGen.vygenerujUnikatnyString(0,20), this.nahodnyGen.vygenerujUnikatneID(), this.nahodnyGen.vygenerujECV());
-
 
         }
     }
@@ -140,6 +151,74 @@ public class AppCore {
                     this.hashFileECV.getAllBlocks(new SearchZakaznikECV("10000"));
             default -> null;
         };
+    }
+
+    public void ulozAplikaciu(String heapfileUkladaciSubor) {
+        this.heapFileStorage.closeHeapFile(heapfileUkladaciSubor);
+        this.hashFileID.saveHashFileIntoFile("idatsave.bin", "idadsave.bin");
+        this.hashFileECV.saveHashFileIntoFile("ecvatsave.bin", "ecvadsave.bin");
+        try {
+            RandomAccessFile numberSaver = new RandomAccessFile("idend.bin", "rw");
+            numberSaver.seek(0);
+            numberSaver.write(this.toByteArray());
+            numberSaver.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void nacitajAplikaciu(String heapfileNacitavaciSubor) {
+        this.heapFileStorage.initialiseHeapFileFromFile(heapfileNacitavaciSubor);
+        this.hashFileID.initialiseHashFileFromFile("idatsave.bin", "idadsave.bin");
+        this.hashFileECV.initialiseHashFileFromFile("ecvatsave.bin", "ecvadsave.bin");
+        try {
+            RandomAccessFile numberSaver = new RandomAccessFile("idend.bin", "rw");
+            numberSaver.seek(0);
+            byte[] numberBytes = new byte[4];
+            numberSaver.read(numberBytes);
+            this.fromByteArray(numberBytes);
+            numberSaver.close();
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private byte[] toByteArray() {
+        ByteArrayOutputStream hlpByteArrayOutputStream = new ByteArrayOutputStream();
+        DataOutputStream hlpOutStream = new DataOutputStream(hlpByteArrayOutputStream);
+
+        try {
+
+            hlpOutStream.writeInt(this.nahodnyGen.getCurrentID());
+
+
+            return hlpByteArrayOutputStream.toByteArray();
+
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Error during conversion to byte array.");
+        }
+    }
+
+    private void fromByteArray(byte[] paByteArray) {
+        ByteArrayInputStream hlpByteArrayInputStream = new ByteArrayInputStream(paByteArray);
+        DataInputStream hlpInStream = new DataInputStream(hlpByteArrayInputStream);
+
+        try {
+
+            this.nahodnyGen.setCurrentID(hlpInStream.readInt());
+
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Error during conversion from byte array.");
+        }
     }
 
 

@@ -110,19 +110,9 @@ public class Zakaznik implements IData<Zakaznik> {
     }
 
     @Override
-    public void print() {
+    public void printData() {
         System.out.println(this.toString());
 
-    }
-
-    @Override
-    public int getHashparameter() {
-        return this.ID;
-    }
-
-    @Override
-    public String getHashParameter() {
-        return this.ECV;
     }
 
 

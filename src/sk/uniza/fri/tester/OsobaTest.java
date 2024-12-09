@@ -78,21 +78,11 @@ public class OsobaTest implements IData<OsobaTest> {
     }
 
     @Override
-    public void print() {
+    public void printData() {
         System.out.println("Meno: " + this.meno);
         System.out.println("Priezvisko: " + this.priezvisko);
         System.out.println("ID: " + this.ID);
         System.out.println("Size: " + this.size);
-    }
-
-    @Override
-    public int getHashparameter() {
-        return 0;
-    }
-
-    @Override
-    public String getHashParameter() {
-        return "";
     }
 
 

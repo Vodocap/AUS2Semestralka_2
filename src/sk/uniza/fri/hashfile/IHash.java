@@ -1,4 +1,4 @@
-package sk.uniza.fri.heapfile;
+package sk.uniza.fri.hashfile;
 
 import java.util.BitSet;
 

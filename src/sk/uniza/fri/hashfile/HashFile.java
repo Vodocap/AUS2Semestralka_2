@@ -1,8 +1,6 @@
 package sk.uniza.fri.hashfile;
 
-import sk.uniza.fri.heapfile.Block;
 import sk.uniza.fri.heapfile.IData;
-import sk.uniza.fri.heapfile.IHash;
 import sk.uniza.fri.heapfile.IRecord;
 
 import java.io.*;
@@ -17,10 +15,10 @@ import java.util.BitSet;
  */
 public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
-    private long actualSize;
+    private int numberOfBlocks;
     private RandomAccessFile randomAccessFileWriter;
     private long end;
-    private long blockSize;
+    private int blockSize;
     private int depth;
     private long[] addreses;
     private static int HASH_OFFSET = 7;
@@ -28,7 +26,8 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
     public HashFile(String paFilePath, int paBlockSize) {
         this.addreses = new long[2];
-        this.actualSize = 0;
+        Arrays.fill(this.addreses, -1);
+        this.numberOfBlocks = 0;
         try {
             this.randomAccessFileWriter = new RandomAccessFile(paFilePath, "rw");
         } catch (FileNotFoundException e) {
@@ -41,10 +40,13 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
     }
 
+    public long[] getAddreses() {
+        return this.addreses;
+    }
+
 
     public int calculateHash(T paData ,int hashDepth) {
 
-        System.out.println(paData.getHash().toString());
 
         BitSet bitSet = this.reverseBitset(paData.getHash());
 
@@ -120,14 +122,25 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
-    public void initialiseHeapFileFromFile(String initFilePath) {
+    public void initialiseHashFileFromFile(String attributeFilePath, String adressesFilePath) {
         try {
-            RandomAccessFile loader = new RandomAccessFile(initFilePath, "rw");
-            byte[] initBytes = new byte[40];
-            loader.seek(0);
-            loader.readFully(initBytes);
-            this.fromByteArray(initBytes);
-            loader.close();
+            RandomAccessFile attributeLoader = new RandomAccessFile(attributeFilePath, "rw");
+            byte[] attributeInitBytes = new byte[20];
+            attributeLoader.seek(0);
+            attributeLoader.readFully(attributeInitBytes);
+            this.fromByteArray(attributeInitBytes);
+            attributeLoader.close();
+
+            RandomAccessFile adrressArrayLoader = new RandomAccessFile(adressesFilePath, "rw");
+            adrressArrayLoader.seek(0);
+            byte[] addressesInitBytes = new byte[this.addreses.length * 8];
+            adrressArrayLoader.readFully(addressesInitBytes);
+            this.adressesFromByteArray(addressesInitBytes);
+            adrressArrayLoader.close();
+
+            System.out.println("HASHFILE INITIALISED: ");
+            System.out.println(this.toString());
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -135,30 +148,34 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
         }
     }
 
-    private void insertBlockInFront(Block blockInstance, long newNext) {
+
+    public void saveHashFileIntoFile(String attributeFilePath, String adressesFilePath) {
         try {
+            RandomAccessFile attributeSaver = new RandomAccessFile(attributeFilePath, "rw");
+            if (attributeSaver.length() < 1) {
+                attributeSaver.seek(attributeSaver.length());
+            } else {
+                attributeSaver.seek(0);
+            }
+            attributeSaver.write(this.toByteArray());
+            attributeSaver.close();
 
-            System.out.println("NEW NEXT " + newNext);
-            System.out.println("FOR ADDRESS " + blockInstance.getBlockStart());
-            this.randomAccessFileWriter.seek(newNext);
+            RandomAccessFile adrressArraySaver = new RandomAccessFile(adressesFilePath, "rw");
+            if (adrressArraySaver.length() < 1) {
+                adrressArraySaver.seek(adrressArraySaver.length());
+            } else {
+                adrressArraySaver.seek(0);
+            }
+            adrressArraySaver.write(this.addressesToByteArray());
+            adrressArraySaver.close();
 
-            Block nextblock = this.makeBlockInstance((T)blockInstance.getInstanceCreator());
-
-            nextblock.setPrevious(blockInstance.getBlockStart());
-            blockInstance.setNext(nextblock.getBlockStart());
-            blockInstance.setPrevious(-1);
-
-            this.randomAccessFileWriter.seek(nextblock.getBlockStart());
-            this.randomAccessFileWriter.write(nextblock.toByteArray());
-
-            this.randomAccessFileWriter.seek(blockInstance.getBlockStart());
-            this.randomAccessFileWriter.write(blockInstance.toByteArray());
-
-
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 
 
     public int getFirst(BitSet bitSet , int trimDepth) {
@@ -167,41 +184,44 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
-    public int getLast(BitSet bitSet , int trimDepth) {
-        bitSet.set(0, trimDepth, true);
-        return bitsetToInt(this.reverseBitset(bitSet));
+    @Override
+    public String toString() {
+        return "HashFile{" +
+                "actualSize=" + numberOfBlocks +
+                ", randomAccessFileWriter=" + randomAccessFileWriter +
+                ", end=" + end +
+                ", blockSize=" + blockSize +
+                ", depth=" + depth +
+                ", addreses=" + Arrays.toString(addreses) +
+                '}';
     }
-
-
 
     public void splitBlock(HashBlock<T> blockInstance, int splitBlockHash) {
 
         ArrayList<T> oldRecords = new ArrayList<>(blockInstance.getDataList());
 //        System.out.println(Arrays.toString(this.addreses));
 
-        System.out.println(this.depth - blockInstance.getDepth());
+//        System.out.println(this.depth - blockInstance.getDepth());
 
         int range = (int) Math.pow(2, this.depth - blockInstance.getDepth());
 
 
         int first = this.getFirst(BitSet.valueOf(new long[]{(splitBlockHash)}), this.depth - blockInstance.getDepth());
         int last = first + range;
-//        int last = this.getLast(BitSet.valueOf(new long[]{(splitBlockHash)}), blockInstance.getDepth());
         int half = first + (range / 2);
-        System.out.println("Zaciatok: " + first);
-        System.out.println("Stred: " + half);
-        System.out.println("Koniec: " + last);
-        System.out.println("Rozsah: " + range);
+
+//        System.out.println("Zaciatok: " + first);
+//        System.out.println("Stred: " + half);
+//        System.out.println("Koniec: " + last);
+//        System.out.println("Rozsah: " + range);
 
         blockInstance.clearList();
         blockInstance.setDepth(blockInstance.getDepth() + 1);
-        if (this.addreses[splitBlockHash] != blockInstance.getBlockStart()) {
-            System.out.println("Nerovnaju sa adresy, zly hash " + this.addreses[splitBlockHash] + " - " + blockInstance.getBlockStart());
-        }
+
         HashBlock<T> newBlock = new HashBlock<T>(oldRecords.get(0), blockInstance.getSize());
         newBlock.setDepth(blockInstance.getDepth());
 
-        System.out.println("SplittedBlockHash " + splitBlockHash);
+
 
 
         for (T oldRecord : oldRecords) {
@@ -209,12 +229,10 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
             int rehashForRecord = this.calculateHash(oldRecord, blockInstance.getDepth());
 
             if (rehashForRecord % 2 == 0) {
-                System.out.println("Velkost Adresara " + this.addreses.length);
-                System.out.println("Novej heš rovnaju sa " + rehashForRecord);
+
                 blockInstance.insertData(oldRecord);
             } else {
-                System.out.println("Velkost Adresara " + this.addreses.length);
-                System.out.println("Novej heš nerovnaju sa " + rehashForRecord);
+
                 newBlock.insertData(oldRecord);
 
             }
@@ -237,7 +255,7 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
                 this.randomAccessFileWriter.seek(this.end);
                 this.end += this.blockSize;
-                this.actualSize++;
+                this.numberOfBlocks++;
 
                 newBlock.setBlockStart(this.randomAccessFileWriter.getFilePointer());
                 this.randomAccessFileWriter.write(newBlock.toByteArray());
@@ -253,9 +271,6 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
 
                 System.out.println("Secia isli do stareho");
-                if (this.addreses[splitBlockHash] != blockInstance.getBlockStart()) {
-                    System.out.println("Nerovnaju sa adresy, zly hash " + this.addreses[splitBlockHash] + " - " + blockInstance.getBlockStart());
-                }
 
 
                 for (int i = half; i < last; i++) {
@@ -264,14 +279,6 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
                 System.out.println(Arrays.toString(blockInstance.getDataList().toArray()));
                 System.out.println(blockInstance.getBlockStart());
-
-//                System.out.println(Arrays.toString(this.addreses));
-
-//                if (splitBlockHash % 2 == 0) {
-//                    this.addreses[splitBlockHash + 1] = this.addreses[splitBlockHash];
-//                } else {
-//                    this.addreses[splitBlockHash - 1] = this.addreses[splitBlockHash];
-//                }
 
 
 
@@ -291,7 +298,6 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
                     this.addreses[i] = -1;
                 }
 
-//                System.out.println(Arrays.toString(this.addreses));
 
                 newBlock.setBlockStart(this.randomAccessFileWriter.getFilePointer());
                 System.out.println(newBlock.getBlockStart());
@@ -309,27 +315,27 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
     public void insert(T paData) {
 
-        if (this.actualSize == 0) {
-            try {
-                this.randomAccessFileWriter.seek(this.randomAccessFileWriter.length());
-                for (int i = 0; i < 2; i++) {
-                    this.addEmptyBlock(paData);
-                    this.actualSize++;
-                    this.addreses[i] = this.end;
-                    this.end += this.blockSize;
-                }
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//        if (this.actualSize == 0) {
+//            try {
+//                this.randomAccessFileWriter.seek(this.randomAccessFileWriter.length());
+//                for (int i = 0; i < 2; i++) {
+//                    this.addEmptyBlock(paData);
+//                    this.actualSize++;
+//                    this.addreses[i] = this.end;
+//                    this.end += this.blockSize;
+//                }
+//
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
 
         boolean inserted = false;
 
         while (!inserted) {
 
             int resultHash = this.calculateHash(paData, this.depth);
-            System.out.println("Na heši: " + resultHash);
+            System.out.println("Hash: " + resultHash);
 
             try {
 
@@ -337,7 +343,7 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
                     this.randomAccessFileWriter.seek(this.end);
                     this.addreses[resultHash] = this.end;
                     this.end += this.blockSize;
-                    this.actualSize++;
+                    this.numberOfBlocks++;
                     HashBlock rehashedBlock = this.makeEmptyBlockInstance(paData);
                     rehashedBlock.setBlockStart(this.randomAccessFileWriter.getFilePointer());
                     rehashedBlock.setDepth(this.depth);
@@ -358,7 +364,7 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
                         if (blockInstance.getDepth() == this.depth) {
                             this.doubleAddressSpace();
                             resultHash = this.calculateHash(paData, this.depth);
-                            System.out.println("Nova hlpka: " + this.depth);
+                            System.out.println("Nova hlbka: " + this.depth);
                             System.out.println("Hash " + resultHash);
                         }
 
@@ -423,8 +429,8 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
     public void printBlocks(T paData) {
-        System.out.println("HashFile size: " + this.actualSize);
-        for (int i = 0; i < this.actualSize; i++) {
+        System.out.println("HashFile size: " + this.numberOfBlocks);
+        for (int i = 0; i < this.numberOfBlocks; i++) {
             long address = i * this.blockSize;
             System.out.println("ADDRESS PRINTED " + address);
             this.printBlock(paData, address);
@@ -454,10 +460,27 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
     public void closeHashFile() {
         try {
-            this.randomAccessFileWriter.setLength(0);
             this.randomAccessFileWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] addressesToByteArray() {
+        ByteArrayOutputStream hlpByteArrayOutputStream = new ByteArrayOutputStream();
+        DataOutputStream hlpOutStream = new DataOutputStream(hlpByteArrayOutputStream);
+
+        try {
+
+            for (long address : this.addreses) {
+                hlpOutStream.writeLong(address);
+            }
+
+            return hlpByteArrayOutputStream.toByteArray();
+
+
+        } catch (IOException e) {
+            throw new IllegalStateException("Error during conversion to byte array.");
         }
     }
 
@@ -468,7 +491,9 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
         try {
 
             hlpOutStream.writeLong(this.end);
-            hlpOutStream.writeLong(this.blockSize);
+            hlpOutStream.writeInt(this.blockSize);
+            hlpOutStream.writeInt(this.depth);
+            hlpOutStream.writeInt(this.addreses.length);
 
             return hlpByteArrayOutputStream.toByteArray();
 
@@ -485,11 +510,28 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
         try {
 
             this.end = hlpInStream.readLong();
+            this.blockSize = hlpInStream.readInt();
+            this.depth = hlpInStream.readInt();
+            int adressesLength = hlpInStream.readInt();
+            System.out.println(adressesLength);
+            this.addreses = new long[adressesLength];
+            this.numberOfBlocks = (int) (this.end / this.blockSize);
 
 
-            this.blockSize = hlpInStream.readLong();
+        } catch (IOException e) {
+            throw new IllegalStateException("Error during conversion from byte array.");
+        }
+    }
 
+    public void adressesFromByteArray(byte[] paByteArray) {
+        ByteArrayInputStream hlpByteArrayInputStream = new ByteArrayInputStream(paByteArray);
+        DataInputStream hlpInStream = new DataInputStream(hlpByteArrayInputStream);
 
+        try {
+
+            for (int i = 0; i < this.addreses.length; i++) {
+                this.addreses[i] = hlpInStream.readLong();
+            }
 
 
         } catch (IOException e) {
@@ -499,7 +541,7 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
     public ArrayList<HashBlock> getAllBlocks(T paData) {
         ArrayList<HashBlock> blocks = new ArrayList<>();
-        for (int i = 0; i < this.actualSize; i++) {
+        for (int i = 0; i < this.numberOfBlocks; i++) {
             long address = i * this.blockSize;
             try {
                 this.randomAccessFileWriter.seek(address);

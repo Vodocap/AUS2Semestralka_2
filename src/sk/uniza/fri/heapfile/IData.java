@@ -8,7 +8,7 @@ package sk.uniza.fri.heapfile;
 public interface IData<T> extends IRecord<T> {
     boolean myEquals(T data);
     T createInstance();
-    void print();
-    int getHashparameter();
-    String getHashParameter();
+    void printData();
+
 }
+

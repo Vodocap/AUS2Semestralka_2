@@ -1,7 +1,7 @@
 package sk.uniza.fri.data;
 
 import sk.uniza.fri.heapfile.IData;
-import sk.uniza.fri.heapfile.IHash;
+import sk.uniza.fri.hashfile.IHash;
 
 import java.io.*;
 import java.util.BitSet;
@@ -42,19 +42,11 @@ public class SearchZakaznikID implements IData<SearchZakaznikID>, IHash {
     }
 
     @Override
-    public void print() {
+    public void printData() {
         System.out.println(this.toString());
     }
 
-    @Override
-    public int getHashparameter() {
-        return this.ID;
-    }
 
-    @Override
-    public String getHashParameter() {
-        return this.ECV;
-    }
 
 
     @Override
