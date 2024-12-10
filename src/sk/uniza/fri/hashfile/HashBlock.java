@@ -50,8 +50,6 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
             byte[] emptyArrray = new byte[(int)(this.getSize() - recordsBytes - this.dataSize)];
 
             hlpOutStream.write(emptyArrray);
-//            System.out.println(hlpOutStream.size());
-
 
             return hlpByteArrayOutputStream.toByteArray();
 

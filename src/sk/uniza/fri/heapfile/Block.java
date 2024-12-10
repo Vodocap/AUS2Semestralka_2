@@ -33,7 +33,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
         this.blockStart = 0;
         this.recordArray = new ArrayList<>();
         this.sizeFactor = (int)paBlockSize / (int)data.getSize();
-        this.dataSize = 40;
+        this.dataSize = 32;
         if (this.sizeFactor * data.getSize() + this.dataSize > this.size) {
             this.sizeFactor -= 1;
         }
@@ -93,7 +93,6 @@ public class Block<T extends IData<T>> implements IRecord<T> {
             hlpOutStream.writeLong(this.validCount);
             hlpOutStream.writeLong(this.next);
             hlpOutStream.writeLong(this.previous);
-            hlpOutStream.writeLong(this.size);
 
 
             long recordsBytes = 0;
@@ -104,7 +103,7 @@ public class Block<T extends IData<T>> implements IRecord<T> {
 
 
 
-            byte[] emptyArrray = new byte[(int)(this.size - recordsBytes - 40)];
+            byte[] emptyArrray = new byte[(int)(this.size - recordsBytes - this.dataSize)];
 
             hlpOutStream.write(emptyArrray);
 
@@ -127,7 +126,6 @@ public class Block<T extends IData<T>> implements IRecord<T> {
             this.validCount = hlpInStream.readLong();
             this.next = hlpInStream.readLong();
             this.previous = hlpInStream.readLong();
-            this.size = hlpInStream.readLong();
 
             for (int i = 0; i < this.validCount; i++) {
 

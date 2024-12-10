@@ -72,7 +72,6 @@ public class SearchZakaznikID implements IData<SearchZakaznikID>, IHash {
         try {
 
             String writtenECV = this.ECV;
-//            System.out.println("ECVL: " + writtenECV.length());
             hlpOutStream.writeLong(this.adresa);
             hlpOutStream.writeInt(this.ID);
             hlpOutStream.write(writtenECV.getBytes());

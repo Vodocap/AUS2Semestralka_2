@@ -144,7 +144,6 @@ public class Navsteva implements IData<Navsteva> {
     }
 
 
-
     public double getCena() {
         return this.cena;
     }
@@ -165,16 +164,9 @@ public class Navsteva implements IData<Navsteva> {
         return this.vykonanePrace;
     }
 
-    public void setVykonanePrace(ArrayList<String> vykonanePrace) {
-        this.vykonanePrace = vykonanePrace;
-    }
 
     public int getPocetPlatnychPrac() {
         return this.pocetPlatnychPrac;
-    }
-
-    public void setPocetPlatnychPrac(int pocetPlatnychPrac) {
-        this.pocetPlatnychPrac = pocetPlatnychPrac;
     }
 
     @Override

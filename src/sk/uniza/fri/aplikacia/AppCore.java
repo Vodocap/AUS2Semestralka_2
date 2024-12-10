@@ -103,15 +103,6 @@ public class AppCore {
 
     }
 
-    public boolean pridajNavstevu(Object parameterVyhladania, LocalDate paDatum, double paCena, ArrayList<String> prace) {
-        Zakaznik pridavaneDoZakaznika = this.vyhladajUdajeOVozidle(parameterVyhladania);
-        Navsteva pridavanaNavsteva = new Navsteva(paDatum, paCena);
-        for (String s : prace) {
-            pridavanaNavsteva.addPRaca(s);
-        }
-        return pridavaneDoZakaznika.addZaznam(pridavanaNavsteva);
-    }
-
     public void zmenVozidlo(Object parameterVyhladania, Zakaznik noveVozidlo) {
 
         Zakaznik zmeneneVozidlo = this.vyhladajUdajeOVozidle(parameterVyhladania);

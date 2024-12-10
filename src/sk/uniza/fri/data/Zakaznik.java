@@ -231,8 +231,4 @@ public class Zakaznik implements IData<Zakaznik> {
         return this.ECV;
     }
 
-    public void setECV(String ECV) {
-        this.ECV = ECV;
-    }
-
 }

@@ -93,6 +93,7 @@ public class NavstevaPopup extends JFrame {
                     }
 
                     ((MainWindow) NavstevaPopup.this.parentInstance).updatelist();
+                    ((MainWindow) NavstevaPopup.this.parentInstance).updateZakaznikText();
                 }
 
                 NavstevaPopup.this.dispose();

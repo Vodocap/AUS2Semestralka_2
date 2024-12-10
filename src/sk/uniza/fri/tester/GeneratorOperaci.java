@@ -45,7 +45,6 @@ public class GeneratorOperaci {
             long adresaVlozenej = this.heapFile.insert(vlozenyZakaznik);
             System.out.println("INSERT: " + vlozenyZakaznik + " Na adrese: " + adresaVlozenej);
             if (adresaVlozenej != -1) {
-//                    this.vypisheapFile();
                 this.kontrolneData.put(vlozenyZakaznik, adresaVlozenej);
             } else {
                 System.out.println("HEAPFILE BOL UZ PLNY");
@@ -129,8 +128,8 @@ public class GeneratorOperaci {
                 int mazanyindex = this.random.nextInt(this.kontrolneData.keySet().size());
                 ArrayList keys = new ArrayList(this.kontrolneData.keySet());
                 this.heapFile.delete(this.kontrolneData.get(keys.get(mazanyindex)), (Zakaznik)keys.get(mazanyindex));
-                System.out.println("DELETE: " + (Zakaznik)keys.get(mazanyindex) + "Na adrese: " + this.kontrolneData.get(keys.get(mazanyindex)));
-//                    this.vypisheapFile();
+                System.out.println("DELETE: " + keys.get(mazanyindex) + "Na adrese: " + this.kontrolneData.get(keys.get(mazanyindex)));
+
                 this.kontrolneData.remove((Zakaznik) keys.get(mazanyindex),this.kontrolneData.get(keys.get(mazanyindex)));
             }
         }
@@ -138,7 +137,6 @@ public class GeneratorOperaci {
     }
 
     private void skontrolujHeapFile() {
-        ArrayList keys = new ArrayList(this.kontrolneData.keySet());
         int hladane = 0;
         int najdene = 0;
 
