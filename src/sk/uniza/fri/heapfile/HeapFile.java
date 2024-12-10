@@ -6,10 +6,9 @@ import java.util.ArrayList;
 /**
  * 15. 11. 2024 - 13:25
  *
+ * @param <T> v HeapFile sú len tie bloke ktoré implementujú interface IDATA
  * @author matus
- *
  */
-
 public class HeapFile<T extends IData> {
     private long emptyBlocks;
     private long partlyEmptyBlocks;
@@ -19,6 +18,12 @@ public class HeapFile<T extends IData> {
     private long blockSize;
 
 
+    /**
+     * Instantiates a new Heap file.
+     * Konštruktor
+     * @param paFilePath  cesta k súboru v ktorom sa budú nachádzať dáta
+     * @param paBlockSize veľkosť blokov v súbore
+     */
     public HeapFile(String paFilePath, int paBlockSize) {
         this.numberOfBlocks = 0;
         try {
@@ -35,6 +40,11 @@ public class HeapFile<T extends IData> {
 
     }
 
+    /**
+     * Inicializuje heapfile zo súboru.
+     *
+     * @param initFilePath cesta k súboru z ktorého sa inicializuje
+     */
     public void initialiseHeapFileFromFile(String initFilePath) {
         try {
             RandomAccessFile loader = new RandomAccessFile(initFilePath, "rw");
@@ -54,6 +64,12 @@ public class HeapFile<T extends IData> {
     }
 
 
+    /**
+     * Insert long.
+     *
+     * @param paData záznam ktorý sa do štruktúry vloží
+     * @return adresa na ktorej bol záznam vložený
+     */
     public long insert(T paData) {
         try {
 
@@ -326,10 +342,12 @@ public class HeapFile<T extends IData> {
         }
     }
 
+    /**
+     * Shorten file.
+     * Skráti súbor
+     * @param blockInstance inštancia bloku od ktorej sa má súbor skracovať
+     */
     public void shortenFile(Block blockInstance) {
-
-
-
 
         if (blockInstance.isEmpty()) {
 
@@ -375,6 +393,12 @@ public class HeapFile<T extends IData> {
     }
 
 
+    /**
+     * Delete.
+     * Vymaže záznam zo štruktúry
+     * @param paAdress adreza na ktorej očakávame záznam
+     * @param paData   inštancia očakávaného záznamu na mazanie z operačnej pamäti
+     */
     public void delete(long paAdress, T paData) {
         try {
 
@@ -402,6 +426,14 @@ public class HeapFile<T extends IData> {
         }
     }
 
+    /**
+     * Update.
+     * Vymení starý záznam za nový záznam
+     *
+     * @param paAddress adresa na ktorej sa nachádza blok
+     * @param oldData   starý záznam
+     * @param newData   nový záznam
+     */
     public void update(long paAddress, T oldData, T newData) {
         try {
             this.randomAccessFileWriter.seek(paAddress);
@@ -416,6 +448,13 @@ public class HeapFile<T extends IData> {
 
     }
 
+    /**
+     * Get.
+     *
+     * @param paAddress na ktorej očakávame blok
+     * @param paData    parametrický záznam ktorý sa porovná
+     * @return vráti záznam dát zo súboru
+     */
     public T get(long paAddress, T paData) {
         try {
             this.randomAccessFileWriter.seek(paAddress);
@@ -428,6 +467,11 @@ public class HeapFile<T extends IData> {
 
     }
 
+    /**
+     * Print blocks.
+     *
+     * @param paData the pa data
+     */
     public void printBlocks(T paData) {
         System.out.println("HeapFile size: " + this.numberOfBlocks);
         System.out.println("Empty Blocks: " + this.emptyBlocks);
@@ -452,6 +496,12 @@ public class HeapFile<T extends IData> {
                 '}';
     }
 
+    /**
+     * To string string.
+     *
+     * @param paData the pa data
+     * @return the string
+     */
     public String toString(T paData) {
         String resultString = "Number of blocks: " + this.numberOfBlocks + "\nEmpty Blocks: " + this.emptyBlocks +
                 "\nPartly Empty Blocks: " + this.partlyEmptyBlocks + "\n";
@@ -464,6 +514,12 @@ public class HeapFile<T extends IData> {
         return resultString;
     }
 
+    /**
+     * Gets all blocks.
+     *
+     * @param paData the pa data
+     * @return the all blocks
+     */
     public ArrayList<Block> getAllBlocks(T paData) {
         ArrayList<Block> blocks = new ArrayList<>();
         for (int i = 0; i < this.numberOfBlocks; i++) {
@@ -485,7 +541,13 @@ public class HeapFile<T extends IData> {
     }
 
 
-
+    /**
+     * To string block string.
+     *
+     * @param paData    the pa data
+     * @param paAddress the pa address
+     * @return the string
+     */
     public String toStringBlock(T paData, long paAddress) {
 
         try {
@@ -504,6 +566,12 @@ public class HeapFile<T extends IData> {
 
     }
 
+    /**
+     * Print block.
+     *
+     * @param paData    the pa data
+     * @param paAddress the pa address
+     */
     public void printBlock(T paData, long paAddress) {
 
 
@@ -521,6 +589,11 @@ public class HeapFile<T extends IData> {
 
     }
 
+    /**
+     * Zavrie .
+     *
+     * @param saveFilePath the save file path
+     */
     public void closeHeapFile(String saveFilePath) {
         try {
             RandomAccessFile saver = new RandomAccessFile(saveFilePath, "rw");

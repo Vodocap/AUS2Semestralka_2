@@ -10,7 +10,6 @@ import sk.uniza.fri.heapfile.HeapFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Random;
 

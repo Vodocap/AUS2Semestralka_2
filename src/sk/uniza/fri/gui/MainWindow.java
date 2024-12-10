@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainWindow extends JFrame {
     private JPanel panel1;
@@ -152,6 +151,7 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainWindow.this.appCore.ulozAplikaciu(MainWindow.this.nazovSuboruTextField.getText());
+                MainWindow.this.dispose();
             }
         });
 

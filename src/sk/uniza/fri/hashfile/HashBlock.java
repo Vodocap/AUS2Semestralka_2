@@ -13,12 +13,22 @@ import java.util.ArrayList;
 /**
  * 15. 11. 2024 - 13:25
  *
+ * @param <T> v bloku sú len tie záznamy ktoré implementujú interface IDATA
+ *
+ *
  * @author matus
  */
 public class HashBlock<T extends IData<T>> extends Block<T> {
     private int depth;
     private final int dataSize;
 
+    /**
+     * Instantiates a new Hash block.
+     *
+     * @param data        inštancia dát ktoré v bloku budú
+     * @param paBlockSize veľkosť bloku
+     *
+     */
     public HashBlock(IData<T> data, long paBlockSize) {
         super((T)data, paBlockSize);
         this.dataSize = 20;
@@ -26,6 +36,8 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
             this.sizeFactor -= 1;
         }
     }
+
+
 
     @Override
     public byte[] toByteArray() {
@@ -99,19 +111,41 @@ public class HashBlock<T extends IData<T>> extends Block<T> {
         return resultString;
     }
 
+    /**
+     * Vráti zoznam všetkých záznamov.
+     *
+     *
+     * @return the data list
+     */
     public ArrayList<T> getDataList () {
         return this.recordArray;
     }
 
+    /**
+     * Vyčistí zoznam záznamov.
+     */
     public void clearList() {
         this.recordArray.clear();
         this.validCount = 0;
     }
 
+    /**
+     * Vráti hĺbku bloku.
+     *
+     * @return hĺbka bloku
+     *
+     *
+     */
     public int getDepth() {
         return this.depth;
     }
 
+    /**
+     * Nastaví hĺbku.
+     *
+     * @param depth hĺbka bloku
+     *
+     */
     public void setDepth(int depth) {
         this.depth = depth;
     }

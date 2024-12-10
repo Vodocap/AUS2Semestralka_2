@@ -11,6 +11,7 @@ import java.util.BitSet;
 /**
  * 15. 11. 2024 - 13:25
  *
+ * @param <T> the type parameter
  * @author matus
  */
 public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
@@ -24,6 +25,12 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     private static int HASH_OFFSET = 7;
 
 
+    /**
+     * Instantiates a new Hash file.
+     *
+     * @param paFilePath  the pa file path
+     * @param paBlockSize the pa block size
+     */
     public HashFile(String paFilePath, int paBlockSize) {
         this.addreses = new long[2];
         Arrays.fill(this.addreses, -1);
@@ -40,11 +47,23 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
     }
 
+    /**
+     * Vráti adresár [ ].
+     *
+     * @return adresár [ ]
+     */
     public long[] getAddreses() {
         return this.addreses;
     }
 
 
+    /**
+     * Vypočíta hash, int.
+     *
+     * @param paData    dáta z ktorých sa vyráta hash
+     * @param hashDepth hĺbka podľa ktorej sa hashuje
+     * @return the int
+     */
     public int calculateHash(T paData ,int hashDepth) {
 
 
@@ -63,6 +82,13 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
+    /**
+     * Vytvorí BitSet z intu int.
+     * V podstate hash bez hĺbky
+     *
+     * @param paBitSet bitset na vytvorenie intu
+     * @return int vytvorený z bitsetu
+     */
     public int bitsetToInt(BitSet paBitSet) {
         int resultHash = 0;
 
@@ -106,6 +132,13 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
+    /**
+     * Otočí bitset.
+     *
+     * @param bitSetToReverse bitset ktorý musí otočiť
+     * @return otočený bitset
+     *
+     */
     BitSet reverseBitset(BitSet bitSetToReverse) {
         BitSet revertedBitset = new BitSet(32);
 
@@ -122,6 +155,13 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
+    /**
+     * Inicializuje hashfile zo súboru.
+     *
+     * @param attributeFilePath cesta k súboru s atribútmi
+     * @param adressesFilePath  cesta k súboru s adresárom
+     *
+     */
     public void initialiseHashFileFromFile(String attributeFilePath, String adressesFilePath) {
         try {
             RandomAccessFile attributeLoader = new RandomAccessFile(attributeFilePath, "rw");
@@ -149,6 +189,12 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
+    /**
+     * Uloží hashfile do súboru.
+     *
+     * @param attributeFilePath cesta k súboru s atribútmi
+     * @param adressesFilePath  cesta k súboru s adresárom
+     */
     public void saveHashFileIntoFile(String attributeFilePath, String adressesFilePath) {
         try {
             RandomAccessFile attributeSaver = new RandomAccessFile(attributeFilePath, "rw");
@@ -177,7 +223,14 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
-
+    /**
+     * Vráť prvý index v adresári z tých čo ukazujú na rovnakú adresu.
+     *
+     * @param bitSet    bitset pôvodného hashu
+     * @param trimDepth faktor orezania bitsetu
+     *
+     * @return the first
+     */
     public int getFirst(BitSet bitSet , int trimDepth) {
         bitSet.set(0, trimDepth, false);
         return bitsetToInt(this.reverseBitset(bitSet));
@@ -196,6 +249,13 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
                 '}';
     }
 
+    /**
+     * Split block.
+     * Rozdelí blok, buď sa z neho stanú dva alebo len jeden
+     *
+     * @param blockInstance  inštancia bloku
+     * @param splitBlockHash hash adresy na ktorom je blok ktorý sa ide splitovať
+     */
     public void splitBlock(HashBlock<T> blockInstance, int splitBlockHash) {
 
         ArrayList<T> oldRecords = new ArrayList<>(blockInstance.getDataList());
@@ -313,22 +373,13 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
+    /**
+     * Insert.
+     *
+     * @param paData the dáta ktoré sa do hashfile vložia
+     *
+     */
     public void insert(T paData) {
-
-//        if (this.actualSize == 0) {
-//            try {
-//                this.randomAccessFileWriter.seek(this.randomAccessFileWriter.length());
-//                for (int i = 0; i < 2; i++) {
-//                    this.addEmptyBlock(paData);
-//                    this.actualSize++;
-//                    this.addreses[i] = this.end;
-//                    this.end += this.blockSize;
-//                }
-//
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
 
         boolean inserted = false;
 
@@ -413,6 +464,13 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
         return readBlock;
     }
 
+    /**
+     * Get.
+     *
+     * @param paData inštancia dát ktoré sa majú vrátiť
+     * @return vráti inštanciu dát zo súboru
+     *
+     */
     public T get(T paData) {
         try {
 
@@ -431,6 +489,12 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
 
     }
 
+    /**
+     * Vyprintuje všetky bloky v súbore.
+     *
+     * @param paData dummy inštancia dát pre vytváranie blokov v operačnej pamäti
+     *
+     */
     public void printBlocks(T paData) {
         System.out.println("HashFile size: " + this.numberOfBlocks);
         for (int i = 0; i < this.numberOfBlocks; i++) {
@@ -441,6 +505,12 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
         }
     }
 
+    /**
+     * Vyprintuje blok na adrese.
+     *
+     * @param paData    the pa data
+     * @param paAddress the pa address
+     */
     public void printBlock(T paData, long paAddress) {
 
 
@@ -459,8 +529,11 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
     }
 
 
-
-
+    /**
+     * Close hash file.
+     * zatvorí hashfile
+     *
+     */
     public void closeHashFile() {
         try {
             this.randomAccessFileWriter.close();
@@ -469,6 +542,11 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
         }
     }
 
+    /**
+     * Prevedie adresár na byteArray
+     *
+     * @return the bytarray adresára [ ]
+     */
     public byte[] addressesToByteArray() {
         ByteArrayOutputStream hlpByteArrayOutputStream = new ByteArrayOutputStream();
         DataOutputStream hlpOutStream = new DataOutputStream(hlpByteArrayOutputStream);
@@ -526,6 +604,11 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
         }
     }
 
+    /**
+     * Načíta adresár z byteArray.
+     *
+     * @param paByteArray byteArray adresára
+     */
     public void adressesFromByteArray(byte[] paByteArray) {
         ByteArrayInputStream hlpByteArrayInputStream = new ByteArrayInputStream(paByteArray);
         DataInputStream hlpInStream = new DataInputStream(hlpByteArrayInputStream);
@@ -542,6 +625,12 @@ public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
         }
     }
 
+    /**
+     * Vráti všetky bloky v súbore .
+     *
+     * @param paData inštancia dát ktoré sa majú vrátiť
+     * @return zoznam všetkých blokov
+     */
     public ArrayList<HashBlock> getAllBlocks(T paData) {
         ArrayList<HashBlock> blocks = new ArrayList<>();
         for (int i = 0; i < this.numberOfBlocks; i++) {

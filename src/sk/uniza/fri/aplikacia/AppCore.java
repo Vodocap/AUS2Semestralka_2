@@ -18,13 +18,26 @@ import java.io.RandomAccessFile;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 
+
+/**
+ * The type App core.
+ */
 public class AppCore {
     private HashFile<SearchZakaznikID> hashFileID;
     private HashFile<SearchZakaznikECV> hashFileECV;
     private HeapFile<Zakaznik> heapFileStorage;
     private NahodnyGenerator nahodnyGen;
+
+
+    /**
+     * Appcore reprezentuje jadro aplikácie.
+     *
+     * @param mainStorageFilePath  cesta k súboru heapfile
+     * @param blockSizeHeapFile    velkost blokov v heapfile
+     * @param blocksizeHashFiles   velkosť blokov v hashfiloch
+     * @param zaciatokIdCislovania čislo od ktorého sa začínajú id čislovať
+     */
 
     public AppCore(String mainStorageFilePath, int blockSizeHeapFile, int blocksizeHashFiles, int zaciatokIdCislovania) {
         this.heapFileStorage = new HeapFile<Zakaznik>(mainStorageFilePath, blockSizeHeapFile);
@@ -34,6 +47,12 @@ public class AppCore {
     }
 
 
+    /**
+     *
+     * @param parameterVyhladania String alebo int, parameter podľa ktorého sa v súbore vyhľadá
+     * @return Inštancia search zákazníka
+     *
+     */
     public Object vratSearchZakaznika(Object parameterVyhladania) {
         if (parameterVyhladania instanceof String) {
             SearchZakaznikECV dummyZakaznik = new SearchZakaznikECV((String) parameterVyhladania);
@@ -50,6 +69,13 @@ public class AppCore {
         }
     }
 
+    /**
+     * Vyhladaj udaje o vozidle zakaznik.
+     *
+     * @param parameterVyhladania String alebo int, parameter podľa ktorého sa v súbore vyhľadá
+     * @return Kópia Zákazníka
+     *
+     */
     public Zakaznik vyhladajUdajeOVozidle(Object parameterVyhladania) {
 
         if (parameterVyhladania instanceof String) {
@@ -74,6 +100,14 @@ public class AppCore {
 
     }
 
+    /**
+     * Pridaj vozidlo.
+     *
+     * @param paMeno       meno zákazníka
+     * @param paPriezvisko priezvisko zákazníka
+     * @param paID         id zákazníka
+     * @param paECV        ECV auta zákazníka
+     */
     public void pridajVozidlo(String paMeno, String paPriezvisko, int paID, String paECV) {
         Zakaznik pridavanyZakaznik = new Zakaznik(paMeno, paPriezvisko, paID,new Navsteva(LocalDate.now(), 20),paECV);
         System.out.println("Pridany novy zagaznik: " + pridavanyZakaznik.toString());
@@ -89,6 +123,11 @@ public class AppCore {
 
     }
 
+    /**
+     * Pridá vozidlo.
+     *
+     * @param zakaznik pridávaný zakaznik
+     */
     public void pridajVozidlo(Zakaznik zakaznik) {
 
         SearchZakaznikID pridavanyID = new SearchZakaznikID(zakaznik.getID());
@@ -103,6 +142,12 @@ public class AppCore {
 
     }
 
+    /**
+     * Zmení vozidlo na nové zadané vozidlo.
+     *
+     * @param parameterVyhladania String alebo int, parameter podľa ktorého sa v súbore vyhľadá
+     * @param noveVozidlo         nové vozidlo
+     */
     public void zmenVozidlo(Object parameterVyhladania, Zakaznik noveVozidlo) {
 
         Zakaznik zmeneneVozidlo = this.vyhladajUdajeOVozidle(parameterVyhladania);
@@ -125,6 +170,12 @@ public class AppCore {
 
     }
 
+    /**
+     * Daj adresar
+     *
+     * @param iDOrECV vráti adresár buď hashfilu z idckami alebo ecvckami
+     * @return the long [ ]
+     */
     public long[] dajAdresar(int iDOrECV) {
         if (iDOrECV == 1) {
             return Arrays.copyOf(this.hashFileID.getAddreses(), this.hashFileID.getAddreses().length);
@@ -133,6 +184,13 @@ public class AppCore {
         }
     }
 
+    /**
+     * Vygeneruje n zakaznikov.
+     *
+     * @param pocetVygenerovanychZakaznikov pocet vygenerovaných zákazníkov
+     *
+     *
+     */
     public void vygenerujNZakaznikov(int pocetVygenerovanychZakaznikov) {
         for (int i = 0; i < pocetVygenerovanychZakaznikov; i++) {
 
@@ -142,6 +200,13 @@ public class AppCore {
         }
     }
 
+    /**
+     * Daj vsetky bloky v heapfile, hashfileID alebo hashFileECV.
+     *
+     * @param typ typ súboru z ktorého sa vypíšu bloky
+     *
+     * @return zoznam všetkých blokov
+     */
     public ArrayList dajVsetkyBloky(int typ) {
         return switch (typ) {
             case 0 ->
@@ -154,10 +219,18 @@ public class AppCore {
         };
     }
 
+    /**
+     * Uloží aplikáciu.
+     *
+     * @param heapfileUkladaciSubor cesta k súboru v ktorom je heapfile
+     *
+     */
     public void ulozAplikaciu(String heapfileUkladaciSubor) {
         this.heapFileStorage.closeHeapFile(heapfileUkladaciSubor);
         this.hashFileID.saveHashFileIntoFile("idatsave.bin", "idadsave.bin");
         this.hashFileECV.saveHashFileIntoFile("ecvatsave.bin", "ecvadsave.bin");
+        this.hashFileID.closeHashFile();
+        this.hashFileECV.closeHashFile();
         try {
             RandomAccessFile numberSaver = new RandomAccessFile("idend.bin", "rw");
             numberSaver.seek(0);
@@ -171,6 +244,11 @@ public class AppCore {
     }
 
 
+    /**
+     * Načíta aplikáciu.
+     *
+     * @param heapfileNacitavaciSubor cesta k súboru v ktorom je heapfile
+     */
     public void nacitajAplikaciu(String heapfileNacitavaciSubor) {
         this.heapFileStorage.initialiseHeapFileFromFile(heapfileNacitavaciSubor);
         this.hashFileID.initialiseHashFileFromFile("idatsave.bin", "idadsave.bin");
