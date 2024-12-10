@@ -1,0 +1,597 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 3,
+    "backwardDepth": 3,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "sk.uniza.fri.aplikacia.AppCore",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_111433751 { 
+   	label=uniza
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_300750138 { 
+   	label=fri
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   AppCore351398779[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)AppCore</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   hashFileECV: HashFile&lt;SearchZakaznikECV&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   hashFileID: HashFile&lt;SearchZakaznikID&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   heapFileStorage: HeapFile&lt;Zakaznik&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   nahodnyGen: NahodnyGenerator [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ dajAdresar(iDOrECV: int): long[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ dajVsetkyBloky(typ: int): ArrayList</TD></TR>
+<TR><TD ALIGN="LEFT" >- fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ nacitajAplikaciu(heapfileNacitavaciSubor: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ pridajNavstevu(parameterVyhladania: Object, paDatum: LocalDate, paCena: double, prace: ArrayList&lt;String&gt;): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ pridajVozidlo(paMeno: String, paPriezvisko: String, paID: int, paECV: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ pridajVozidlo(zakaznik: Zakaznik)</TD></TR>
+<TR><TD ALIGN="LEFT" >- toByteArray(): byte[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ ulozAplikaciu(heapfileUkladaciSubor: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vratSearchZakaznika(parameterVyhladania: Object): Object</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vygenerujNZakaznikov(pocetVygenerovanychZakaznikov: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vyhladajUdajeOVozidle(parameterVyhladania: Object): Zakaznik</TD></TR>
+<TR><TD ALIGN="LEFT" >+ zmenVozidlo(parameterVyhladania: Object, noveVozidlo: Zakaznik)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Block1462360346[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Block&lt;T extends IData&lt;T&gt;&gt;</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   blockStart: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dataSize: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   instanceCreator: T [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   next: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   previous: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   recordArray: ArrayList&lt;T&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   size: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   sizeFactor: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   validCount: long [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getRecord(paData: T): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ insertData(paData: T)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printBlock()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ removeData(paData: T)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toStringLonger(): String</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+HashBlock209471224[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)HashBlock&lt;T extends IData&lt;T&gt;&gt;</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   dataSize: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   depth: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ clearList()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+HashFile209471224[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)HashFile&lt;T extends IData&lt;T&gt; &amp; IHash&gt;</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   addreses: long[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   blockSize: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   depth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   end: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   numberOfBlocks: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   randomAccessFileWriter: RandomAccessFile [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addEmptyBlock(paData: T)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ addressesToByteArray(): byte[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ adressesFromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ bitsetToInt(paBitSet: BitSet): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ calculateHash(paData: T, hashDepth: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ closeHashFile()</TD></TR>
+<TR><TD ALIGN="LEFT" >- doubleAddressSpace()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ get(paData: T): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getAllBlocks(paData: T): ArrayList&lt;HashBlock&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getFirst(bitSet: BitSet, trimDepth: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ initialiseHashFileFromFile(attributeFilePath: String, adressesFilePath: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ insert(paData: T)</TD></TR>
+<TR><TD ALIGN="LEFT" >- makeBlockInstance(paData: T): HashBlock</TD></TR>
+<TR><TD ALIGN="LEFT" >- makeEmptyBlockInstance(paData: T): HashBlock</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printBlock(paData: T, paAddress: long)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printBlocks(paData: T)</TD></TR>
+<TR><TD ALIGN="LEFT" >- readBlock(): byte[]</TD></TR>
+<TR><TD ALIGN="LEFT" ># reverseBitset(bitSetToReverse: BitSet): BitSet</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveHashFileIntoFile(attributeFilePath: String, adressesFilePath: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ splitBlock(blockInstance: HashBlock&lt;T&gt;, splitBlockHash: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+HeapFile1462360346[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)HeapFile&lt;T extends IData&gt;</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   blockSize: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   emptyBlocks: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   end: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   numberOfBlocks: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   partlyEmptyBlocks: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   randomAccessFileWriter: RandomAccessFile [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- checkStatusDelete(blockInstance: Block)</TD></TR>
+<TR><TD ALIGN="LEFT" >- checkStatusInsert(blockInstance: Block)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ closeHeapFile(saveFilePath: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ delete(paAdress: long, paData: T)</TD></TR>
+<TR><TD ALIGN="LEFT" >- fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ get(paAddress: long, paData: T): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getAllBlocks(paData: T): ArrayList&lt;Block&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ initialiseHeapFileFromFile(initFilePath: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ insert(paData: T): long</TD></TR>
+<TR><TD ALIGN="LEFT" >- insertBlockInFront(blockInstance: Block, newNext: long)</TD></TR>
+<TR><TD ALIGN="LEFT" >- makeBlockInstance(paData: T): Block</TD></TR>
+<TR><TD ALIGN="LEFT" >- makeEmptyBlockInstance(paData: T): Block</TD></TR>
+<TR><TD ALIGN="LEFT" >- mendOldReferences(blockInstance: Block)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printBlock(paData: T, paAddress: long)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printBlocks(paData: T)</TD></TR>
+<TR><TD ALIGN="LEFT" >- readBlock(): byte[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ shortenFile(blockInstance: Block)</TD></TR>
+<TR><TD ALIGN="LEFT" >- toByteArray(): byte[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toStringBlock(paData: T, paAddress: long): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(paAddress: long, oldData: T, newData: T)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MainWindow90119939[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MainWindow</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   appCore: AppCore [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   comboBox1: JComboBox [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   comboBox2: JComboBox [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentZakaznik: Zakaznik [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   jList2: JList [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   list1: JList [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   nacitajZoSuboruButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   navstevy: ArrayList [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   nazovSuboruTextField: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   panel1: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   parameterVyhladaniaTextField: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pridajAutoButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pridajNavstevuButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textField4: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ulozDoSUboruButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   upravAktualneVozidloButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   vygenerujZakaznikovButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   vyhladajZakaznikaButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zakaznikTextArea: JTextArea [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zobrazBlokyButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zrusButton: JButton [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ $$$getRootComponent$$$(): JComponent</TD></TR>
+<TR><TD ALIGN="LEFT" >- $$$setupUI$$$()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateZakaznikText()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updatelist()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+NahodnyGenerator1501141032[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)NahodnyGenerator</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   currentID: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   random: Random [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   vygenerovaneID: ArrayList&lt;Integer&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   vygenerovaneInty: ArrayList&lt;Integer&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   vygenerovaneStringy: ArrayList&lt;String&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ dajCharZCisla(cisloCharu: int): char</TD></TR>
+<TR><TD ALIGN="LEFT" >- returnCharpoolFromIndex(paInt: int): char</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vygenerujECV(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vygenerujString(paDlzka: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vygenerujString(minDlzka: int, maxDlzka: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vygenerujUnikatneID(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vygenerujUnikatnyInt(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vygenerujUnikatnyString(minDlzka: int, maxDlzka: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ vygenerujUnikatnyString(paDlzka: int): String</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Navsteva1501141032[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Navsteva</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   cena: double [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   datum: LocalDate [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pocetPlatnychPrac: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   vykonanePrace: ArrayList&lt;String&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addPRaca(novaPraca: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createInstance(): Navsteva</TD></TR>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ myEquals(data: Navsteva): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ removePraca(odstranovanaPraca: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+NavstevaPopup90119939[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)NavstevaPopup</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   appCore: AppCore [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   list1: JList [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   navsetvas: ArrayList [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   panel1: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   parentInstance: Object [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prace: ArrayList&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pridajNavstevuButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pridajPracuButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldCena: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldDen: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldMesiac: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldPrace: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldRok: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   vytvorenaNavsteva: Navsteva [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zrusButton: JButton [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ $$$getRootComponent$$$(): JComponent</TD></TR>
+<TR><TD ALIGN="LEFT" >- $$$setupUI$$$()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateList()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OsobaTest50727491[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OsobaTest</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   ID: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   meno: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pocetPlatnychNavstev: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   priezvisko: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   size: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zaznamy: ArrayList&lt;ZaznamTest&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addZaznam(paZaznam: ZaznamTest)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createInstance(): OsobaTest</TD></TR>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ myEquals(data: OsobaTest): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+SearchZakaznikECV1501141032[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SearchZakaznikECV</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   ECV: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ID: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   adresa: long [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ createInstance(): SearchZakaznikECV</TD></TR>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ myEquals(data: SearchZakaznikECV): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+SearchZakaznikID1501141032[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SearchZakaznikID</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   ECV: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ID: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   adresa: long [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ createInstance(): SearchZakaznikID</TD></TR>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ myEquals(data: SearchZakaznikID): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+UpravNavstevyPopup90119939[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)UpravNavstevyPopup</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   appCore: AppCore [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   jpanel1: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   list1: JList [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   panel1: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   parentInstance: MainWindow [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   prace: ArrayList&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldCena: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldDen: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldMesiac: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldPrace: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textFieldRok: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   upravNavstevuButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   upravPracuButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   upravovanaNavsteva: Navsteva [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zrusButton: JButton [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ $$$getRootComponent$$$(): JComponent</TD></TR>
+<TR><TD ALIGN="LEFT" >- $$$setupUI$$$()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+UpravVozidloPopup90119939[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)UpravVozidloPopup</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   appCore: AppCore [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   jpanel: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   jpanel1: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   list1: JList [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   menoTextField: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   parentInstance: MainWindow [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   priezviskoTextField: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   upravNavstevuButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   upravVozidloButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zrusButton: JButton [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ $$$getRootComponent$$$(): JComponent</TD></TR>
+<TR><TD ALIGN="LEFT" >- $$$setupUI$$$()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+VozidloPopup90119939[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)VozidloPopup</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   ECVTextField: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   IDTextField: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   appCore: AppCore [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   jpanel1: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   list1: JList [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   menoTextField: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   navstevas: ArrayList&lt;Navsteva&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pridajNavstevuButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pridajVozidloButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   priezviskoTextField: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zrusButton: JButton [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ $$$getRootComponent$$$(): JComponent</TD></TR>
+<TR><TD ALIGN="LEFT" >- $$$setupUI$$$()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updatelist()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Zakaznik1501141032[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Zakaznik</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   ECV: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   ID: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   meno: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pocetPlatnychNavstev: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   priezvisko: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   size: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   vytvaracInstancii: Navsteva [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   zaznamyONasvsteve: ArrayList&lt;Navsteva&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addZaznam(paNavsteva: Navsteva): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ createInstance(): Zakaznik</TD></TR>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(paByteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ myEquals(data: Zakaznik): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ printData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ removeZaznam(paData: Navsteva)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ZaznamTest50727491[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ZaznamTest</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ fromByteArray(pabyteArray: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toByteArray(): byte[]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+AppCore351398779 -> HashFile209471224[label="hashFileECV
+[0..1]"];
+AppCore351398779 -> HashFile209471224[label="hashFileID
+[0..1]"];
+AppCore351398779 -> HeapFile1462360346[label="heapFileStorage
+[0..1]"];
+AppCore351398779 -> NahodnyGenerator1501141032[label="nahodnyGen
+[0..1]"];
+AppCore351398779 -> Navsteva1501141032[label="pridajNavstevu() -> addPRaca()"];
+AppCore351398779 -> SearchZakaznikECV1501141032[label="hashFileECV
+[0..1]"];
+AppCore351398779 -> SearchZakaznikID1501141032[label="hashFileID
+[0..1]"];
+AppCore351398779 -> Zakaznik1501141032[label="heapFileStorage
+[0..1]"];
+MainWindow90119939 -> AppCore351398779[label="appCore
+[0..1]"];
+Navsteva1501141032 -> Block1462360346[arrowhead=none];
+Navsteva1501141032 -> HashFile209471224[arrowhead=none];
+Navsteva1501141032 -> OsobaTest50727491[arrowhead=none];
+Navsteva1501141032 -> SearchZakaznikECV1501141032[arrowhead=none];
+Navsteva1501141032 -> SearchZakaznikID1501141032[arrowhead=none];
+Navsteva1501141032 -> Zakaznik1501141032[arrowhead=none];
+Navsteva1501141032 -> ZaznamTest50727491[arrowhead=none];
+NavstevaPopup90119939 -> AppCore351398779[label="appCore
+[0..1]"];
+OsobaTest50727491 -> ZaznamTest50727491[label="zaznamy
+[0..*]"];
+SearchZakaznikID1501141032 -> SearchZakaznikECV1501141032[arrowhead=none];
+UpravNavstevyPopup90119939 -> AppCore351398779[label="appCore
+[0..1]"];
+UpravNavstevyPopup90119939 -> MainWindow90119939[label="parentInstance
+[0..1]"];
+UpravVozidloPopup90119939 -> AppCore351398779[label="appCore
+[0..1]"];
+UpravVozidloPopup90119939 -> MainWindow90119939[label="parentInstance
+[0..1]"];
+VozidloPopup90119939 -> AppCore351398779[label="appCore
+[0..1]"];
+Zakaznik1501141032 -> Navsteva1501141032[label="vytvaracInstancii
+[0..1]"];
+Zakaznik1501141032 -> Navsteva1501141032[label="zaznamyONasvsteve
+[0..*]"];
+    
+}
+@enduml

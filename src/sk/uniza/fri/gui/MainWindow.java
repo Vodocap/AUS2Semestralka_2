@@ -1,9 +1,12 @@
 package sk.uniza.fri.gui;
 
 import sk.uniza.fri.aplikacia.AppCore;
+import sk.uniza.fri.data.Navsteva;
 import sk.uniza.fri.data.Zakaznik;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,7 +36,7 @@ public class MainWindow extends JFrame {
     private Zakaznik currentZakaznik;
 
     public MainWindow() {
-        this.appCore = new AppCore("Bin.bin", 6000, 70, 262223);
+        this.appCore = new AppCore("Bin.bin", 6000, 200, 262223);
         this.navstevy = new ArrayList();
         this.pridajNavstevuButton.setVisible(false);
         this.upravAktualneVozidloButton.setVisible(false);
@@ -53,6 +56,18 @@ public class MainWindow extends JFrame {
                 MainWindow.this.list1.setListData(MainWindow.this.appCore.dajVsetkyBloky(MainWindow.this.comboBox2.getSelectedIndex()).toArray());
 
 
+            }
+        });
+
+        this.list1.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (MainWindow.this.currentZakaznik != null) {
+                    MainWindow.this.jList2.clearSelection();
+                    MainWindow.this.jList2.setListData(((Navsteva) MainWindow.this.list1.getSelectedValue()).getVykonanePrace().toArray());
+                } else {
+                    MainWindow.this.jList2.clearSelection();
+                }
 
             }
         });
