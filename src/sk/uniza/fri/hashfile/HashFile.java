@@ -11,7 +11,7 @@ import java.util.BitSet;
 /**
  * 15. 11. 2024 - 13:25
  *
- * @param <T> the type parameter
+ * @param <T> v HashFile sú len tie bloke ktoré implementujú interface IDATA
  * @author matus
  */
 public class HashFile<T extends IData<T> & IHash> implements IRecord<T> {
